@@ -10,7 +10,6 @@ public class ExampleListener : MonoBehaviour
     public ButtonHandler rightPrimaryButtonHandler = null;
     public ButtonHandler rightSecondaryButtonHandler = null;
 
-    [Space(20)]
     [Header("Left controller")]
     public AxisHandler2D leftPrimaryAxisHandler2D = null;
     public AxisHandler leftTriggerHandler = null;

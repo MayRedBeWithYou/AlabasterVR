@@ -146,7 +146,7 @@ Transform:
   m_GameObject: {fileID: 19109670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1669763579}
   m_RootOrder: 0
@@ -194,7 +194,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240967875}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e988983f96fe1dd48800bcdfc82f23e9, type: 3}
   m_Name: 
@@ -296,7 +296,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240967875}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -400,7 +400,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240967875}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
@@ -485,7 +485,7 @@ MonoBehaviour:
   m_ActivateUsage: 2
   m_UIPressUsage: 2
   m_AxisToPressThreshold: 0.1
-  m_ModelPrefab: {fileID: 312399483089926175, guid: 68d0022956800864884415e5f05df6ed,
+  m_ModelPrefab: {fileID: -8679921383154817045, guid: 4068488ac71b0974984fa1e69ded0c08,
     type: 3}
   m_ModelTransform: {fileID: 401280367}
   m_AnimateModel: 0
@@ -507,6 +507,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
   - {fileID: 11400000, guid: 72e585be256124e4f9091c2ee9aa9aab, type: 2}
   - {fileID: 11400000, guid: 6e43c03404523d04d90af0b5798b4417, type: 2}
+  - {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
+  - {fileID: 11400000, guid: f7add6caf7164724c81d35f9fd88d9a1, type: 2}
+  - {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
+  - {fileID: 11400000, guid: accd9e48977a4774aad6486f22878d29, type: 2}
   axisHandlers:
   - {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
   - {fileID: 11400000, guid: 64e2dd6667fd2bc4da492ae761772ac1, type: 2}
@@ -568,7 +572,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271393736}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.7403039, y: 0.49242604, z: 0.39560926}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -599,7 +603,7 @@ Transform:
   m_GameObject: {fileID: 401280366}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 240967876}
   m_RootOrder: 0
@@ -697,6 +701,51 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1298109535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1298109537}
+  - component: {fileID: 1298109536}
+  m_Layer: 0
+  m_Name: ToolController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1298109536
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1298109535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ba0dcd22342c1304a86b049dcaefeabd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightControllerTransform: {fileID: 401280367}
+  leftControllerTransform: {fileID: 19109671}
+--- !u!4 &1298109537
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1298109535}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.67885196, y: 0.59029555, z: 0.26566863}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1398798747
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,7 +830,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -907,7 +956,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1669763578}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e988983f96fe1dd48800bcdfc82f23e9, type: 3}
   m_Name: 
@@ -1009,7 +1058,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1669763578}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -1113,7 +1162,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1669763578}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
@@ -1198,7 +1247,7 @@ MonoBehaviour:
   m_ActivateUsage: 2
   m_UIPressUsage: 2
   m_AxisToPressThreshold: 0.1
-  m_ModelPrefab: {fileID: 312399483089926175, guid: 68d0022956800864884415e5f05df6ed,
+  m_ModelPrefab: {fileID: -8679921383154817045, guid: 07df425e42f705541a5273abba078bb4,
     type: 3}
   m_ModelTransform: {fileID: 19109671}
   m_AnimateModel: 0
@@ -1221,6 +1270,10 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b9d5ada87bb67ac49b3a892d0c471952, type: 2}
   - {fileID: 11400000, guid: 97e501efc2665b54793e026476b32321, type: 2}
   - {fileID: 11400000, guid: 3be534cc8a45d1e4ba1e42769746762b, type: 2}
+  - {fileID: 11400000, guid: fafa023c0a6763444859207510fe53f8, type: 2}
+  - {fileID: 11400000, guid: c9f2f0bd713f6c6409a18c2786404799, type: 2}
+  - {fileID: 11400000, guid: 2feffd6caa18b9940a5afbfa0046cee1, type: 2}
+  - {fileID: 11400000, guid: ce5545b4db5b01b45a2551a9db9257ce, type: 2}
   axisHandlers:
   - {fileID: 11400000, guid: 08c28c0bb7224c344b4aa2e029702eb0, type: 2}
   - {fileID: 11400000, guid: 7ea3eaea2db94a24086f1d0ab13c638e, type: 2}
