@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
-  m_UseShadowmask: 0
+  m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -164,6 +164,7 @@ GameObject:
   - component: {fileID: 240967879}
   - component: {fileID: 240967878}
   - component: {fileID: 240967877}
+  - component: {fileID: 240967881}
   m_Layer: 0
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -330,7 +331,7 @@ LineRenderer:
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.005
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -490,6 +491,89 @@ MonoBehaviour:
   m_AnimateModel: 0
   m_ModelSelectTransition: 
   m_ModelDeSelectTransition: 
+--- !u!114 &240967881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240967875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4ed948e727d574ea96fab6cffe83ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHandlers:
+  - {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
+  - {fileID: 11400000, guid: 72e585be256124e4f9091c2ee9aa9aab, type: 2}
+  - {fileID: 11400000, guid: 6e43c03404523d04d90af0b5798b4417, type: 2}
+  axisHandlers:
+  - {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
+  - {fileID: 11400000, guid: 64e2dd6667fd2bc4da492ae761772ac1, type: 2}
+  axisHandler2Ds:
+  - {fileID: 11400000, guid: 8a2d4ffca8480fb48b6ef34f6b00aaa8, type: 2}
+--- !u!1 &271393736
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 271393738}
+  - component: {fileID: 271393737}
+  m_Layer: 0
+  m_Name: ExampleListener
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &271393737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271393736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b38213eb62ee9c4d86713ac3c9ff0f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightPrimaryAxisHandler2D: {fileID: 11400000, guid: 8a2d4ffca8480fb48b6ef34f6b00aaa8,
+    type: 2}
+  rightTriggerHandler: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056,
+    type: 2}
+  rightPrimaryAxisClickHandler: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03,
+    type: 2}
+  rightPrimaryButtonHandler: {fileID: 11400000, guid: 72e585be256124e4f9091c2ee9aa9aab,
+    type: 2}
+  rightSecondaryButtonHandler: {fileID: 11400000, guid: 6e43c03404523d04d90af0b5798b4417,
+    type: 2}
+  leftPrimaryAxisHandler2D: {fileID: 11400000, guid: c4a58d3688e95b14dafc30b13fc431ee,
+    type: 2}
+  leftTriggerHandler: {fileID: 11400000, guid: 08c28c0bb7224c344b4aa2e029702eb0, type: 2}
+  leftPrimaryAxisClickHandler: {fileID: 11400000, guid: 7f1a0f647770e394782890691c3ea206,
+    type: 2}
+  leftPrimaryButtonHandler: {fileID: 11400000, guid: b9d5ada87bb67ac49b3a892d0c471952,
+    type: 2}
+  leftSecondaryButtonHandler: {fileID: 11400000, guid: 97e501efc2665b54793e026476b32321,
+    type: 2}
+--- !u!4 &271393738
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 271393736}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.7403039, y: 0.49242604, z: 0.39560926}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &401280366
 GameObject:
   m_ObjectHideFlags: 0
@@ -793,6 +877,7 @@ GameObject:
   - component: {fileID: 1669763582}
   - component: {fileID: 1669763581}
   - component: {fileID: 1669763580}
+  - component: {fileID: 1669763584}
   m_Layer: 0
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -959,7 +1044,7 @@ LineRenderer:
   m_Positions: []
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.005
+    widthMultiplier: 0.02
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -1119,6 +1204,28 @@ MonoBehaviour:
   m_AnimateModel: 0
   m_ModelSelectTransition: 
   m_ModelDeSelectTransition: 
+--- !u!114 &1669763584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669763578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4ed948e727d574ea96fab6cffe83ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHandlers:
+  - {fileID: 11400000, guid: 7f1a0f647770e394782890691c3ea206, type: 2}
+  - {fileID: 11400000, guid: b9d5ada87bb67ac49b3a892d0c471952, type: 2}
+  - {fileID: 11400000, guid: 97e501efc2665b54793e026476b32321, type: 2}
+  - {fileID: 11400000, guid: 3be534cc8a45d1e4ba1e42769746762b, type: 2}
+  axisHandlers:
+  - {fileID: 11400000, guid: 08c28c0bb7224c344b4aa2e029702eb0, type: 2}
+  - {fileID: 11400000, guid: 7ea3eaea2db94a24086f1d0ab13c638e, type: 2}
+  axisHandler2Ds:
+  - {fileID: 11400000, guid: c4a58d3688e95b14dafc30b13fc431ee, type: 2}
 --- !u!1 &1793690297
 GameObject:
   m_ObjectHideFlags: 0
