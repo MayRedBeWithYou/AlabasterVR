@@ -144,11 +144,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19109670}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2105602491}
+  - {fileID: 441042022}
   m_Father: {fileID: 1669763579}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -166,6 +167,7 @@ GameObject:
   - component: {fileID: 240967878}
   - component: {fileID: 240967877}
   - component: {fileID: 240967881}
+  - component: {fileID: 240967882}
   m_Layer: 0
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -297,7 +299,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240967875}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -401,7 +403,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 240967875}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
@@ -518,6 +520,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 64e2dd6667fd2bc4da492ae761772ac1, type: 2}
   axisHandler2Ds:
   - {fileID: 11400000, guid: 8a2d4ffca8480fb48b6ef34f6b00aaa8, type: 2}
+--- !u!114 &240967882
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240967875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32a8ab83a77189844a912d477548b6ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &271393736
 GameObject:
   m_ObjectHideFlags: 0
@@ -542,7 +556,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 271393736}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b38213eb62ee9c4d86713ac3c9ff0f8, type: 3}
   m_Name: 
@@ -611,6 +625,36 @@ Transform:
   m_Father: {fileID: 240967876}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &441042021
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 441042022}
+  m_Layer: 0
+  m_Name: ToolSelectionTransform
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &441042022
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441042021}
+  m_LocalRotation: {x: 0.2588191, y: 0, z: 0, w: 0.9659258}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 19109671}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
 --- !u!1 &654544605
 GameObject:
   m_ObjectHideFlags: 0
@@ -768,13 +812,27 @@ MonoBehaviour:
   cameraTransform: {fileID: 1619316189}
   leftPointer: {fileID: 2105602491}
   rightPointer: {fileID: 1265726289}
-  MainMenuHandler: {fileID: 11400000, guid: b9d5ada87bb67ac49b3a892d0c471952, type: 2}
+  MainMenuButtonHandler: {fileID: 11400000, guid: b9d5ada87bb67ac49b3a892d0c471952,
+    type: 2}
   LeftPointerButtonHandler: {fileID: 11400000, guid: a58ef9bfe8d104647815c73918cedc32,
     type: 2}
   RightPointerButtonHandler: {fileID: 11400000, guid: 0407ead129088124aad966351a5bcc72,
     type: 2}
+  ToolSelectionMenuButtonHandler: {fileID: 11400000, guid: fafa023c0a6763444859207510fe53f8,
+    type: 2}
   MainMenuPrefab: {fileID: 7558545779775698295, guid: f0bd81be6a0cd6a439c5456b0ddd2f56,
     type: 3}
+  MainMenuDistance: 0.2
+  ToolSelectionMenuPrefab: {fileID: 2332784744473230363, guid: 89b43f4cef579364992c41a7707a8a97,
+    type: 3}
+  ToolSelectionMenuTransform: {fileID: 441042022}
+  ToolPrefabs:
+  - {fileID: 3456394130398050143, guid: 626e040734521e74e862bb1af310c2ef, type: 3}
+  - {fileID: 7079215710341580042, guid: f0f26cae52586ac4388545fa91574f01, type: 3}
+  - {fileID: 7160288784685767975, guid: b975b2a3560322f498e5007d571e636d, type: 3}
+  - {fileID: 3948406273424207580, guid: aed6661ee1c1f914d96a7372e0caa28a, type: 3}
+  - {fileID: 2117250042692717289, guid: 3aed699dfd20b614d909e239d72261be, type: 3}
+  Tools: []
 --- !u!4 &1298109537
 Transform:
   m_ObjectHideFlags: 0
@@ -916,6 +974,7 @@ GameObject:
   - component: {fileID: 1669763581}
   - component: {fileID: 1669763580}
   - component: {fileID: 1669763584}
+  - component: {fileID: 1669763585}
   m_Layer: 0
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -1047,7 +1106,7 @@ LineRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1669763578}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -1151,7 +1210,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1669763578}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6803edce0201f574f923fd9d10e5b30a, type: 3}
   m_Name: 
@@ -1191,8 +1250,8 @@ MonoBehaviour:
   m_HapticSelectExitIntensity: 0
   m_HapticSelectExitDuration: 0
   m_PlayHapticsOnHoverEnter: 0
-  m_HapticHoverEnterIntensity: 0
-  m_HapticHoverEnterDuration: 0
+  m_HapticHoverEnterIntensity: 1000
+  m_HapticHoverEnterDuration: 1000
   m_PlayHapticsOnHoverExit: 0
   m_HapticHoverExitIntensity: 0
   m_HapticHoverExitDuration: 0
@@ -1269,6 +1328,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7ea3eaea2db94a24086f1d0ab13c638e, type: 2}
   axisHandler2Ds:
   - {fileID: 11400000, guid: c4a58d3688e95b14dafc30b13fc431ee, type: 2}
+--- !u!114 &1669763585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669763578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32a8ab83a77189844a912d477548b6ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1793690297
 GameObject:
   m_ObjectHideFlags: 0
