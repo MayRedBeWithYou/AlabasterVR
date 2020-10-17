@@ -13,9 +13,18 @@ public class InputManager : MonoBehaviour
 
     private XRController controller = null;
 
+    private OnHoverEventHandler onHoverHandler = null;
+
+    private XRInteractorLineVisual visual = null;
+
     private void Awake()
     {
         controller = GetComponent<XRController>();
+        onHoverHandler = GetComponent<OnHoverEventHandler>();
+        visual = GetComponent<XRInteractorLineVisual>();
+
+        onHoverHandler.OnHoverEnter.AddListener((c) => visual.enabled = true);
+        onHoverHandler.OnHoverExit.AddListener((c) => visual.enabled = false);
     }
 
     private void Update()

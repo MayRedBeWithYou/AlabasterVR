@@ -1,37 +1,45 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class RaycastLineEnabler : MonoBehaviour
+[Serializable]
+public class OnHoverEnterEvent : UnityEvent<XRController> { }
+
+[Serializable]
+public class OnHoverExitEvent : UnityEvent<XRController> { }
+
+public class OnHoverEventHandler : MonoBehaviour
 {
     private XRRayInteractor interactor;
-    private XRInteractorLineVisual visual;
+    private XRController controller;
 
     private bool isHitting = false;
+
+    public OnHoverEnterEvent OnHoverEnter;
+    public OnHoverExitEvent OnHoverExit;
 
     public bool IsHitting
     {
         get => isHitting;
         private set
         {
-            if (isHitting == value) return;
-            isHitting = value;
-            ToggleInteractor(value);
+            if (isHitting != value)
+            {
+                if (value) OnHoverEnter?.Invoke(controller); 
+                else OnHoverExit?.Invoke(controller);
+                isHitting = value;
+            }            
         }
     }
 
     private void Awake()
     {
         interactor = gameObject.GetComponent<XRRayInteractor>();
-        visual = gameObject.GetComponent<XRInteractorLineVisual>();
+        controller = gameObject.GetComponent<XRController>();
     }
-
-    private void ToggleInteractor(bool value)
-    {
-        visual.enabled = value;
-    }
-
     void Update()
     {
         bool isValid = false;
