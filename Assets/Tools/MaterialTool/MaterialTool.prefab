@@ -43,6 +43,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6cad72d1ea2f274c809d651c4bbcc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
   toolName: Tworzywo
+  description: 
   sprite: {fileID: 21300000, guid: b2d0a19bcee3ee54cb4270f50a6ea3bd, type: 3}
+  trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
+  actionButton: {fileID: 11400000, guid: 03fa79984a97acb4f940f360e8597ec5, type: 2}
+  settingsButton: {fileID: 11400000, guid: 6e43c03404523d04d90af0b5798b4417, type: 2}
+  toggleButton: {fileID: 11400000, guid: 72e585be256124e4f9091c2ee9aa9aab, type: 2}
+  positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
+  upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
+  downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
+  addMaterial: {fileID: 2100000, guid: 9e9b8de4449c2084b87d70a7942f741a, type: 2}
+  removeMaterial: {fileID: 2100000, guid: 2f527c5923696354980882ead218fac6, type: 2}
+  cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
+    type: 3}
+  cursor: {fileID: 0}
+  isAdding: 1
