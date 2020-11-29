@@ -23,6 +23,11 @@ public class MaterialTool : Tool
     [Space(10f)]
     public GameObject cursorPrefab;
 
+    public ComputeShader addShader;
+    public ComputeShader removeShader;
+
+    int sphereShaderKernel;
+
     [HideInInspector]
     public CursorSDF cursor;
 
@@ -30,7 +35,6 @@ public class MaterialTool : Tool
 
     public override void Enable()
     {
-
         if (cursor != null)
             cursor.ToggleRenderer(true);
         base.Enable();
@@ -71,10 +75,8 @@ public class MaterialTool : Tool
         {
             cursor.DecreaseRadius();
         }
-        if(trigger.Value > 0.2)
+        if (trigger.Value > 0.2)
         {
-            cursor.UpdateActiveChunks();
-
             PerformAction();
         }
     }
@@ -87,29 +89,21 @@ public class MaterialTool : Tool
 
     private void PerformAction()
     {
+        ComputeShader shader = isAdding ? addShader : removeShader;
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
-            for (int x = 0; x < chunk.size; x++)
-            {
-                for (int y = 0; y < chunk.size; y++)
-                {
-                    for (int z = 0; z < chunk.size; z++)
-                    {
-                        int index = chunk.GetVoxelIndex(x, y, z);
-                        float val = cursor.IsInside(chunk.voxelArray[index].position);
-                        if (isAdding)
-                        {
-                            chunk.voxelArray[index].value = Mathf.Min(val, chunk.voxelArray[index].value);
-                        }
-                        else
-                        {
-                            chunk.voxelArray[index].value = Mathf.Max(-val, chunk.voxelArray[index].value);
-                        }
-                    }
-                }
-            }
+            sphereShaderKernel = shader.FindKernel("CSMain");
+
+            shader.SetFloat("radius", cursor.radius);
+            shader.SetFloat("chunkSize", chunk.size);
+            shader.SetVector("position", cursor.transform.position);
+            shader.SetVector("offset", chunk.transform.position);
+            shader.SetInt("resolution", chunk.resolution);
+            shader.SetBuffer(sphereShaderKernel, "sdf", chunk.voxels.VoxelBuffer);
+            shader.Dispatch(sphereShaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
+            chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
         }
 
-        MeshGenerator.Instance.UpdateAllActiveChunks();
+        //MeshGenerator.Instance.UpdateAllActiveChunks();
     }
 }
