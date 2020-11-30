@@ -3,7 +3,7 @@ using UnityEngine.XR;
 using UnityEngine.XR.Interaction.Toolkit;
 
 [CreateAssetMenu(menuName = "Input/Axis", fileName = "NewAxisHandler")]
-public class AxisHandler : InputHandler, ISerializationCallbackReceiver
+public class AxisHandler : InputHandler<float>, ISerializationCallbackReceiver
 {
     public enum Axis
     {
@@ -12,40 +12,22 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
         Grip
     }
 
-    public float Value => previousValue;
-
-    public delegate void ValueChange(XRController controller, float value);
-    public event ValueChange OnValueChange;
-
     public Axis axis = Axis.None;
 
     private InputFeatureUsage<float> inputFeature;
-    private float previousValue = 0f;
-
     public void OnAfterDeserialize()
     {
         inputFeature = new InputFeatureUsage<float>(axis.ToString());
     }
 
     public void OnBeforeSerialize() { }
-
-    public override void HandleState(XRController controller)
+    public override bool TryGetValue(XRController controller, out float value)
     {
-        float value = GetValue(controller);
-        if (value != previousValue)
+        if (controller.inputDevice.TryGetFeatureValue(inputFeature, out value))
         {
-            previousValue = value;
-            OnValueChange?.Invoke(controller, value);
+            if (value < controller.axisToPressThreshold) value = 0f;
+            return true;
         }
-    }
-
-    public float GetValue(XRController controller)
-    {
-        if (controller.inputDevice.TryGetFeatureValue(inputFeature, out float value))
-        {
-            if (value < controller.axisToPressThreshold) return 0;
-            return value;
-        }
-        return 0f;
+        return false;
     }
 }

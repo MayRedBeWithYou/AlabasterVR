@@ -69,9 +69,9 @@ public class ToolController : MonoBehaviour
             return;
         }
         _instance = this;
-        MainMenuButtonHandler.OnButtonDown += ShowMainMenu;
+        MainMenuButtonHandler.StateChanged += ShowMainMenu;
 
-        ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
+        ToolSelectionMenuButtonHandler.StateChanged += ShowToolSelectionMenu;
 
         foreach (Tool tool in ToolPrefabs)
         {
@@ -80,32 +80,38 @@ public class ToolController : MonoBehaviour
         SelectedTool = Tools[0];
     }
 
-    private void ShowMainMenu(XRController controller)
+    private void ShowMainMenu(object sender, bool value)
     {
-        if (_activeMainMenu)
+        if(value)
         {
-            CloseMainMenu();
-        }
-        else
-        {
-            Vector3 lookDirection = leftController.transform.position - cameraTransform.position;
-            lookDirection.y = 0;
-            _activeMainMenu = Instantiate(MainMenuPrefab, leftPointer.position + lookDirection.normalized * MainMenuDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
-            MainMenuController mainMenu = _activeMainMenu.GetComponent<MainMenuController>();
-            mainMenu.ExitButton.onClick.AddListener(CloseMainMenu);
+            if (_activeMainMenu)
+            {
+                CloseMainMenu();
+            }
+            else
+            {
+                Vector3 lookDirection = leftController.transform.position - cameraTransform.position;
+                lookDirection.y = 0;
+                _activeMainMenu = Instantiate(MainMenuPrefab, leftPointer.position + lookDirection.normalized * MainMenuDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
+                MainMenuController mainMenu = _activeMainMenu.GetComponent<MainMenuController>();
+                mainMenu.ExitButton.onClick.AddListener(CloseMainMenu);
+            }
         }
     }
 
-    private void ShowToolSelectionMenu(XRController controller)
+    private void ShowToolSelectionMenu(object sender, bool value)
     {
-        if (_activeToolSelectionMenu)
+        if(value)
         {
-            Destroy(_activeToolSelectionMenu);
-            _activeToolSelectionMenu = null;
-        }
-        else
-        {
-            _activeToolSelectionMenu = Instantiate(ToolSelectionMenuPrefab, ToolSelectionMenuTransform.position, ToolSelectionMenuTransform.rotation, ToolSelectionMenuTransform);
+            if (_activeToolSelectionMenu)
+            {
+                Destroy(_activeToolSelectionMenu);
+                _activeToolSelectionMenu = null;
+            }
+            else
+            {
+                _activeToolSelectionMenu = Instantiate(ToolSelectionMenuPrefab, ToolSelectionMenuTransform.position, ToolSelectionMenuTransform.rotation, ToolSelectionMenuTransform);
+            }
         }
     }
 

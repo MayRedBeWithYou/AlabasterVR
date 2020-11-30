@@ -17,119 +17,120 @@ public class ExampleListener : MonoBehaviour
     public ButtonHandler leftPrimaryButtonHandler = null;
     public ButtonHandler leftSecondaryButtonHandler = null;
 
+
     public void OnEnable()
     {
-        rightPrimaryAxisHandler2D.OnValueChange += PrintRightPrimaryAxis;
-        rightTriggerHandler.OnValueChange += PrintRightTrigger;
-        rightPrimaryAxisClickHandler.OnButtonDown += PrintRightPrimaryAxisButtonDown;
-        rightPrimaryAxisClickHandler.OnButtonUp += PrintRightPrimaryAxisButtonUp;
-        rightPrimaryButtonHandler.OnButtonDown += PrintRightPrimaryButtonDown;
-        rightPrimaryButtonHandler.OnButtonUp += PrintRightPrimaryButtonUp;
-        rightSecondaryButtonHandler.OnButtonDown += PrintRightSecondaryButtonDown;
-        rightSecondaryButtonHandler.OnButtonUp += PrintRightSecondaryButtonUp;
+        rightPrimaryAxisHandler2D.StateChanged += PrintRightPrimaryAxis;
+        rightTriggerHandler.StateChanged += PrintRightTrigger;
+        rightPrimaryAxisClickHandler.StateChanged += PrintRightPrimaryAxisButtonDown;
+        rightPrimaryAxisClickHandler.StateChanged += PrintRightPrimaryAxisButtonUp;
+        rightPrimaryButtonHandler.StateChanged += PrintRightPrimaryButtonDown;
+        rightPrimaryButtonHandler.StateChanged += PrintRightPrimaryButtonUp;
+        rightSecondaryButtonHandler.StateChanged += PrintRightSecondaryButtonDown;
+        rightSecondaryButtonHandler.StateChanged += PrintRightSecondaryButtonUp;
 
-        leftPrimaryAxisHandler2D.OnValueChange += PrintLeftPrimaryAxis;
-        leftTriggerHandler.OnValueChange += PrintLeftTrigger;
-        leftPrimaryAxisClickHandler.OnButtonDown += PrintLeftPrimaryAxisButtonDown;
-        leftPrimaryAxisClickHandler.OnButtonUp += PrintLeftPrimaryAxisButtonUp;
-        leftPrimaryButtonHandler.OnButtonDown += PrintLeftPrimaryButtonDown;
-        leftPrimaryButtonHandler.OnButtonUp += PrintLeftPrimaryButtonUp;
-        leftSecondaryButtonHandler.OnButtonDown += PrintLeftSecondaryButtonDown;
-        leftSecondaryButtonHandler.OnButtonUp += PrintLeftSecondaryButtonUp;
+        leftPrimaryAxisHandler2D.StateChanged += PrintLeftPrimaryAxis;
+        leftTriggerHandler.StateChanged += PrintLeftTrigger;
+        leftPrimaryAxisClickHandler.StateChanged += PrintLeftPrimaryAxisButtonDown;
+        leftPrimaryAxisClickHandler.StateChanged += PrintLeftPrimaryAxisButtonUp;
+        leftPrimaryButtonHandler.StateChanged += PrintLeftPrimaryButtonDown;
+        leftPrimaryButtonHandler.StateChanged += PrintLeftPrimaryButtonUp;
+        leftSecondaryButtonHandler.StateChanged += PrintLeftSecondaryButtonDown;
+        leftSecondaryButtonHandler.StateChanged += PrintLeftSecondaryButtonUp;
     }
 
     public void OnDisable()
     {
-        rightPrimaryAxisHandler2D.OnValueChange -= PrintRightPrimaryAxis;
-        rightTriggerHandler.OnValueChange -= PrintRightTrigger;
-        rightPrimaryAxisClickHandler.OnButtonDown -= PrintRightPrimaryAxisButtonDown;
-        rightPrimaryAxisClickHandler.OnButtonUp -= PrintRightPrimaryAxisButtonUp;
-        rightPrimaryButtonHandler.OnButtonDown -= PrintRightPrimaryButtonDown;
-        rightPrimaryButtonHandler.OnButtonUp -= PrintRightPrimaryButtonUp;
-        rightSecondaryButtonHandler.OnButtonDown -= PrintRightSecondaryButtonDown;
-        rightSecondaryButtonHandler.OnButtonUp += PrintRightSecondaryButtonUp;
+        rightPrimaryAxisHandler2D.StateChanged -= PrintRightPrimaryAxis;
+        rightTriggerHandler.StateChanged -= PrintRightTrigger;
+        rightPrimaryAxisClickHandler.StateChanged -= PrintRightPrimaryAxisButtonDown;
+        rightPrimaryAxisClickHandler.StateChanged -= PrintRightPrimaryAxisButtonUp;
+        rightPrimaryButtonHandler.StateChanged -= PrintRightPrimaryButtonDown;
+        rightPrimaryButtonHandler.StateChanged -= PrintRightPrimaryButtonUp;
+        rightSecondaryButtonHandler.StateChanged -= PrintRightSecondaryButtonDown;
+        rightSecondaryButtonHandler.StateChanged += PrintRightSecondaryButtonUp;
 
-        leftPrimaryAxisHandler2D.OnValueChange -= PrintLeftPrimaryAxis;
-        leftTriggerHandler.OnValueChange -= PrintLeftTrigger;
-        leftPrimaryAxisClickHandler.OnButtonDown -= PrintLeftPrimaryAxisButtonDown;
-        leftPrimaryAxisClickHandler.OnButtonUp -= PrintLeftPrimaryAxisButtonUp;
-        leftPrimaryButtonHandler.OnButtonDown -= PrintLeftPrimaryButtonDown;
-        leftPrimaryButtonHandler.OnButtonUp -= PrintLeftPrimaryButtonUp;
-        leftSecondaryButtonHandler.OnButtonDown -= PrintLeftSecondaryButtonDown;
-        leftSecondaryButtonHandler.OnButtonUp += PrintLeftSecondaryButtonUp;
+        leftPrimaryAxisHandler2D.StateChanged -= PrintLeftPrimaryAxis;
+        leftTriggerHandler.StateChanged -= PrintLeftTrigger;
+        leftPrimaryAxisClickHandler.StateChanged -= PrintLeftPrimaryAxisButtonDown;
+        leftPrimaryAxisClickHandler.StateChanged -= PrintLeftPrimaryAxisButtonUp;
+        leftPrimaryButtonHandler.StateChanged -= PrintLeftPrimaryButtonDown;
+        leftPrimaryButtonHandler.StateChanged -= PrintLeftPrimaryButtonUp;
+        leftSecondaryButtonHandler.StateChanged -= PrintLeftSecondaryButtonDown;
+        leftSecondaryButtonHandler.StateChanged -= PrintLeftSecondaryButtonUp;
     }
 
-    private void PrintRightPrimaryAxisButtonDown(XRController controller)
+    private void PrintRightPrimaryAxisButtonDown(object sender, bool value)
     {
         Debug.Log("Right primary axis button down");
     }
 
-    private void PrintRightPrimaryAxisButtonUp(XRController controller)
+    private void PrintRightPrimaryAxisButtonUp(object sender, bool value)
     {
         Debug.Log("Right primary axis button up");
     }
-    private void PrintRightPrimaryButtonDown(XRController controller)
+    private void PrintRightPrimaryButtonDown(object sender, bool value)
     {
         Debug.Log("Right primary button down");
     }
 
-    private void PrintRightPrimaryButtonUp(XRController controller)
+    private void PrintRightPrimaryButtonUp(object sender, bool value)
     {
         Debug.Log("Right primary button up");
     }
-    private void PrintRightSecondaryButtonDown(XRController controller)
+    private void PrintRightSecondaryButtonDown(object sender, bool value)
     {
         Debug.Log("Right secondary button down");
     }
 
-    private void PrintRightSecondaryButtonUp(XRController controller)
+    private void PrintRightSecondaryButtonUp(object sender, bool value)
     {
         Debug.Log("Right secondary button up");
     }
 
-    private void PrintRightPrimaryAxis(XRController controller, Vector2 value)
+    private void PrintRightPrimaryAxis(object sender, Vector2 value)
     {
         Debug.Log($"Right primary axis - X: {value.x}, Y: {value.y}");
     }
 
-    private void PrintRightTrigger(XRController controller, float value)
+    private void PrintRightTrigger(object sender, float value)
     {
         Debug.Log($"Right trigger value: {value}");
     }
-    private void PrintLeftPrimaryAxisButtonDown(XRController controller)
+    private void PrintLeftPrimaryAxisButtonDown(object sender, bool value)
     {
         Debug.Log("Left primary axis button down");
     }
 
-    private void PrintLeftPrimaryAxisButtonUp(XRController controller)
+    private void PrintLeftPrimaryAxisButtonUp(object sender, bool value)
     {
         Debug.Log("Left primary axis button up");
     }
-    private void PrintLeftPrimaryButtonDown(XRController controller)
+    private void PrintLeftPrimaryButtonDown(object sender, bool value)
     {
         Debug.Log("Left primary button down");
     }
 
-    private void PrintLeftPrimaryButtonUp(XRController controller)
+    private void PrintLeftPrimaryButtonUp(object sender, bool value)
     {
         Debug.Log("Left primary button up");
     }
-    private void PrintLeftSecondaryButtonDown(XRController controller)
+    private void PrintLeftSecondaryButtonDown(object sender, bool value)
     {
         Debug.Log("Left secondary button down");
     }
 
-    private void PrintLeftSecondaryButtonUp(XRController controller)
+    private void PrintLeftSecondaryButtonUp(object sender, bool value)
     {
         Debug.Log("Left secondary button up");
     }
 
-    private void PrintLeftPrimaryAxis(XRController controller, Vector2 value)
+    private void PrintLeftPrimaryAxis(object sender, Vector2 value)
     {
         Debug.Log($"Left primary axis - X: {value.x}, Y: {value.y}");
     }
 
-    private void PrintLeftTrigger(XRController controller, float value)
+    private void PrintLeftTrigger(object sender, float value)
     {
         Debug.Log($"Left trigger value: {value}");
     }
