@@ -36,17 +36,16 @@ public class MaterialTool : Tool
         base.Enable();
     }
 
-    private void PositionButtonHandler(object sender, bool value)
+    private void PositionButton_OnButtonDown(XRController controller)
     {
-        if(value)
-        {
-            cursor.transform.parent = null;
-        }
-        else
-        {
-            cursor.transform.parent = ToolController.Instance.rightController.transform;
-        }
+        cursor.transform.parent = null;
     }
+
+    private void PositionButton_OnButtonUp(XRController controller)
+    {
+        cursor.transform.parent = ToolController.Instance.rightController.transform;
+    }
+
 
     public override void Disable()
     {
@@ -57,22 +56,24 @@ public class MaterialTool : Tool
     public void Awake()
     {
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
-        toggleButton.StateChanged += ToggleButtonHandler;
-        positionButton.StateChanged += PositionButtonHandler;
+        toggleButton.OnButtonDown += ToggleButtonHandler;
+
+        positionButton.OnButtonDown += PositionButton_OnButtonDown;
+        positionButton.OnButtonUp += PositionButton_OnButtonUp;
     }
 
     private void FixedUpdate()
     {
         cursor.UpdateActiveChunks();
-        if (upButton.Value)
+        if (upButton.IsPressed)
         {
             cursor.IncreaseRadius();
         }
-        if (downButton.Value)
+        if (downButton.IsPressed)
         {
             cursor.DecreaseRadius();
         }
-        if(trigger.Value > 0.2)
+        if (trigger.Value > 0.2)
         {
             cursor.UpdateActiveChunks();
 
@@ -80,10 +81,11 @@ public class MaterialTool : Tool
         }
     }
 
-    private void ToggleButtonHandler(object sender, bool value)
+    private void ToggleButtonHandler(XRController controller)
     {
         isAdding = !isAdding;
         cursor.SetMaterial(isAdding ? addMaterial : removeMaterial);
+
     }
 
     private void PerformAction()

@@ -9,7 +9,7 @@ public class MockButtonHandler : ButtonHandler
 
     public override void HandleState(XRController controller)
     {
-        if(Input.GetKeyDown(key)) mockedButton.InvokeEvent(true);
-        if(Input.GetKeyUp(key)) mockedButton.InvokeEvent(false);
+        if(Input.GetKeyDown(key)) mockedButton.InvokeDownEvent(controller);
+        if(Input.GetKeyUp(key)) mockedButton.InvokeUpEvent(controller);
     }
 }
