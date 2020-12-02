@@ -32,6 +32,6 @@ public class MeshGenerator : MonoBehaviour
 
     public void UpdateChunkMesh(Chunk chunk)
     {
-        chunk.gpuMesh.DrawMesh(chunk.transform.position);
+        chunk.gpuMesh.DrawMesh(chunk.offset);
     }
 }

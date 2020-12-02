@@ -23,7 +23,6 @@ float3 realPos(uint3 id)
     float3 ids = id;
     float res = numPointsPerAxis - 1;
     ids = ids / res;
-    //return float3(1,2,3);
     return ids * chunkSize;
 }
 
@@ -31,7 +30,6 @@ float3 interpolateVerts(float4 v1, float4 v2) {
     float t = (isoLevel - v1.w) / (v2.w - v1.w);
     return v1.xyz + t * (v2.xyz - v1.xyz);
 }
-
 
 int indexFromCoord(int x, int y, int z) {
     return z * numPointsPerAxis * numPointsPerAxis + y * numPointsPerAxis + x;
@@ -51,7 +49,8 @@ float4 sdfValAndPos(int x, int y, int z, uint3 id)
     retVal.w = points[indexFromCoord(x, y, z)];
     return retVal;
 }
-[numthreads(8, 8, 8)]
+
+[numthreads(numThreads, numThreads, numThreads)]
 void March(int3 id : SV_DispatchThreadID)
 {
     // Stop one point before the end because voxel includes neighbouring points

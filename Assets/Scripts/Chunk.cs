@@ -50,7 +50,7 @@ public class Chunk : MonoBehaviour
 
     void Update()
     {
-        gpuMesh.DrawMesh(transform.position);
+        gpuMesh.DrawMesh(offset);
     }
 
     public void GenerateCollider()

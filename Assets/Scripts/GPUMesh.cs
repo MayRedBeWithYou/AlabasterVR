@@ -17,6 +17,7 @@ public class GPUMesh : IDisposable
         proceduralMaterial = Resources.Load<Material>("MarchingCubes/proceduralMaterial");
         marchingCubesShader = Resources.Load<ComputeShader>("MarchingCubes/marchingCubesGPU");
     }
+
     public GPUMesh(int maxTriangleCount)
     {
         vertexBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 18, ComputeBufferType.Append);
@@ -35,17 +36,16 @@ public class GPUMesh : IDisposable
         marchingCubesShader.SetFloat("chunkSize", voxels.Size);
         marchingCubesShader.Dispatch(kernel, voxels.Resolution / 8, voxels.Resolution / 8, voxels.Resolution / 8);
         ComputeBuffer.CopyCount(vertexBuffer, drawArgs, sizeof(int));
-        var array = new float[vertexBuffer.count * 72 / 4];
-        vertexBuffer.GetData(array);
-        for (int i = 0; i < 12; i++)
-        {
-            Debug.Log($"{array[i]}");
-        }
+        //var array = new float[vertexBuffer.count * 72 / 4];
+        //vertexBuffer.GetData(array);
+        //for (int i = 0; i < 3; i++)
+        //{
+        //    Debug.Log($"x: {array[3*i]}, y: {array[3*i + 1]}, z: {array[3 * i + 2]}");
+        //}
 
-        var draw = new int[4];
-        drawArgs.GetData(draw);
-        Debug.Log($"Triangles: {draw[1]}");
-
+        //var draw = new int[4];
+        //drawArgs.GetData(draw);
+        //Debug.Log($"Triangles: {draw[1]}");
     }
 
     public void DrawMesh(Vector3 offset)
