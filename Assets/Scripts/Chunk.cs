@@ -28,6 +28,8 @@ public class Chunk : MonoBehaviour
 
     public GPUMesh gpuMesh;
 
+    public bool DisplayVoxels;
+
     [HideInInspector]
     public Mesh mesh;
 
@@ -51,7 +53,7 @@ public class Chunk : MonoBehaviour
     void Update()
     {
         gpuMesh.DrawMesh(offset);
-        voxels.DrawVoxelData(offset);
+        if (DisplayVoxels) voxels.DrawVoxelData(offset);
     }
 
     public void GenerateCollider()
