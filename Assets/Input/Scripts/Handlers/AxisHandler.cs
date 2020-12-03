@@ -48,4 +48,9 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
         }
         return 0f;
     }
+
+    public void InvokeEvent(XRController controller, float value)
+    {
+        OnValueChange?.Invoke(controller, value);
+    }
 }

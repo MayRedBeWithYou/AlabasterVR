@@ -17,8 +17,6 @@ public class ToolController : MonoBehaviour
 
     [Header("Buttons")]
     public ButtonHandler MainMenuButtonHandler;
-    public ButtonHandler LeftPointerButtonHandler;
-    public ButtonHandler RightPointerButtonHandler;
     public ButtonHandler ToolSelectionMenuButtonHandler;
 
     [Header("Menus")]
@@ -57,6 +55,12 @@ public class ToolController : MonoBehaviour
         }
     }
 
+    public void ToggleSelectedTool(bool value)
+    {
+        if (value) SelectedTool.Enable();
+        else SelectedTool.Disable();
+    }
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -65,14 +69,7 @@ public class ToolController : MonoBehaviour
             return;
         }
         _instance = this;
-        DontDestroyOnLoad(this.gameObject);
         MainMenuButtonHandler.OnButtonDown += ShowMainMenu;
-
-        LeftPointerButtonHandler.OnButtonDown += (controller) => ToggleLineVisual(controller, true);
-        LeftPointerButtonHandler.OnButtonUp += (controller) => ToggleLineVisual(controller, false);
-
-        RightPointerButtonHandler.OnButtonDown += (controller) => ToggleLineVisual(controller, true);
-        RightPointerButtonHandler.OnButtonUp += (controller) => ToggleLineVisual(controller, false);
 
         ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
 
@@ -81,11 +78,6 @@ public class ToolController : MonoBehaviour
             Tools.Add(Instantiate(tool, transform));
         }
         SelectedTool = Tools[0];
-    }
-
-    private void ToggleLineVisual(XRController controller, bool value)
-    {
-        controller.GetComponentInParent<XRInteractorLineVisual>().enabled = value;
     }
 
     private void ShowMainMenu(XRController controller)

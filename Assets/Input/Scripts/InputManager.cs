@@ -4,14 +4,13 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class InputManager : MonoBehaviour
 {
-
     public List<ButtonHandler> buttonHandlers = new List<ButtonHandler>();
 
     public List<AxisHandler> axisHandlers = new List<AxisHandler>();
 
     public List<AxisHandler2D> axisHandler2Ds = new List<AxisHandler2D>();
-
-    private XRController controller = null;
+    
+    private XRController controller;
 
     private OnHoverEventHandler onHoverHandler = null;
 
@@ -23,8 +22,8 @@ public class InputManager : MonoBehaviour
         onHoverHandler = GetComponent<OnHoverEventHandler>();
         visual = GetComponent<XRInteractorLineVisual>();
 
-        onHoverHandler.OnHoverEnter.AddListener((c) => visual.enabled = true);
-        onHoverHandler.OnHoverExit.AddListener((c) => visual.enabled = false);
+        onHoverHandler?.OnHoverEnter.AddListener((c) => visual.enabled = true);
+        onHoverHandler?.OnHoverExit.AddListener((c) => visual.enabled = false);
     }
 
     private void Update()

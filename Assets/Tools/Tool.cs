@@ -16,9 +16,9 @@ public class Tool : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public AxisHandler Trigger;
-
     public string toolName;
+
+    public string description;
 
     public Sprite sprite;
 }

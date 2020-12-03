@@ -20,7 +20,7 @@ public class AxisHandler2D : InputHandler, ISerializationCallbackReceiver
     public Axis2D axis = Axis2D.None;
 
     private InputFeatureUsage<Vector2> inputFeature;
-    private Vector2 previousValue = Vector2.zero;
+    protected Vector2 previousValue = Vector2.zero;
 
     public void OnAfterDeserialize()
     {
@@ -46,5 +46,10 @@ public class AxisHandler2D : InputHandler, ISerializationCallbackReceiver
             return value;
         }
         return Vector2.zero;
+    }
+
+    public void InvokeEvent(XRController controller, Vector2 value)
+    {
+        OnValueChange?.Invoke(controller, value);
     }
 }
