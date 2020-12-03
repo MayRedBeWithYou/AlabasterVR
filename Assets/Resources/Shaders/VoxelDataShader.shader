@@ -2,14 +2,13 @@
 {
 	Properties
 	{
-		_MainTex("Texture", 2D) = "white" {}
+		_InsideColor("Inside Color", Color) = (0,1,0,1)
+		_OutsideColor("Outside Color", Color) = (1,0,0,1)
 	}
 		SubShader
 	{
 		Tags { "RenderType" = "Opaque" }
-		//Cull Off
-		Cull Back
-		//Lighting On
+		Cull Off
 		LOD 100
 
 		Pass
@@ -26,14 +25,14 @@
 			int res;
 			float3 offset;
 			float spacing;
+			half4 _InsideColor;
+			half4 _OutsideColor;
+
 			struct v2f
 			{
 				float4 vertex : SV_POSITION;
 				uint id : TEXCOORD1;
 			};
-
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
 
 			uint3 idToGridCoords(uint id)
 			{
@@ -57,17 +56,9 @@
 
 			fixed4 frag(float4 i:SV_POSITION, uint id : TEXCOORD1) : SV_Target
 			{
-				// sample the texture
-				//fixed4 col = {1,0,0,1};// tex2D(_MainTex, i.uv);
-				//fixed4 col;
-				//col.rgb = i.normal;
-				// apply fog
-				//UNITY_APPLY_FOG(i.fogCoord, col);
 				float newval = (data[id]+1)/2;
-				half3 lightColor = {newval,1-newval, 0.0f};//ShadeVertexLights(i.vertex, i.normal);
-				return half4(lightColor, 1.0f);
+				return lerp(_InsideColor, _OutsideColor, newval);
 			}
-				//return col;
 			ENDCG
 		}
 	}
