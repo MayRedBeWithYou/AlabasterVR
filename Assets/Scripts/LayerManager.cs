@@ -17,15 +17,31 @@ public class LayerManager : MonoBehaviour
     public GameObject chunkPrefab;
 
     [Header("Parameters")]
-    public int chunksInAxis;
+    [SerializeField]
+    private float _size = 1;
 
-    public int chunkSize;
+    [SerializeField]
+    private int _resolution = 3;
 
-    public float boundSize;
+    [SerializeField]
+    private int _chunkResolution = 32;
+
+    public int Resolution => _resolution;
+    public float Size => _size;
+
+    public int ChunkResolution => _chunkResolution;
+
+    public float Spacing => Size / Resolution;
 
     [Header("Gizmos")]
+    [SerializeField]
+    private bool _drawBoundingBox = false;
+    [SerializeField]
+    private bool _drawGrid = true;
 
-    public bool showBoundGizmo;
+
+    [SerializeField]
+    private bool _drawOnlyActive = true;
 
     [Header("Debug info")]
 
@@ -57,8 +73,8 @@ public class LayerManager : MonoBehaviour
         activeChunks = new List<Chunk>();
 
         Chunk chunk = chunkPrefab.GetComponent<Chunk>();
-        chunk.boundSize = boundSize;
-        chunk.size = chunkSize;
+        chunk.size = Spacing;
+        chunk.resolution = ChunkResolution;
         _activeLayer = AddNewLayer();
     }
 
@@ -67,28 +83,43 @@ public class LayerManager : MonoBehaviour
         GameObject layerObject = new GameObject($"Layer {layers.Count + 1}");
         layerObject.transform.parent = LayersHolder.transform;
         Layer layer = layerObject.AddComponent<Layer>();
-        layer.GenerateChunks(chunksInAxis, chunkPrefab);
+        layer.Resolution = Resolution;
+        layer.ChunkResolution = ChunkResolution;
+        layer.Size = Size;
+        layer.GenerateChunks(chunkPrefab);
         layers.Add(layer);
         return layer;
     }
 
     void OnDrawGizmos()
     {
-        if (Application.isPlaying && showBoundGizmo)
+        if (Application.isPlaying)
         {
-            foreach (Chunk chunk in _activeLayer.chunks)
+            if(_drawGrid)
             {
-                if (!activeChunks.Contains(chunk))
+                if(!_drawOnlyActive)
                 {
-                    Gizmos.color = Color.white;
-                    Gizmos.DrawWireCube(chunk.center, Vector3.one * chunk.boundSize);
+                    foreach (Chunk chunk in _activeLayer.chunks)
+                    {
+                        if (!activeChunks.Contains(chunk))
+                        {
+                            Gizmos.color = Color.white;
+                            Gizmos.DrawWireCube(chunk.center, Vector3.one * chunk.size);
+                        }
+
+                    }
+                }
+                foreach (Chunk chunk in activeChunks)
+                {
+                    Gizmos.color = Color.green;
+                    Gizmos.DrawWireCube(chunk.center, Vector3.one * chunk.size);
                 }
 
             }
-            foreach (Chunk chunk in activeChunks)
+            if(_drawBoundingBox)
             {
-                Gizmos.color = Color.green;
-                Gizmos.DrawWireCube(chunk.center, Vector3.one * chunk.boundSize);
+                Gizmos.color = Color.black;
+                //Gizmos.DrawWireCube(transform.position, Vector3.one * Size / 2f);
             }
         }
     }
