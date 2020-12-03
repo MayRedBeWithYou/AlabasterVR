@@ -15,7 +15,7 @@ public class GPUVoxelData : IDisposable
     [RuntimeInitializeOnLoadMethod]
     private static void Initialize()
     {
-        pointMaterial = Resources.Load<Material>("Shaders/PointMaterial");
+        pointMaterial = Resources.Load<Material>("Materials/PointMaterial");
     }
 
     public GPUVoxelData(int resolution, float size)

@@ -14,7 +14,7 @@ public class GPUMesh : IDisposable
     [RuntimeInitializeOnLoadMethod]
     private static void Initialize()
     {
-        proceduralMaterial = Resources.Load<Material>("MarchingCubes/proceduralMaterial");
+        proceduralMaterial = Resources.Load<Material>("Materials/proceduralMaterial");
         marchingCubesShader = Resources.Load<ComputeShader>("MarchingCubes/marchingCubesGPU");
     }
 
