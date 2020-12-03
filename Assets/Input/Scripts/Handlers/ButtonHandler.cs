@@ -28,4 +28,14 @@ public class ButtonHandler : InputHandler
             }
         }
     }
+
+    public void InvokeDownEvent(XRController controller)
+    {
+        OnButtonDown?.Invoke(controller);
+    }
+
+    public void InvokeUpEvent(XRController controller)
+    {
+        OnButtonUp?.Invoke(controller);
+    }
 }

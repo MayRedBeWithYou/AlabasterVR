@@ -50,6 +50,7 @@ public class MaterialTool : Tool
         cursor.transform.parent = ToolController.Instance.rightController.transform;
     }
 
+
     public override void Disable()
     {
         cursor.ToggleRenderer(false);
@@ -59,7 +60,8 @@ public class MaterialTool : Tool
     public void Awake()
     {
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
-        toggleButton.OnButtonDown += ToggleButton_OnButtonDown;
+        toggleButton.OnButtonDown += ToggleButtonHandler;
+
         positionButton.OnButtonDown += PositionButton_OnButtonDown;
         positionButton.OnButtonUp += PositionButton_OnButtonUp;
     }
@@ -81,10 +83,11 @@ public class MaterialTool : Tool
         }
     }
 
-    private void ToggleButton_OnButtonDown(XRController controller)
+    private void ToggleButtonHandler(XRController controller)
     {
         isAdding = !isAdding;
         cursor.SetMaterial(isAdding ? addMaterial : removeMaterial);
+
     }
 
     private void PerformAction()

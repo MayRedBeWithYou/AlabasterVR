@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
+using System;
 
-public class InputHandler : ScriptableObject
+public abstract class InputHandler : ScriptableObject
 {
     public virtual void HandleState(XRController controller) { }
 }
