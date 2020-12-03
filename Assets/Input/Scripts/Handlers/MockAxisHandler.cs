@@ -10,7 +10,10 @@ public class MockAxisHandler : AxisHandler
 
     public override void HandleState(XRController controller)
     {
-        if (Input.GetKeyDown(key)) mockedAxis.InvokeEvent(controller, mockValue);
-        if (Input.GetKeyUp(key)) mockedAxis.InvokeEvent(controller, 0f);
+        float value = previousValue;
+        if (Input.GetKeyDown(key)) value = mockValue;
+        if (Input.GetKeyUp(key)) value = 0f;
+        if (previousValue != value) mockedAxis.InvokeEvent(controller, value);
+        previousValue = value;
     }
 }

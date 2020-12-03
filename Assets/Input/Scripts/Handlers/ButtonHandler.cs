@@ -13,7 +13,7 @@ public class ButtonHandler : InputHandler
     public event StateChange OnButtonDown;
     public event StateChange OnButtonUp;
 
-    private bool previousPress = false;
+    protected bool previousPress = false;
 
     public override void HandleState(XRController controller)
     {
@@ -31,11 +31,13 @@ public class ButtonHandler : InputHandler
 
     public void InvokeDownEvent(XRController controller)
     {
+        previousPress = true;
         OnButtonDown?.Invoke(controller);
     }
 
     public void InvokeUpEvent(XRController controller)
     {
+        previousPress = false;
         OnButtonUp?.Invoke(controller);
     }
 }

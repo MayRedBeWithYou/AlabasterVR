@@ -20,7 +20,7 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
     public Axis axis = Axis.None;
 
     private InputFeatureUsage<float> inputFeature;
-    private float previousValue = 0f;
+    protected float previousValue = 0f;
 
     public void OnAfterDeserialize()
     {
@@ -31,26 +31,30 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
 
     public override void HandleState(XRController controller)
     {
-        float value = GetValue(controller);
-        if (value != previousValue)
+        if(GetValue(controller, out float value))
         {
-            previousValue = value;
-            OnValueChange?.Invoke(controller, value);
+            if (value != previousValue)
+            {
+                previousValue = value;
+                OnValueChange?.Invoke(controller, value);
+            }
         }
+        
     }
 
-    public float GetValue(XRController controller)
+    public bool GetValue(XRController controller, out float value)
     {
-        if (controller.inputDevice.TryGetFeatureValue(inputFeature, out float value))
+        if (controller.inputDevice.TryGetFeatureValue(inputFeature, out value))
         {
-            if (value < controller.axisToPressThreshold) return 0;
-            return value;
+            if (value < controller.axisToPressThreshold) value = 0;
+            return true;
         }
-        return 0f;
+        return false;
     }
 
     public void InvokeEvent(XRController controller, float value)
     {
+        previousValue = value;
         OnValueChange?.Invoke(controller, value);
     }
 }

@@ -31,25 +31,24 @@ public class AxisHandler2D : InputHandler, ISerializationCallbackReceiver
 
     public override void HandleState(XRController controller)
     {
-        Vector2 value = GetValue(controller);
-        if (value != previousValue)
+        if(GetValue(controller, out Vector2 value))
         {
-            previousValue = value;
-            OnValueChange?.Invoke(controller, value);
+            if (value != previousValue)
+            {
+                previousValue = value;
+                OnValueChange?.Invoke(controller, value);
+            }
         }
     }
 
-    public Vector2 GetValue(XRController controller)
+    public bool GetValue(XRController controller, out Vector2 value)
     {
-        if (controller.inputDevice.TryGetFeatureValue(inputFeature, out Vector2 value))
-        {
-            return value;
-        }
-        return Vector2.zero;
+        return controller.inputDevice.TryGetFeatureValue(inputFeature, out value);
     }
 
     public void InvokeEvent(XRController controller, Vector2 value)
     {
+        previousValue = value;
         OnValueChange?.Invoke(controller, value);
     }
 }
