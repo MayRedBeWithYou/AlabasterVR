@@ -10,6 +10,13 @@ public class GPUVoxelData : IDisposable
     public int Resolution { get; private set; }
     public int Volume { get; private set; }
     public float Size { get; private set; }
+    private static Material pointMaterial;
+
+    [RuntimeInitializeOnLoadMethod]
+    private static void Initialize()
+    {
+        pointMaterial = Resources.Load<Material>("Shaders/PointMaterial");
+    }
 
     public GPUVoxelData(int resolution, float size)
     {
@@ -28,5 +35,23 @@ public class GPUVoxelData : IDisposable
     public void Dispose()
     {
         VoxelBuffer.Dispose();
+    }
+
+    public void DrawVoxelData(Vector3 offset)
+    {
+        MaterialPropertyBlock materialBlock = new MaterialPropertyBlock();
+        materialBlock.SetBuffer("data", VoxelBuffer);
+        materialBlock.SetVector("offset", offset);
+        materialBlock.SetFloat("spacing", Size / (Resolution - 1));
+        materialBlock.SetInt("res", Resolution);
+        Graphics.DrawProcedural(
+            pointMaterial,
+            new Bounds(Vector3.zero, new Vector3(100, 100, 100)), //what exactly should go here?
+            MeshTopology.Points,
+            1,
+            Volume,
+            null,
+            materialBlock
+            );
     }
 }
