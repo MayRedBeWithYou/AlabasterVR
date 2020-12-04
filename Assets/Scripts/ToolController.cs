@@ -18,14 +18,17 @@ public class ToolController : MonoBehaviour
     [Header("Buttons")]
     public ButtonHandler MainMenuButtonHandler;
     public ButtonHandler ToolSelectionMenuButtonHandler;
+    public ButtonHandler LayerSelectionMenuButtonHandler;
 
     [Header("Menus")]
 
     public GameObject MainMenuPrefab;
     public float MainMenuDistance = 0f;
 
+    public Transform LeftHandMenuTransform;
+
     public GameObject ToolSelectionMenuPrefab;
-    public Transform ToolSelectionMenuTransform;
+    public GameObject LayerSelectionMenuPrefab;
 
     private static ToolController _instance;
     public static ToolController Instance => _instance;
@@ -38,7 +41,7 @@ public class ToolController : MonoBehaviour
     public List<Tool> Tools = new List<Tool>();
 
     private GameObject _activeMainMenu = null;
-    private GameObject _activeToolSelectionMenu = null;
+    private GameObject _activeLeftHandMenu = null;
 
     public Tool SelectedTool
     {
@@ -72,6 +75,7 @@ public class ToolController : MonoBehaviour
         MainMenuButtonHandler.OnButtonDown += ShowMainMenu;
 
         ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
+        LayerSelectionMenuButtonHandler.OnButtonDown += ShowLayerSelectionMenu;
 
         foreach (Tool tool in ToolPrefabs)
         {
@@ -98,14 +102,27 @@ public class ToolController : MonoBehaviour
 
     private void ShowToolSelectionMenu(XRController controller)
     {
-        if (_activeToolSelectionMenu)
+        if (_activeLeftHandMenu)
         {
-            Destroy(_activeToolSelectionMenu);
-            _activeToolSelectionMenu = null;
+            Destroy(_activeLeftHandMenu);
+            _activeLeftHandMenu = null;
         }
         else
         {
-            _activeToolSelectionMenu = Instantiate(ToolSelectionMenuPrefab, ToolSelectionMenuTransform.position, ToolSelectionMenuTransform.rotation, ToolSelectionMenuTransform);
+            _activeLeftHandMenu = Instantiate(ToolSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+        }
+    }
+
+    private void ShowLayerSelectionMenu(XRController controller)
+    {
+        if (_activeLeftHandMenu)
+        {
+            Destroy(_activeLeftHandMenu);
+            _activeLeftHandMenu = null;
+        }
+        else
+        {
+            _activeLeftHandMenu = Instantiate(LayerSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         }
     }
 

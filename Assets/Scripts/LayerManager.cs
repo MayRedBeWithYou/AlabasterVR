@@ -12,7 +12,7 @@ public class LayerManager : MonoBehaviour
 
     public GameObject LayersHolder;
 
-    private List<Layer> layers;
+    public List<Layer> layers { get; private set; }
 
     public GameObject chunkPrefab;
 
@@ -50,15 +50,25 @@ public class LayerManager : MonoBehaviour
 
     public List<Chunk> activeChunks;
 
-    public Layer activeLayer
+    public Layer ActiveLayer
     {
         get => _activeLayer;
         set
         {
             activeChunks.Clear();
             _activeLayer = value;
+            Debug.Log($"Active layer: {value.name}");
+            ActiveLayerChanged?.Invoke(value);
         }
     }
+
+    public delegate void LayerChange(Layer layer);
+
+    public static event LayerChange ActiveLayerChanged;
+
+    public static event LayerChange LayerAdded;
+
+    public static event LayerChange LayerRemoved;
 
     public void Awake()
     {
@@ -78,7 +88,7 @@ public class LayerManager : MonoBehaviour
         _activeLayer = AddNewLayer();
     }
 
-    Layer AddNewLayer()
+    public Layer AddNewLayer()
     {
         GameObject layerObject = new GameObject($"Layer {layers.Count + 1}");
         layerObject.transform.parent = LayersHolder.transform;
@@ -88,16 +98,30 @@ public class LayerManager : MonoBehaviour
         layer.Size = Size;
         layer.GenerateChunks(chunkPrefab);
         layers.Add(layer);
+        LayerAdded?.Invoke(layer);
+        Debug.Log($"Created layer: {layer.name}");
         return layer;
+    }
+
+    public void RemoveLayer(Layer layer)
+    {
+        if (layers.Count == 1) return;
+
+        int index = layers.IndexOf(layer);
+        layers.RemoveAt(index);
+        ActiveLayer = layers[Mathf.Clamp(index, 0, layers.Count - 1)];
+        Debug.Log($"Removed layer: {layer.name}");
+        Destroy(layer.gameObject);
+        LayerRemoved?.Invoke(layer);
     }
 
     void OnDrawGizmos()
     {
         if (Application.isPlaying)
         {
-            if(_drawGrid)
+            if (_drawGrid)
             {
-                if(!_drawOnlyActive)
+                if (!_drawOnlyActive)
                 {
                     foreach (Chunk chunk in _activeLayer.chunks)
                     {
@@ -116,7 +140,7 @@ public class LayerManager : MonoBehaviour
                 }
 
             }
-            if(_drawBoundingBox)
+            if (_drawBoundingBox)
             {
                 Gizmos.color = Color.black;
                 //Gizmos.DrawWireCube(transform.position, Vector3.one * Size / 2f);

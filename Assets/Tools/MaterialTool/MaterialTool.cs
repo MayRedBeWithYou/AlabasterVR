@@ -93,7 +93,7 @@ public class MaterialTool : Tool
     private void PerformAction()
     {
         ComputeShader shader = isAdding ? addShader : removeShader;
-        foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+        foreach (Chunk chunk in LayerManager.Instance.ActiveLayer.chunks)
         {
             sphereShaderKernel = shader.FindKernel("CSMain");
 
