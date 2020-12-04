@@ -43,6 +43,9 @@ public class ToolController : MonoBehaviour
     private GameObject _activeMainMenu = null;
     private GameObject _activeLeftHandMenu = null;
 
+    public delegate void ToolChanged(Tool tool);
+    public static event ToolChanged SelectedToolChanged;
+
     public Tool SelectedTool
     {
         get => _selectedTool;
@@ -54,6 +57,7 @@ public class ToolController : MonoBehaviour
                 else tool.Disable();
             }
             _selectedTool = value;
+            SelectedToolChanged?.Invoke(value);
             Debug.Log($"Selected tool changed to {value.name}");
         }
     }
