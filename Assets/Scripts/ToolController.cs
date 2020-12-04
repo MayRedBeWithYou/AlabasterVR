@@ -27,6 +27,13 @@ public class ToolController : MonoBehaviour
     public GameObject ToolSelectionMenuPrefab;
     public Transform ToolSelectionMenuTransform;
 
+    [Header("Keyboard")]
+    public ButtonHandler KeyboardHandler;
+    public GameObject KeyboardPrefab;
+    private GameObject _activeKeyboard = null;
+
+
+
     private static ToolController _instance;
     public static ToolController Instance => _instance;
 
@@ -39,6 +46,9 @@ public class ToolController : MonoBehaviour
 
     private GameObject _activeMainMenu = null;
     private GameObject _activeToolSelectionMenu = null;
+    
+
+
 
     public Tool SelectedTool
     {
@@ -73,6 +83,7 @@ public class ToolController : MonoBehaviour
 
         ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
 
+        KeyboardHandler.OnButtonDown+=ShowKeyboard;
         foreach (Tool tool in ToolPrefabs)
         {
             Tools.Add(Instantiate(tool, transform));
@@ -114,4 +125,31 @@ public class ToolController : MonoBehaviour
         Destroy(_activeMainMenu);
         _activeMainMenu = null;
     }
+
+    private void ShowKeyboard(XRController controller)
+    {
+        Debug.Log("ShowKeyboard");
+        if (_activeKeyboard)
+        {
+            Destroy(_activeKeyboard);
+            _activeKeyboard = null;
+        }
+        else
+        {
+            Vector3 lookDirection = leftController.transform.position - cameraTransform.position;
+            lookDirection.y = 0;
+            _activeKeyboard = Instantiate(KeyboardPrefab, leftPointer.position + lookDirection.normalized * MainMenuDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
+            var KeyboardPanelTransform=_activeKeyboard.transform.GetChild(0).GetChild(0).GetChild(1);
+            UnityEngine.UI.Button bCancel=KeyboardPanelTransform.GetChild(4).GetChild(5).gameObject.GetComponent<UnityEngine.UI.Button>();
+            UnityEngine.UI.Button bConfirm=KeyboardPanelTransform.GetChild(2).GetChild(12).gameObject.GetComponent<UnityEngine.UI.Button>();
+            
+            bCancel.onClick.AddListener(CloseKeyboard);
+            bConfirm.onClick.AddListener(CloseKeyboard);
+        }
+    }
+    private void CloseKeyboard()
+    {
+        Destroy(_activeKeyboard);
+        _activeKeyboard = null;
+    }    
 }
