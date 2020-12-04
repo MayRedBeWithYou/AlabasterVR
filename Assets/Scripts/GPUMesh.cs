@@ -48,11 +48,13 @@ public class GPUMesh : IDisposable
         //Debug.Log($"Triangles: {draw[1]}");
     }
 
-    public void DrawMesh(Vector3 offset)
+    public void DrawMesh(Matrix4x4 modelMatrix, Matrix4x4 inverseModelMatrix)
     {
         MaterialPropertyBlock materialBlock = new MaterialPropertyBlock();
         materialBlock.SetBuffer("data", vertexBuffer);
-        materialBlock.SetVector("offset", offset);
+        materialBlock.SetMatrix("model", modelMatrix);
+        materialBlock.SetMatrix("invModel", inverseModelMatrix);
+
         Graphics.DrawProceduralIndirect(
             proceduralMaterial,
             new Bounds(Vector3.zero, new Vector3(100, 100, 100)), //what exactly should go here?
