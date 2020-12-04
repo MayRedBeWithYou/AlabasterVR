@@ -33,7 +33,6 @@ public class LayerSelection : MonoBehaviour
     {
         LayerItem item = layers[layer];
         layers.Remove(layer);
-        item.transform.parent = null;
         Destroy(item.gameObject);
     }
 
