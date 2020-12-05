@@ -6,18 +6,38 @@ using UnityEngine;
 
 public class GPUVoxelData : IDisposable
 {
-    public ComputeBuffer VoxelBuffer { get; private set; }
+    private ComputeBuffer _voxelBuffer;
+    public ComputeBuffer VoxelBuffer
+    {
+        get
+        {
+            if (_voxelBuffer is null)
+            {
+                InitBuffer();
+            }
+            return _voxelBuffer;
+        }
+
+        private set => _voxelBuffer = value;
+    }
     public int Resolution { get; private set; }
     public int Volume { get; private set; }
     public float Size { get; private set; }
+
+    public bool Initialized = false;
 
     public GPUVoxelData(int resolution, float size)
     {
         Size = size;
         Resolution = resolution;
         Volume = Resolution * Resolution * Resolution;
-        VoxelBuffer = new ComputeBuffer(Volume, sizeof(float));
+    }
+
+    public void InitBuffer()
+    {
+        _voxelBuffer = new ComputeBuffer(Volume, sizeof(float));
         ResetVoxelsValues();
+        Initialized = true;
     }
 
     private void ResetVoxelsValues()
@@ -27,6 +47,6 @@ public class GPUVoxelData : IDisposable
 
     public void Dispose()
     {
-        VoxelBuffer.Dispose();
+        if (_voxelBuffer != null) VoxelBuffer.Dispose();
     }
 }

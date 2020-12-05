@@ -55,8 +55,10 @@ public class LayerManager : MonoBehaviour
         get => _activeLayer;
         set
         {
+            foreach (Chunk chunk in _activeLayer.chunks) chunk.ToggleColliders(false);
             activeChunks.Clear();
             _activeLayer = value;
+            foreach (Chunk chunk in _activeLayer.chunks) chunk.ToggleColliders(true);
             Debug.Log($"Active layer: {value.name}");
             ActiveLayerChanged?.Invoke(value);
         }
