@@ -30,6 +30,8 @@ public class Chunk : MonoBehaviour, IDisposable
 
     public GPUMesh gpuMesh;
 
+    public bool DisplayVoxels;
+
     [HideInInspector]
     public Mesh mesh;
 
@@ -53,6 +55,7 @@ public class Chunk : MonoBehaviour, IDisposable
 
     void Update()
     {
+        if (DisplayVoxels) voxels.DrawVoxelData(offset);
         if (voxels.Initialized) gpuMesh.DrawMesh(offset);
     }
 
