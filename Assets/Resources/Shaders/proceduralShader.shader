@@ -24,6 +24,7 @@
 			#include "UnityCG.cginc"
 			StructuredBuffer<float3> data;
 			float3 offset;
+			float4x4 modelMatrix;
 			struct v2f
 			{
 				float4 vertex : SV_POSITION;
