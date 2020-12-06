@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SpatialTracking;
 using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -12,8 +13,11 @@ public class ToolController : MonoBehaviour
     public GameObject leftController;
 
     public Transform cameraTransform;
+
     public Transform leftPointer;
     public Transform rightPointer;
+
+    public XRRig rig;
 
     [Header("Buttons")]
     public ButtonHandler MainMenuButtonHandler;
@@ -22,10 +26,16 @@ public class ToolController : MonoBehaviour
     [Header("Menus")]
 
     public GameObject MainMenuPrefab;
-    public float MainMenuDistance = 0f;
+    public float uiDistance = 0f;
 
     public GameObject ToolSelectionMenuPrefab;
     public Transform ToolSelectionMenuTransform;
+
+    [Header("Keyboard")]
+    public GameObject KeyboardPrefab;
+    private Keyboard _activeKeyboard = null;
+
+    public ButtonHandler KeyboardTest;
 
     private static ToolController _instance;
     public static ToolController Instance => _instance;
@@ -72,12 +82,13 @@ public class ToolController : MonoBehaviour
         MainMenuButtonHandler.OnButtonDown += ShowMainMenu;
 
         ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
-
         foreach (Tool tool in ToolPrefabs)
         {
             Tools.Add(Instantiate(tool, transform));
         }
         SelectedTool = Tools[0];
+
+        KeyboardTest.OnButtonDown += (controller) => ShowKeyboard();
     }
 
     private void ShowMainMenu(XRController controller)
@@ -88,9 +99,9 @@ public class ToolController : MonoBehaviour
         }
         else
         {
-            Vector3 lookDirection = leftController.transform.position - cameraTransform.position;
+            Vector3 lookDirection = cameraTransform.forward;
             lookDirection.y = 0;
-            _activeMainMenu = Instantiate(MainMenuPrefab, leftPointer.position + lookDirection.normalized * MainMenuDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
+            _activeMainMenu = Instantiate(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
             MainMenuController mainMenu = _activeMainMenu.GetComponent<MainMenuController>();
             mainMenu.ExitButton.onClick.AddListener(CloseMainMenu);
         }
@@ -113,5 +124,21 @@ public class ToolController : MonoBehaviour
     {
         Destroy(_activeMainMenu);
         _activeMainMenu = null;
+    }
+
+    public Keyboard ShowKeyboard()
+    {
+        if(_activeKeyboard != null)
+        {
+            _activeKeyboard.Close();
+        }
+
+        Vector3 lookDirection = Camera.main.transform.forward;
+        lookDirection.y = 0;
+        GameObject go = Instantiate(KeyboardPrefab, Camera.main.transform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
+
+        _activeKeyboard = go.GetComponent<Keyboard>();
+        _activeKeyboard.OnCancelled += () => _activeKeyboard = null;
+        return _activeKeyboard;
     }
 }
