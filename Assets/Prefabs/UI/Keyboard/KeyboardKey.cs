@@ -5,53 +5,63 @@ using UnityEngine.UI;
 
 public class KeyboardKey : MonoBehaviour
 {
-    UnityEngine.UI.Button button;
-    UnityEngine.UI.InputField inputField;
+    [SerializeField]
+    private Keyboard _keyboard;
+
+    Button _button;
+    InputField _inputField;
     public char Primary;
     public char Secondary;
     public char AltPrimary;
     public char AltSecondary;
-    public bool IsLetter{get{return Primary>='a'&&Primary<='z';}}    
 
-    // Start is called before the first frame update
+    private Text currentText;
+    
+    public bool IsLetter => Primary >= 'a' && Primary <= 'z';
+
     void Start()
     {
-        button=this.gameObject.GetComponent<Button>();
-        button.onClick.AddListener(OnClick);
-        inputField=button.gameObject.transform.parent.parent.parent.GetChild(0).GetChild(0).gameObject.GetComponent<InputField>();
-        if(Primary=='_'&&Secondary=='_') Primary=Secondary=AltPrimary=AltSecondary=' ';
+        _button = GetComponent<Button>();
+        currentText = GetComponentInChildren<Text>();
+
+        _button.onClick.AddListener(OnClick);
+        _inputField = _keyboard.inputField;
     }
+
     public void Change2Primary()
     {
-        button.GetComponentInChildren<Text>().text=Primary.ToString();
+        currentText.text = Primary.ToString();
     }
+
     public void Change2Secondary()
     {
-        button.GetComponentInChildren<Text>().text=Secondary.ToString();
+        currentText.text = Secondary.ToString();
     }
+
     public void Change2AltPrimary()
     {
-        button.GetComponentInChildren<Text>().text=AltPrimary.ToString();
+        currentText.text = AltPrimary.ToString();
     }
+
     public void Change2AltSecondary()
     {
-        button.GetComponentInChildren<Text>().text=AltSecondary.ToString();
+        currentText.text = AltSecondary.ToString();
     }
 
     public void OnClick()
     {
-        if(inputField.text.Length==inputField.caretPosition)
+        if (_inputField.text.Length == _inputField.caretPosition)
         {
-            inputField.text+=button.GetComponentInChildren<Text>().text;
-            inputField.caretPosition++;
+            _inputField.text += currentText.text;
+            _inputField.caretPosition++;
         }
         else
         {
-            string tmp=inputField.text.Substring(0,inputField.caretPosition)+button.GetComponentInChildren<Text>().text;
-            tmp+=inputField.text.Substring(inputField.caretPosition,inputField.text.Length-inputField.caretPosition);
-            inputField.text=tmp;
-            inputField.caretPosition++;
+            string text = _inputField.text.Substring(0, _inputField.caretPosition) + currentText.text;
+            text += _inputField.text.Substring(_inputField.caretPosition, _inputField.text.Length - _inputField.caretPosition);
+            _inputField.text = text;
+            _inputField.caretPosition++;
         }
-        
+
     }
 }
