@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SpatialTracking;
 using UnityEngine.UIElements;
 using UnityEngine.XR.Interaction.Toolkit;
 
@@ -12,8 +13,11 @@ public class ToolController : MonoBehaviour
     public GameObject leftController;
 
     public Transform cameraTransform;
+
     public Transform leftPointer;
     public Transform rightPointer;
+
+    public XRRig rig;
 
     [Header("Buttons")]
     public ButtonHandler MainMenuButtonHandler;
@@ -23,7 +27,7 @@ public class ToolController : MonoBehaviour
     [Header("Menus")]
 
     public GameObject MainMenuPrefab;
-    public float MainMenuDistance = 0f;
+    public float uiDistance = 0f;
 
     public Transform LeftHandMenuTransform;
 
@@ -31,11 +35,8 @@ public class ToolController : MonoBehaviour
     public GameObject LayerSelectionMenuPrefab;
 
     [Header("Keyboard")]
-    public ButtonHandler KeyboardHandler;
     public GameObject KeyboardPrefab;
-    private GameObject _activeKeyboard = null;
-
-
+    private Keyboard _activeKeyboard = null;
 
     private static ToolController _instance;
     public static ToolController Instance => _instance;
@@ -89,7 +90,6 @@ public class ToolController : MonoBehaviour
         ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
         LayerSelectionMenuButtonHandler.OnButtonDown += ShowLayerSelectionMenu;
 
-        KeyboardHandler.OnButtonDown+=ShowKeyboard;
         foreach (Tool tool in ToolPrefabs)
         {
             Tools.Add(Instantiate(tool, transform));
@@ -105,9 +105,9 @@ public class ToolController : MonoBehaviour
         }
         else
         {
-            Vector3 lookDirection = leftController.transform.position - cameraTransform.position;
+            Vector3 lookDirection = cameraTransform.forward;
             lookDirection.y = 0;
-            _activeMainMenu = Instantiate(MainMenuPrefab, leftPointer.position + lookDirection.normalized * MainMenuDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
+            _activeMainMenu = Instantiate(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
             MainMenuController mainMenu = _activeMainMenu.GetComponent<MainMenuController>();
             mainMenu.ExitButton.onClick.AddListener(CloseMainMenu);
         }
@@ -145,30 +145,20 @@ public class ToolController : MonoBehaviour
         _activeMainMenu = null;
     }
 
-    private void ShowKeyboard(XRController controller)
+    public Keyboard ShowKeyboard(string text)
     {
-        Debug.Log("ShowKeyboard");
-        if (_activeKeyboard)
+        if(_activeKeyboard != null)
         {
-            Destroy(_activeKeyboard);
-            _activeKeyboard = null;
+            _activeKeyboard.Close();
         }
-        else
-        {
-            Vector3 lookDirection = leftController.transform.position - cameraTransform.position;
-            lookDirection.y = 0;
-            _activeKeyboard = Instantiate(KeyboardPrefab, leftPointer.position + lookDirection.normalized * MainMenuDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
-            var KeyboardPanelTransform=_activeKeyboard.transform.GetChild(0).GetChild(0).GetChild(1);
-            UnityEngine.UI.Button bCancel=KeyboardPanelTransform.GetChild(4).GetChild(5).gameObject.GetComponent<UnityEngine.UI.Button>();
-            UnityEngine.UI.Button bConfirm=KeyboardPanelTransform.GetChild(2).GetChild(12).gameObject.GetComponent<UnityEngine.UI.Button>();
-            
-            bCancel.onClick.AddListener(CloseKeyboard);
-            bConfirm.onClick.AddListener(CloseKeyboard);
-        }
+
+        Vector3 lookDirection = Camera.main.transform.forward;
+        lookDirection.y = 0;
+        GameObject go = Instantiate(KeyboardPrefab, Camera.main.transform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
+
+        _activeKeyboard = go.GetComponent<Keyboard>();
+        _activeKeyboard.OnClosing += () => _activeKeyboard = null;
+        _activeKeyboard.SetText(text);
+        return _activeKeyboard;
     }
-    private void CloseKeyboard()
-    {
-        Destroy(_activeKeyboard);
-        _activeKeyboard = null;
-    }    
 }

@@ -145,6 +145,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   textBox: {fileID: 7969765409901348593}
+  _renameButton: {fileID: 842176230537518293}
 --- !u!1 &874883953467221960
 GameObject:
   m_ObjectHideFlags: 0

@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 5778017990548195537}
   - component: {fileID: 7118615233802471306}
   m_Layer: 5
-  m_Name: Button (5)
+  m_Name: H
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -210,6 +210,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 104
   Secondary: 72
   AltPrimary: 104
@@ -306,7 +307,7 @@ GameObject:
   - component: {fileID: 8419299059081557960}
   - component: {fileID: 5648990059468899718}
   m_Layer: 5
-  m_Name: Button (7)
+  m_Name: 8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -424,6 +425,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 56
   Secondary: 42
   AltPrimary: 56
@@ -704,7 +706,7 @@ GameObject:
   - component: {fileID: 6484817217632176943}
   - component: {fileID: 1055108596704897946}
   m_Layer: 5
-  m_Name: Button (8)
+  m_Name: O
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -822,6 +824,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 111
   Secondary: 79
   AltPrimary: 243
@@ -1292,7 +1295,7 @@ GameObject:
   - component: {fileID: 5232858266469307625}
   - component: {fileID: 7403552876726062010}
   m_Layer: 5
-  m_Name: Button (5)
+  m_Name: Y
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1410,6 +1413,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 121
   Secondary: 89
   AltPrimary: 121
@@ -1428,7 +1432,7 @@ GameObject:
   - component: {fileID: 1546294672079502856}
   - component: {fileID: 164517284866656234}
   m_Layer: 5
-  m_Name: Button (12)
+  m_Name: =
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1546,6 +1550,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 61
   Secondary: 43
   AltPrimary: 61
@@ -1568,7 +1573,7 @@ GameObject:
   - component: {fileID: 6723841349300266411}
   - component: {fileID: 3153826913178236198}
   m_Layer: 5
-  m_Name: ButtonShiftLeft
+  m_Name: ShiftLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1686,6 +1691,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 3
 --- !u!114 &6164590332068945380
 MonoBehaviour:
@@ -1751,7 +1757,7 @@ GameObject:
   - component: {fileID: 5113934729393440703}
   - component: {fileID: 4540295362161802802}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: B
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1869,6 +1875,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 98
   Secondary: 66
   AltPrimary: 98
@@ -2121,7 +2128,7 @@ GameObject:
   - component: {fileID: 6877442271656866042}
   - component: {fileID: 935140054512310903}
   m_Layer: 5
-  m_Name: Button (12)
+  m_Name: \
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2239,6 +2246,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 92
   Secondary: 124
   AltPrimary: 92
@@ -2257,7 +2265,7 @@ GameObject:
   - component: {fileID: 7947790552434807676}
   - component: {fileID: 243013778960049262}
   m_Layer: 5
-  m_Name: Button (12)
+  m_Name: ']'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2375,6 +2383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 93
   Secondary: 125
   AltPrimary: 93
@@ -2393,7 +2402,7 @@ GameObject:
   - component: {fileID: 1575490924591277915}
   - component: {fileID: 1333604829527059782}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2511,6 +2520,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 51
   Secondary: 35
   AltPrimary: 51
@@ -2763,7 +2773,7 @@ GameObject:
   - component: {fileID: 6494894439438421899}
   - component: {fileID: 6360068624475602834}
   m_Layer: 5
-  m_Name: Button (8)
+  m_Name: K
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2881,6 +2891,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 108
   Secondary: 76
   AltPrimary: 322
@@ -3055,7 +3066,7 @@ GameObject:
   - component: {fileID: 4398972828106242466}
   - component: {fileID: 9144817989886932652}
   m_Layer: 5
-  m_Name: Button (9)
+  m_Name: 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3173,6 +3184,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 48
   Secondary: 41
   AltPrimary: 48
@@ -3191,7 +3203,7 @@ GameObject:
   - component: {fileID: 9094096648049706031}
   - component: {fileID: 6354671122676695524}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: F
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3309,6 +3321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 102
   Secondary: 70
   AltPrimary: 102
@@ -3327,7 +3340,7 @@ GameObject:
   - component: {fileID: 8173593547761252915}
   - component: {fileID: 1863399838553118449}
   m_Layer: 5
-  m_Name: ButtonDelete
+  m_Name: Delete
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3445,6 +3458,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 1
 --- !u!1 &2167243248809905349
 GameObject:
@@ -3460,7 +3474,7 @@ GameObject:
   - component: {fileID: 7166147499075434699}
   - component: {fileID: 8851344667417531332}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: Spacebar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3578,8 +3592,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Primary: 95
-  Secondary: 95
+  _keyboard: {fileID: 4833786292510429488}
+  Primary: 32
+  Secondary: 32
   AltPrimary: 32
   AltSecondary: 32
 --- !u!1 &2299118064985048446
@@ -3674,7 +3689,7 @@ GameObject:
   - component: {fileID: 4133307877603964071}
   - component: {fileID: 7925424752867500546}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: R
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3792,6 +3807,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 114
   Secondary: 82
   AltPrimary: 114
@@ -3888,7 +3904,7 @@ GameObject:
   - component: {fileID: 752115802805542931}
   - component: {fileID: 2334536008285399679}
   m_Layer: 5
-  m_Name: Button (6)
+  m_Name: J
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4006,6 +4022,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 106
   Secondary: 74
   AltPrimary: 106
@@ -4255,7 +4272,7 @@ GameObject:
   - component: {fileID: 7444451222978225774}
   - component: {fileID: 7983290613838052319}
   m_Layer: 5
-  m_Name: Button (6)
+  m_Name: 7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4373,6 +4390,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 55
   Secondary: 38
   AltPrimary: 55
@@ -4391,7 +4409,7 @@ GameObject:
   - component: {fileID: 8068511887889952013}
   - component: {fileID: 5116189990219727153}
   m_Layer: 5
-  m_Name: Button (7)
+  m_Name: I
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4509,6 +4527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 105
   Secondary: 73
   AltPrimary: 105
@@ -4527,7 +4546,7 @@ GameObject:
   - component: {fileID: 8418667208912555683}
   - component: {fileID: 2757201277924684348}
   m_Layer: 5
-  m_Name: ButtonCancel
+  m_Name: Cancel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4645,6 +4664,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 6
 --- !u!1 &3012026215674972897
 GameObject:
@@ -4660,7 +4680,7 @@ GameObject:
   - component: {fileID: 8774477667750965927}
   - component: {fileID: 7835000894311666724}
   m_Layer: 5
-  m_Name: Button
+  m_Name: 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4778,6 +4798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 49
   Secondary: 33
   AltPrimary: 49
@@ -4871,7 +4892,7 @@ GameObject:
   - component: {fileID: 1330127573996313165}
   - component: {fileID: 6658802932278079063}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: C
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4989,6 +5010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 99
   Secondary: 67
   AltPrimary: 263
@@ -5007,7 +5029,7 @@ GameObject:
   - component: {fileID: 1523410688652323043}
   - component: {fileID: 2213557564676321354}
   m_Layer: 5
-  m_Name: ButtonClear
+  m_Name: Clear
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5125,6 +5147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 7
 --- !u!1 &3252844984731256032
 GameObject:
@@ -5140,7 +5163,7 @@ GameObject:
   - component: {fileID: 9053357799097651563}
   - component: {fileID: 69773986023092569}
   m_Layer: 5
-  m_Name: Button (9)
+  m_Name: ;
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5258,6 +5281,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 59
   Secondary: 58
   AltPrimary: 59
@@ -5390,7 +5414,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 2
-  m_Camera: {fileID: 3376193841980731052, guid: c630bb43d5ada774c9bff54d1ff7b549,
+  m_Camera: {fileID: 1455743658018615335, guid: 9b5f88629b8dfd54cbae8be551f7bf5b,
     type: 3}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -5456,6 +5480,58 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NumericalKeyCurrentMode: 0
   LetterKeyCurrentMode: 0
+  acceptButton: {fileID: 3567695752116548655}
+  cancelButton: {fileID: 8418667208912555683}
+  inputField: {fileID: 6270483363677185449}
+  letterKeys:
+  - {fileID: 8636078984039088079}
+  - {fileID: 8629536776601965795}
+  - {fileID: 1929033652892908211}
+  - {fileID: 7925424752867500546}
+  - {fileID: 4673491407113488422}
+  - {fileID: 7403552876726062010}
+  - {fileID: 94203164085785456}
+  - {fileID: 5116189990219727153}
+  - {fileID: 1055108596704897946}
+  - {fileID: 8617210933589528890}
+  - {fileID: 257538329025098250}
+  - {fileID: 4963836798553092484}
+  - {fileID: 6408572411699342674}
+  - {fileID: 6354671122676695524}
+  - {fileID: 1535525004831958941}
+  - {fileID: 7118615233802471306}
+  - {fileID: 2334536008285399679}
+  - {fileID: 4645619532145657483}
+  - {fileID: 6360068624475602834}
+  - {fileID: 26840777774361754}
+  - {fileID: 2369136761777509814}
+  - {fileID: 6658802932278079063}
+  - {fileID: 679978189992205553}
+  - {fileID: 4540295362161802802}
+  - {fileID: 8808223528726596355}
+  - {fileID: 1019976431458132145}
+  numKeys:
+  - {fileID: 8506827156116629629}
+  - {fileID: 7835000894311666724}
+  - {fileID: 4957198298824093938}
+  - {fileID: 1333604829527059782}
+  - {fileID: 5650681865325996840}
+  - {fileID: 6104485652523000854}
+  - {fileID: 3741553660362530885}
+  - {fileID: 7983290613838052319}
+  - {fileID: 5648990059468899718}
+  - {fileID: 3920702547020377888}
+  - {fileID: 9144817989886932652}
+  - {fileID: 5856986214661698440}
+  - {fileID: 164517284866656234}
+  - {fileID: 487262761027429151}
+  - {fileID: 243013778960049262}
+  - {fileID: 935140054512310903}
+  - {fileID: 69773986023092569}
+  - {fileID: 6303436085929602539}
+  - {fileID: 2215711137731509709}
+  - {fileID: 7688013073445333607}
+  - {fileID: 3411416914899761966}
 --- !u!1 &3370045446640873464
 GameObject:
   m_ObjectHideFlags: 0
@@ -5626,7 +5702,7 @@ GameObject:
   - component: {fileID: 1754033451402588248}
   - component: {fileID: 6408572411699342674}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: D
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5744,6 +5820,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 100
   Secondary: 68
   AltPrimary: 100
@@ -5762,7 +5839,7 @@ GameObject:
   - component: {fileID: 812322533290867101}
   - component: {fileID: 1019976431458132145}
   m_Layer: 5
-  m_Name: Button (6)
+  m_Name: M
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5880,6 +5957,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 109
   Secondary: 77
   AltPrimary: 109
@@ -5898,7 +5976,7 @@ GameObject:
   - component: {fileID: 2632212189244367755}
   - component: {fileID: 7688013073445333607}
   m_Layer: 5
-  m_Name: Button (8)
+  m_Name: .
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6016,6 +6094,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 46
   Secondary: 62
   AltPrimary: 46
@@ -6037,7 +6116,7 @@ GameObject:
   - component: {fileID: 7364665914797119115}
   - component: {fileID: 1798634599273262760}
   m_Layer: 5
-  m_Name: ButtonShiftRight
+  m_Name: ShiftRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6155,6 +6234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 3
 --- !u!114 &5992624806491044967
 MonoBehaviour:
@@ -6207,7 +6287,7 @@ GameObject:
   - component: {fileID: 1113670634031354372}
   - component: {fileID: 257538329025098250}
   m_Layer: 5
-  m_Name: Button
+  m_Name: A
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6325,6 +6405,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 97
   Secondary: 65
   AltPrimary: 261
@@ -6421,7 +6502,7 @@ GameObject:
   - component: {fileID: 5673851241040880275}
   - component: {fileID: 2215711137731509709}
   m_Layer: 5
-  m_Name: Button (7)
+  m_Name: ','
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6539,6 +6620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 44
   Secondary: 60
   AltPrimary: 44
@@ -6635,7 +6717,7 @@ GameObject:
   - component: {fileID: 1288941037893060377}
   - component: {fileID: 1535525004831958941}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: G
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6753,6 +6835,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 103
   Secondary: 71
   AltPrimary: 103
@@ -7107,7 +7190,7 @@ GameObject:
   - component: {fileID: 2768938861249783066}
   - component: {fileID: 8808223528726596355}
   m_Layer: 5
-  m_Name: Button (5)
+  m_Name: N
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7225,6 +7308,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 110
   Secondary: 78
   AltPrimary: 324
@@ -7246,7 +7330,7 @@ GameObject:
   - component: {fileID: 2203883411296663373}
   - component: {fileID: 8972391393015757788}
   m_Layer: 5
-  m_Name: ButtonAlt
+  m_Name: Alt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7364,6 +7448,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 4
 --- !u!114 &709226166968141019
 MonoBehaviour:
@@ -7572,7 +7657,7 @@ GameObject:
   - component: {fileID: 1013388570503995986}
   - component: {fileID: 94203164085785456}
   m_Layer: 5
-  m_Name: Button (6)
+  m_Name: U
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7690,6 +7775,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 117
   Secondary: 85
   AltPrimary: 117
@@ -7708,7 +7794,7 @@ GameObject:
   - component: {fileID: 844025424093778934}
   - component: {fileID: 8636078984039088079}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Q
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7826,6 +7912,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 113
   Secondary: 81
   AltPrimary: 113
@@ -7844,7 +7931,7 @@ GameObject:
   - component: {fileID: 3238245821907875530}
   - component: {fileID: 2369136761777509814}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: X
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7962,6 +8049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 120
   Secondary: 88
   AltPrimary: 378
@@ -7980,7 +8068,7 @@ GameObject:
   - component: {fileID: 5543394995046585336}
   - component: {fileID: 6104485652523000854}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8098,6 +8186,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 53
   Secondary: 37
   AltPrimary: 53
@@ -8116,7 +8205,7 @@ GameObject:
   - component: {fileID: 523258190394556671}
   - component: {fileID: 679978189992205553}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: V
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8234,6 +8323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 118
   Secondary: 86
   AltPrimary: 118
@@ -8330,7 +8420,7 @@ GameObject:
   - component: {fileID: 1494523860239531628}
   - component: {fileID: 8617210933589528890}
   m_Layer: 5
-  m_Name: Button (9)
+  m_Name: P
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8448,6 +8538,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 112
   Secondary: 80
   AltPrimary: 112
@@ -8892,7 +8983,7 @@ GameObject:
   - component: {fileID: 5953315258688594069}
   - component: {fileID: 4957198298824093938}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9010,6 +9101,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 50
   Secondary: 64
   AltPrimary: 50
@@ -9453,7 +9545,7 @@ GameObject:
   - component: {fileID: 406426650235761440}
   - component: {fileID: 3741553660362530885}
   m_Layer: 5
-  m_Name: Button (5)
+  m_Name: 6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9571,6 +9663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 54
   Secondary: 94
   AltPrimary: 54
@@ -9745,7 +9838,7 @@ GameObject:
   - component: {fileID: 8301884847685518904}
   - component: {fileID: 5650681865325996840}
   m_Layer: 5
-  m_Name: Button (3)
+  m_Name: 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9863,6 +9956,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 52
   Secondary: 36
   AltPrimary: 52
@@ -9881,7 +9975,7 @@ GameObject:
   - component: {fileID: 6122928706504540917}
   - component: {fileID: 6408611255677193496}
   m_Layer: 5
-  m_Name: ButtonCapslock
+  m_Name: Capslock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9999,6 +10093,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 2
 --- !u!1 &6499333720102054727
 GameObject:
@@ -10197,7 +10292,7 @@ GameObject:
   - component: {fileID: 3023599748293529611}
   - component: {fileID: 5856986214661698440}
   m_Layer: 5
-  m_Name: Button (10)
+  m_Name: '-'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10315,6 +10410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 45
   Secondary: 95
   AltPrimary: 45
@@ -10333,7 +10429,7 @@ GameObject:
   - component: {fileID: 1071670915032662363}
   - component: {fileID: 4645619532145657483}
   m_Layer: 5
-  m_Name: Button (7)
+  m_Name: K
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10451,6 +10547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 107
   Secondary: 75
   AltPrimary: 107
@@ -10469,7 +10566,7 @@ GameObject:
   - component: {fileID: 3163072602428354104}
   - component: {fileID: 26840777774361754}
   m_Layer: 5
-  m_Name: Button
+  m_Name: Z
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10587,6 +10684,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 122
   Secondary: 90
   AltPrimary: 380
@@ -10605,7 +10703,7 @@ GameObject:
   - component: {fileID: 8576180593905885293}
   - component: {fileID: 8506827156116629629}
   m_Layer: 5
-  m_Name: Button (11)
+  m_Name: Tilde
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10723,6 +10821,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 96
   Secondary: 126
   AltPrimary: 96
@@ -10741,7 +10840,7 @@ GameObject:
   - component: {fileID: 5005399118613639357}
   - component: {fileID: 487262761027429151}
   m_Layer: 5
-  m_Name: Button (10)
+  m_Name: '['
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10859,6 +10958,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 91
   Secondary: 123
   AltPrimary: 91
@@ -10877,7 +10977,7 @@ GameObject:
   - component: {fileID: 3567695752116548655}
   - component: {fileID: 6801524019690480957}
   m_Layer: 5
-  m_Name: ButtonConfirm
+  m_Name: Confirm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10995,6 +11095,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 5
 --- !u!1 &6961097026251082214
 GameObject:
@@ -11244,7 +11345,7 @@ GameObject:
   - component: {fileID: 8988049414256938910}
   - component: {fileID: 3920702547020377888}
   m_Layer: 5
-  m_Name: Button (8)
+  m_Name: 9
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11362,6 +11463,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 57
   Secondary: 40
   AltPrimary: 57
@@ -11572,7 +11674,7 @@ GameObject:
   - component: {fileID: 111215093597889545}
   - component: {fileID: 4673491407113488422}
   m_Layer: 5
-  m_Name: Button (4)
+  m_Name: T
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11690,6 +11792,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 116
   Secondary: 84
   AltPrimary: 116
@@ -11864,7 +11967,7 @@ GameObject:
   - component: {fileID: 5563445605766647479}
   - component: {fileID: 3411416914899761966}
   m_Layer: 5
-  m_Name: Button (9)
+  m_Name: /
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11982,6 +12085,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 47
   Secondary: 63
   AltPrimary: 47
@@ -12000,7 +12104,7 @@ GameObject:
   - component: {fileID: 3064897085492281280}
   - component: {fileID: 1596295146084348948}
   m_Layer: 5
-  m_Name: ButtonLeftCaret
+  m_Name: LeftArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12118,6 +12222,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 8
 --- !u!1 &7803262595875964394
 GameObject:
@@ -12445,7 +12550,7 @@ GameObject:
   - component: {fileID: 4238905320070891284}
   - component: {fileID: 4963836798553092484}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: S
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12563,6 +12668,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 115
   Secondary: 83
   AltPrimary: 347
@@ -12893,7 +12999,7 @@ GameObject:
   - component: {fileID: 2503681831036833897}
   - component: {fileID: 8629536776601965795}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: W
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13011,6 +13117,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 119
   Secondary: 87
   AltPrimary: 119
@@ -13185,7 +13292,7 @@ GameObject:
   - component: {fileID: 4843256901020125405}
   - component: {fileID: 2141843060368767040}
   m_Layer: 5
-  m_Name: ButtonBackspace
+  m_Name: Backspace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13303,6 +13410,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 0
 --- !u!1 &8471557911325318870
 GameObject:
@@ -13552,7 +13660,7 @@ GameObject:
   - component: {fileID: 5623212170003379310}
   - component: {fileID: 6303436085929602539}
   m_Layer: 5
-  m_Name: Button (10)
+  m_Name: ''''
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13670,6 +13778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 39
   Secondary: 34
   AltPrimary: 39
@@ -13688,7 +13797,7 @@ GameObject:
   - component: {fileID: 4439572084399688561}
   - component: {fileID: 9029442673632882631}
   m_Layer: 5
-  m_Name: ButtonRightCaret
+  m_Name: RightArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13806,6 +13915,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 536029907d8afb942a4ef55aea27d6f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Key: 9
 --- !u!1 &9086454545069714616
 GameObject:
@@ -13821,7 +13931,7 @@ GameObject:
   - component: {fileID: 142440789144022671}
   - component: {fileID: 1929033652892908211}
   m_Layer: 5
-  m_Name: Button (2)
+  m_Name: E
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13939,6 +14049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc3e6759f4505eb4c8db0da84f53e556, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _keyboard: {fileID: 4833786292510429488}
   Primary: 101
   Secondary: 69
   AltPrimary: 281

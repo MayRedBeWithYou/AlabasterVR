@@ -6,70 +6,73 @@ using UnityEngine.EventSystems;
 
 public class KeyboardKeySpecial : MonoBehaviour
 {
-    Button button;
-    UnityEngine.UI.InputField inputField;
-    KeyboardMain sc;
+    Button _button;
+
+    InputField _inputField;
+
+    [SerializeField]
+    private Keyboard _keyboard;
+
     public SpecialKeyType Key;
-    // Start is called before the first frame update
+
     void Start()
     {
-        button=this.gameObject.GetComponent<Button>();
-        
-        inputField=button.gameObject.transform.parent.parent.parent.GetChild(0).GetChild(0).gameObject.GetComponent<InputField>();
-        sc=button.gameObject.transform.parent.parent.parent.parent.parent.gameObject.GetComponent<KeyboardMain>();
-    
-        if(Key!=SpecialKeyType.Shift && Key!=SpecialKeyType.Alt) button.onClick.AddListener(OnClick);
-        
+        _button = GetComponent<Button>();
+
+        _inputField = _keyboard.inputField;
+
+        if (Key != SpecialKeyType.Shift && Key != SpecialKeyType.Alt) _button.onClick.AddListener(OnClick);
+
     }
     public void OnClick()
     {
         switch (Key)
         {
             case SpecialKeyType.Backspace:
-                if(inputField.caretPosition>0)
+                if (_inputField.caretPosition > 0)
                 {
-                    string tmp=inputField.text.Substring(0,inputField.caretPosition-1);
-                    if(inputField.caretPosition<inputField.text.Length)
+                    string text = _inputField.text.Substring(0, _inputField.caretPosition - 1);
+                    if (_inputField.caretPosition < _inputField.text.Length)
                     {
-                        tmp+= inputField.text.Substring(inputField.caretPosition,inputField.text.Length-inputField.caretPosition);
-                        inputField.caretPosition--;
+                        text += _inputField.text.Substring(_inputField.caretPosition, _inputField.text.Length - _inputField.caretPosition);
+                        _inputField.caretPosition--;
                     }
-                    inputField.text=tmp;
+                    _inputField.text = text;
                 }
                 break;
             case SpecialKeyType.Delete:
-                if(inputField.caretPosition<=inputField.text.Length)
+                if (_inputField.caretPosition <= _inputField.text.Length)
                 {
-                    string tmp=inputField.text.Substring(0,inputField.caretPosition);
-                    if(inputField.caretPosition<inputField.text.Length-1)
+                    string text = _inputField.text.Substring(0, _inputField.caretPosition);
+                    if (_inputField.caretPosition < _inputField.text.Length - 1)
                     {
-                        tmp+= inputField.text.Substring(inputField.caretPosition+1,inputField.text.Length-inputField.caretPosition-1);
+                        text += _inputField.text.Substring(_inputField.caretPosition + 1, _inputField.text.Length - _inputField.caretPosition - 1);
                     }
-                    inputField.text=tmp;
+                    _inputField.text = text;
                 }
                 break;
             case SpecialKeyType.CapsLock:
-                sc.ApplyCapsLock();
+                _keyboard.ApplyCapsLock();
                 break;
             case SpecialKeyType.Shift:
-                sc.ApplyShift();
+                _keyboard.ApplyShift();
                 break;
             case SpecialKeyType.Alt:
-                sc.ApplyAlt();
+                _keyboard.ApplyAlt();
                 break;
             case SpecialKeyType.Confirm:
                 break;
             case SpecialKeyType.Cancel:
                 break;
             case SpecialKeyType.Clear:
-                inputField.text="";
-                inputField.caretPosition=0;
+                _inputField.text = "";
+                _inputField.caretPosition = 0;
                 break;
             case SpecialKeyType.LeftCaret:
-                if(inputField.caretPosition>0) inputField.caretPosition--;
+                if (_inputField.caretPosition > 0) _inputField.caretPosition--;
                 break;
             case SpecialKeyType.RightCaret:
-                if(inputField.caretPosition<=inputField.text.Length)inputField.caretPosition++;
+                if (_inputField.caretPosition <= _inputField.text.Length) _inputField.caretPosition++;
                 break;
         }
     }

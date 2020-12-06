@@ -8,6 +8,9 @@ public class LayerItem : MonoBehaviour
     private Layer _layer;
     public Text textBox;
 
+    [SerializeField]
+    private Button _renameButton;
+
     private Image _image;
 
     public Layer Layer
@@ -22,6 +25,7 @@ public class LayerItem : MonoBehaviour
 
     public void Awake()
     {
+        _renameButton.onClick.AddListener(ShowKeyboard);
     }
 
     public void SelectLayer()
@@ -32,11 +36,24 @@ public class LayerItem : MonoBehaviour
     public void HighlightItem(bool highlight)
     {
         if (highlight) GetComponent<Image>().color = Color.white;
-        else GetComponent<Image>().color = new Color(Color.white.r, Color.white.g, Color.white.b, 100f/255f);
+        else GetComponent<Image>().color = new Color(Color.white.r, Color.white.g, Color.white.b, 100f / 255f);
     }
 
     public void RemoveLayer()
     {
         LayerManager.Instance.RemoveLayer(Layer);
+    }
+
+    public void ShowKeyboard()
+    {
+        Keyboard keyboard = Keyboard.Show(Layer.name);
+        keyboard.OnAccepted += (text) =>
+        {
+            if (string.IsNullOrWhiteSpace(text)) return;
+            Layer.name = text;
+            textBox.text = text;
+            keyboard.Close();
+        };
+        keyboard.OnCancelled += () => keyboard.Close();
     }
 }
