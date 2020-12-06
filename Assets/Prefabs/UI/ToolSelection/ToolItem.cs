@@ -14,6 +14,13 @@ public class ToolItem : MonoBehaviour
     public void OnClicked()
     {
         ToolController.Instance.SelectedTool = tool;
+        ToolController.Instance.ToggleSelectedTool(false);
+    }
+
+    public void HighlightItem(bool highlight)
+    {
+        if (highlight) GetComponent<Image>().color = Color.white;
+        else GetComponent<Image>().color = new Color(Color.white.r, Color.white.g, Color.white.b, 100f / 255f);
     }
 
     public void RefreshData()
