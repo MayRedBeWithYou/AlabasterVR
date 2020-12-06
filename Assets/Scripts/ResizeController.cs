@@ -17,32 +17,56 @@ public class ResizeController : MonoBehaviour
     public XRController rightController;
 
     [Header("Buttons")]
-    public ButtonHandler LeftGripHandler;
-    public ButtonHandler RightGripHandler;
+    public AxisHandler LeftGripHandler;
+    public AxisHandler RightGripHandler;
+
+    private float leftVal;
+    private float rightVal;
 
     private GrabState grab = GrabState.None;
 
     private float refDist;
 
+    private Vector3 center => (leftController.transform.position + rightController.transform.position) / 2;
+
     void Awake()
     {
-        LeftGripHandler.OnButtonDown += OnGrabHold;
-        LeftGripHandler.OnButtonUp += OnGrabRelease;
-        
-        RightGripHandler.OnButtonDown += OnGrabHold;
-        RightGripHandler.OnButtonUp += OnGrabRelease;
+        LeftGripHandler.OnValueChange += (controller, value) =>
+        {
+            if (value != leftVal)
+            {
+                if (value > 0.5f != leftVal > 0.5f)
+                {
+                    if (value > 0.5f) OnGrabHold(controller);
+                    else OnGrabRelease(controller);
+                }
+                leftVal = value;
+            }
+        };
+
+        RightGripHandler.OnValueChange += (controller, value) =>
+        {
+            if (value != rightVal)
+            {
+                if (value > 0.5f != rightVal > 0.5f)
+                {
+                    if (value > 0.5f) OnGrabHold(controller);
+                    else OnGrabRelease(controller);
+                }
+                rightVal = value;
+            }
+        };
     }
 
     void Update()
     {
         if (grab == GrabState.Both)
         {
-            Vector3 center = leftController.transform.position + rightController.transform.position;
-            center = leftController.transform.position + center / 2;
-
-            LayerManager.Instance.activeLayer.transform.position = center;
+            Vector3 pos = center - LayerManager.Instance.ActiveLayer.transform.localScale * LayerManager.Instance.ActiveLayer.Size / 2;
+            
+            LayerManager.Instance.ActiveLayer.transform.position = pos;
             float dist = Vector3.Distance(leftController.transform.position, rightController.transform.position);
-            LayerManager.Instance.activeLayer.transform.localScale = Vector3.one * dist / refDist;
+            LayerManager.Instance.ActiveLayer.transform.localScale = Vector3.one * dist / refDist;
         }
     }
 
@@ -53,10 +77,11 @@ public class ResizeController : MonoBehaviour
         {
             case GrabState.None:
                 grab = GrabState.One;
-                LayerManager.Instance.activeLayer.transform.parent = controller.transform;
+                LayerManager.Instance.ActiveLayer.transform.parent = controller.transform;
                 break;
             case GrabState.One:
                 grab = GrabState.Both;
+                LayerManager.Instance.ActiveLayer.transform.parent = LayerManager.Instance.LayersHolder.transform;
                 refDist = Vector3.Distance(leftController.transform.position, rightController.transform.position);
                 break;
             default:
@@ -70,14 +95,20 @@ public class ResizeController : MonoBehaviour
         {
             case GrabState.One:
                 grab = GrabState.None;
-                LayerManager.Instance.activeLayer.transform.parent = LayerManager.Instance.LayersHolder.transform;
+                LayerManager.Instance.ActiveLayer.transform.parent = LayerManager.Instance.LayersHolder.transform;
                 break;
             case GrabState.Both:
                 grab = GrabState.One;
-                LayerManager.Instance.activeLayer.transform.parent = controller.transform;
+                LayerManager.Instance.ActiveLayer.transform.parent = controller == leftController ? rightController.transform : leftController.transform;
                 break;
             default:
                 break;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawSphere(center, 0.05f);
     }
 }

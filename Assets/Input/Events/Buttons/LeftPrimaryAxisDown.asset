@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7eb11bda7a00c2842bf5562fb62bb595, type: 3}
   m_Name: LeftPrimaryAxisDown
   m_EditorClassIdentifier: 
-  button: 0
+  button: 15

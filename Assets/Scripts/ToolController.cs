@@ -22,20 +22,21 @@ public class ToolController : MonoBehaviour
     [Header("Buttons")]
     public ButtonHandler MainMenuButtonHandler;
     public ButtonHandler ToolSelectionMenuButtonHandler;
+    public ButtonHandler LayerSelectionMenuButtonHandler;
 
     [Header("Menus")]
 
     public GameObject MainMenuPrefab;
     public float uiDistance = 0f;
 
+    public Transform LeftHandMenuTransform;
+
     public GameObject ToolSelectionMenuPrefab;
-    public Transform ToolSelectionMenuTransform;
+    public GameObject LayerSelectionMenuPrefab;
 
     [Header("Keyboard")]
     public GameObject KeyboardPrefab;
     private Keyboard _activeKeyboard = null;
-
-    public ButtonHandler KeyboardTest;
 
     private static ToolController _instance;
     public static ToolController Instance => _instance;
@@ -48,7 +49,11 @@ public class ToolController : MonoBehaviour
     public List<Tool> Tools = new List<Tool>();
 
     private GameObject _activeMainMenu = null;
-    private GameObject _activeToolSelectionMenu = null;
+    
+    private GameObject _activeLeftHandMenu = null;
+
+    public delegate void ToolChanged(Tool tool);
+    public static event ToolChanged SelectedToolChanged;
 
     public Tool SelectedTool
     {
@@ -61,6 +66,7 @@ public class ToolController : MonoBehaviour
                 else tool.Disable();
             }
             _selectedTool = value;
+            SelectedToolChanged?.Invoke(value);
             Debug.Log($"Selected tool changed to {value.name}");
         }
     }
@@ -82,13 +88,13 @@ public class ToolController : MonoBehaviour
         MainMenuButtonHandler.OnButtonDown += ShowMainMenu;
 
         ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
+        LayerSelectionMenuButtonHandler.OnButtonDown += ShowLayerSelectionMenu;
+
         foreach (Tool tool in ToolPrefabs)
         {
             Tools.Add(Instantiate(tool, transform));
         }
         SelectedTool = Tools[0];
-
-        KeyboardTest.OnButtonDown += (controller) => ShowKeyboard();
     }
 
     private void ShowMainMenu(XRController controller)
@@ -109,14 +115,27 @@ public class ToolController : MonoBehaviour
 
     private void ShowToolSelectionMenu(XRController controller)
     {
-        if (_activeToolSelectionMenu)
+        if (_activeLeftHandMenu)
         {
-            Destroy(_activeToolSelectionMenu);
-            _activeToolSelectionMenu = null;
+            Destroy(_activeLeftHandMenu);
+            _activeLeftHandMenu = null;
         }
         else
         {
-            _activeToolSelectionMenu = Instantiate(ToolSelectionMenuPrefab, ToolSelectionMenuTransform.position, ToolSelectionMenuTransform.rotation, ToolSelectionMenuTransform);
+            _activeLeftHandMenu = Instantiate(ToolSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+        }
+    }
+
+    private void ShowLayerSelectionMenu(XRController controller)
+    {
+        if (_activeLeftHandMenu)
+        {
+            Destroy(_activeLeftHandMenu);
+            _activeLeftHandMenu = null;
+        }
+        else
+        {
+            _activeLeftHandMenu = Instantiate(LayerSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         }
     }
 
@@ -126,7 +145,7 @@ public class ToolController : MonoBehaviour
         _activeMainMenu = null;
     }
 
-    public Keyboard ShowKeyboard()
+    public Keyboard ShowKeyboard(string text)
     {
         if(_activeKeyboard != null)
         {
@@ -138,7 +157,8 @@ public class ToolController : MonoBehaviour
         GameObject go = Instantiate(KeyboardPrefab, Camera.main.transform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
 
         _activeKeyboard = go.GetComponent<Keyboard>();
-        _activeKeyboard.OnCancelled += () => _activeKeyboard = null;
+        _activeKeyboard.OnClosing += () => _activeKeyboard = null;
+        _activeKeyboard.SetText(text);
         return _activeKeyboard;
     }
 }

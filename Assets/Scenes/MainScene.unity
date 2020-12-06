@@ -765,7 +765,7 @@ GameObject:
   m_Component:
   - component: {fileID: 441042022}
   m_Layer: 0
-  m_Name: ToolSelectionTransform
+  m_Name: LeftHandMenuTransform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -864,8 +864,8 @@ MonoBehaviour:
   chunkPrefab: {fileID: 1005784055029476331, guid: 81b31b7d519924846b8fcb1f026f61b5,
     type: 3}
   _size: 3
-  _resolution: 6
-  _chunkResolution: 32
+  _resolution: 16
+  _chunkResolution: 16
   _drawBoundingBox: 0
   _drawGrid: 1
   _drawOnlyActive: 1
@@ -1190,20 +1190,23 @@ MonoBehaviour:
     type: 2}
   ToolSelectionMenuButtonHandler: {fileID: 11400000, guid: fafa023c0a6763444859207510fe53f8,
     type: 2}
+  LayerSelectionMenuButtonHandler: {fileID: 11400000, guid: 2feffd6caa18b9940a5afbfa0046cee1,
+    type: 2}
   MainMenuPrefab: {fileID: 7558545779775698295, guid: f0bd81be6a0cd6a439c5456b0ddd2f56,
     type: 3}
   uiDistance: 0.5
+  LeftHandMenuTransform: {fileID: 441042022}
   ToolSelectionMenuPrefab: {fileID: 2332784744473230363, guid: 89b43f4cef579364992c41a7707a8a97,
     type: 3}
-  ToolSelectionMenuTransform: {fileID: 441042022}
+  LayerSelectionMenuPrefab: {fileID: 633745008470641335, guid: 7866a6f16b75fac418c12afdd6d47a0c,
+    type: 3}
   KeyboardPrefab: {fileID: 3361844223996469137, guid: 37a179890cd05954ab8efbb146cb1e22,
     type: 3}
-  KeyboardTest: {fileID: 11400000, guid: 97e501efc2665b54793e026476b32321, type: 2}
   ToolPrefabs:
   - {fileID: 3456394130398050143, guid: 626e040734521e74e862bb1af310c2ef, type: 3}
   - {fileID: 7079215710341580042, guid: f0f26cae52586ac4388545fa91574f01, type: 3}
-  - {fileID: 7160288784685767975, guid: b975b2a3560322f498e5007d571e636d, type: 3}
   - {fileID: 3948406273424207580, guid: aed6661ee1c1f914d96a7372e0caa28a, type: 3}
+  - {fileID: 7160288784685767975, guid: b975b2a3560322f498e5007d571e636d, type: 3}
   - {fileID: 2117250042692717289, guid: 3aed699dfd20b614d909e239d72261be, type: 3}
   Tools: []
 --- !u!4 &1298109537

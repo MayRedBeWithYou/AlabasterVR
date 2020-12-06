@@ -25,6 +25,7 @@ public class Keyboard : MonoBehaviour
 
     public delegate void InputCancelled();
     public event InputCancelled OnCancelled;
+    public event InputCancelled OnClosing;
 
 
     void Start()
@@ -33,6 +34,15 @@ public class Keyboard : MonoBehaviour
 
         //inputField.GetType().GetField("m_AllowInput", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(inputField, true);
         //inputField.GetType().InvokeMember("SetCaretVisible", BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance, null, inputField, null);
+
+        acceptButton.onClick.AddListener(() => OnAccepted?.Invoke(inputField.text));
+        cancelButton.onClick.AddListener(() => OnCancelled?.Invoke());
+    }
+
+    public void SetText(string text)
+    {
+        inputField.text = text;
+        inputField.caretPosition = text.Length;
     }
 
     public void ApplyShift()
@@ -116,13 +126,13 @@ public class Keyboard : MonoBehaviour
 
     public void Close()
     {
-        OnCancelled?.Invoke();
+        OnClosing?.Invoke();
         Destroy(gameObject);
     }
 
-    public static Keyboard Show()
+    public static Keyboard Show(string text = "")
     {
-        return ToolController.Instance.ShowKeyboard();
+        return ToolController.Instance.ShowKeyboard(text);
     }
 }
 

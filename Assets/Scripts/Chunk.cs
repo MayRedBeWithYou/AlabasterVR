@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Chunk : MonoBehaviour
+public class Chunk : MonoBehaviour, IDisposable
 {
     public int resolution;
 
@@ -23,6 +24,7 @@ public class Chunk : MonoBehaviour
     private MeshFilter _filter;
     private MeshRenderer _renderer;
     private MeshCollider _collider;
+    private BoxCollider _boxCollider;
 
     public GPUVoxelData voxels;
 
@@ -36,6 +38,7 @@ public class Chunk : MonoBehaviour
         _filter = GetComponent<MeshFilter>();
         _renderer = GetComponent<MeshRenderer>();
         _collider = GetComponent<MeshCollider>();
+        _boxCollider = GetComponent<BoxCollider>();
 
         mesh = new Mesh();
         mesh.MarkDynamic();
@@ -50,7 +53,7 @@ public class Chunk : MonoBehaviour
 
     void Update()
     {
-        gpuMesh.DrawMesh(offset);
+        if (voxels.Initialized) gpuMesh.DrawMesh(offset);
     }
 
     public void GenerateCollider()
@@ -59,7 +62,19 @@ public class Chunk : MonoBehaviour
         _collider.enabled = true;
     }
 
+    public void ToggleColliders(bool value)
+    {
+        _collider.enabled = value;
+        _boxCollider.enabled = value;
+    }
+
     void OnDestroy()
+    {
+        gpuMesh.Dispose();
+        voxels.Dispose();
+    }
+
+    public void Dispose()
     {
         gpuMesh.Dispose();
         voxels.Dispose();

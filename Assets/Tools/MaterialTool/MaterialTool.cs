@@ -96,7 +96,6 @@ public class MaterialTool : Tool
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
             sphereShaderKernel = shader.FindKernel("CSMain");
-
             shader.SetFloat("radius", cursor.radius);
             shader.SetFloat("chunkSize", chunk.size);
             shader.SetVector("position", cursor.transform.position);
@@ -106,7 +105,5 @@ public class MaterialTool : Tool
             shader.Dispatch(sphereShaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
         }
-
-        //MeshGenerator.Instance.UpdateAllActiveChunks();
     }
 }
