@@ -27,13 +27,14 @@ public class Keyboard : MonoBehaviour
     public event InputCancelled OnCancelled;
     public event InputCancelled OnClosing;
 
+    private bool isSet = false;
 
     void Start()
     {
         inputField.caretPosition = 0; // desired cursor position
 
-        //inputField.GetType().GetField("m_AllowInput", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(inputField, true);
-        //inputField.GetType().InvokeMember("SetCaretVisible", BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance, null, inputField, null);
+        inputField.GetType().GetField("m_AllowInput", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(inputField, true);
+        inputField.GetType().InvokeMember("SetCaretVisible", BindingFlags.NonPublic | BindingFlags.InvokeMethod | BindingFlags.Instance, null, inputField, null);
 
         acceptButton.onClick.AddListener(() => OnAccepted?.Invoke(inputField.text));
         cancelButton.onClick.AddListener(() => OnCancelled?.Invoke());
@@ -42,7 +43,18 @@ public class Keyboard : MonoBehaviour
     public void SetText(string text)
     {
         inputField.text = text;
-        inputField.caretPosition = text.Length;
+        isSet = true;
+        inputField.ForceLabelUpdate();
+    }
+
+    public void LateUpdate()
+    {
+        if(isSet)
+        {
+            isSet = false;
+            inputField.caretPosition = inputField.text.Length;
+            inputField.ForceLabelUpdate();
+        }
     }
 
     public void ApplyShift()

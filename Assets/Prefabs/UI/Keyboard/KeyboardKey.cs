@@ -54,6 +54,7 @@ public class KeyboardKey : MonoBehaviour
         {
             _inputField.text += currentText.text;
             _inputField.caretPosition++;
+            _inputField.ForceLabelUpdate();
         }
         else
         {
@@ -61,6 +62,7 @@ public class KeyboardKey : MonoBehaviour
             text += _inputField.text.Substring(_inputField.caretPosition, _inputField.text.Length - _inputField.caretPosition);
             _inputField.text = text;
             _inputField.caretPosition++;
+            _inputField.ForceLabelUpdate();
         }
 
     }

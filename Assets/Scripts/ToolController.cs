@@ -17,8 +17,6 @@ public class ToolController : MonoBehaviour
     public Transform leftPointer;
     public Transform rightPointer;
 
-    public XRRig rig;
-
     [Header("Buttons")]
     public ButtonHandler MainMenuButtonHandler;
     public ButtonHandler ToolSelectionMenuButtonHandler;
@@ -27,7 +25,7 @@ public class ToolController : MonoBehaviour
     [Header("Menus")]
 
     public GameObject MainMenuPrefab;
-    public float uiDistance = 0f;
+    public float uiDistance;
 
     public Transform LeftHandMenuTransform;
 

@@ -443,7 +443,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 654544606}
   m_InteractionLayerMask:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 0
   m_AttachTransform: {fileID: 1265726289}
   m_StartingSelectedInteractable: {fileID: 0}
   m_OnHoverEnter:
@@ -481,7 +481,7 @@ MonoBehaviour:
   m_HapticHoverExitIntensity: 0
   m_HapticHoverExitDuration: 0
   m_LineType: 0
-  m_MaxRaycastDistance: 30
+  m_MaxRaycastDistance: 50
   m_ReferenceFrame: {fileID: 0}
   m_Velocity: 16
   m_Acceleration: 9.8
@@ -1185,7 +1185,6 @@ MonoBehaviour:
   cameraTransform: {fileID: 922121026}
   leftPointer: {fileID: 2105602491}
   rightPointer: {fileID: 1265726289}
-  rig: {fileID: 1125159544}
   MainMenuButtonHandler: {fileID: 11400000, guid: b9d5ada87bb67ac49b3a892d0c471952,
     type: 2}
   ToolSelectionMenuButtonHandler: {fileID: 11400000, guid: fafa023c0a6763444859207510fe53f8,

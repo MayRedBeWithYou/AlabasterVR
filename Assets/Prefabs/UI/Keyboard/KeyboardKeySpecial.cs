@@ -75,6 +75,8 @@ public class KeyboardKeySpecial : MonoBehaviour
                 if (_inputField.caretPosition <= _inputField.text.Length) _inputField.caretPosition++;
                 break;
         }
+
+        _inputField.ForceLabelUpdate();
     }
 }
 public enum SpecialKeyType
