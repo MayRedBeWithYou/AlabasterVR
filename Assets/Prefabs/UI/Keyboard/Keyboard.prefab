@@ -5465,7 +5465,7 @@ MonoBehaviour:
   m_CheckFor3DOcclusion: 1
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
 --- !u!114 &4833786292510429488
 MonoBehaviour:
   m_ObjectHideFlags: 0

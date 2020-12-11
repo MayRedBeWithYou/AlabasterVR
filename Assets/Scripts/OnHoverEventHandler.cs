@@ -28,10 +28,10 @@ public class OnHoverEventHandler : MonoBehaviour
         {
             if (isHitting != value)
             {
-                if (value) OnHoverEnter?.Invoke(controller); 
+                if (value) OnHoverEnter?.Invoke(controller);
                 else OnHoverExit?.Invoke(controller);
                 isHitting = value;
-            }            
+            }
         }
     }
 

@@ -72,6 +72,8 @@ public class LayerManager : MonoBehaviour
 
     public static event LayerChange LayerRemoved;
 
+    private int _layerCount = 1;
+
     public void Awake()
     {
         if (_instance != null && _instance != this)
@@ -92,10 +94,9 @@ public class LayerManager : MonoBehaviour
 
     public Layer AddNewLayer()
     {
-        GameObject layerObject = new GameObject($"Layer {layers.Count + 1}");
+        GameObject layerObject = new GameObject($"Layer {_layerCount++}");
         layerObject.transform.parent = LayersHolder.transform;
         Layer layer = layerObject.AddComponent<Layer>();
-        layerObject.layer = 11;
         layer.Resolution = Resolution;
         layer.ChunkResolution = ChunkResolution;
         layer.Size = Size;
