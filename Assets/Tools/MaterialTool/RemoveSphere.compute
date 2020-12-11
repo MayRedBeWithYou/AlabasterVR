@@ -8,7 +8,8 @@ float radius;
 float chunkSize;
 float3 position;
 uint resolution;
-float3 offset;
+float4x4 modelMatrix;
+
 uint coords(uint3 id)
 {
     return id.z * resolution * resolution + id.y * resolution + id.x;
@@ -27,7 +28,7 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint arrCoords = coords(id);
     float sdfVal = sdf[arrCoords];
-    float3 pos = realPos(id) + offset;
+    float3 pos = mul(modelMatrix, float4(realPos(id), 1)).xyz;
     float3 displacement = pos - position;
     float val = dot(displacement, displacement) - (radius * radius);
 
