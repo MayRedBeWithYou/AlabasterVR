@@ -99,7 +99,6 @@ public class MaterialTool : Tool
             shader.SetFloat("radius", cursor.radius);
             shader.SetFloat("chunkSize", chunk.size);
             shader.SetVector("position", cursor.transform.position);
-            //shader.SetVector("offset", chunk.transform.position);
             shader.SetMatrix("modelMatrix", chunk.transform.localToWorldMatrix);
             shader.SetInt("resolution", chunk.resolution);
             shader.SetBuffer(sphereShaderKernel, "sdf", chunk.voxels.VoxelBuffer);
