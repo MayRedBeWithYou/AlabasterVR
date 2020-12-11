@@ -443,7 +443,7 @@ MonoBehaviour:
   m_InteractionManager: {fileID: 654544606}
   m_InteractionLayerMask:
     serializedVersion: 2
-    m_Bits: 32
+    m_Bits: 0
   m_AttachTransform: {fileID: 1265726289}
   m_StartingSelectedInteractable: {fileID: 0}
   m_OnHoverEnter:
@@ -481,7 +481,7 @@ MonoBehaviour:
   m_HapticHoverExitIntensity: 0
   m_HapticHoverExitDuration: 0
   m_LineType: 0
-  m_MaxRaycastDistance: 30
+  m_MaxRaycastDistance: 50
   m_ReferenceFrame: {fileID: 0}
   m_Velocity: 16
   m_Acceleration: 9.8
@@ -1009,8 +1009,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftController: {fileID: 1669763583}
   rightController: {fileID: 240967880}
-  LeftGripHandler: {fileID: 0}
-  RightGripHandler: {fileID: 0}
+  LeftGripHandler: {fileID: 11400000, guid: 7ea3eaea2db94a24086f1d0ab13c638e, type: 2}
+  RightGripHandler: {fileID: 11400000, guid: 64e2dd6667fd2bc4da492ae761772ac1, type: 2}
 --- !u!1 &1125159543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,7 +1185,6 @@ MonoBehaviour:
   cameraTransform: {fileID: 922121026}
   leftPointer: {fileID: 2105602491}
   rightPointer: {fileID: 1265726289}
-  rig: {fileID: 1125159544}
   MainMenuButtonHandler: {fileID: 11400000, guid: b9d5ada87bb67ac49b3a892d0c471952,
     type: 2}
   ToolSelectionMenuButtonHandler: {fileID: 11400000, guid: fafa023c0a6763444859207510fe53f8,
@@ -1389,8 +1388,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonHandlers:
   - {fileID: 11400000, guid: 9ab5832b6ec8ebb48972921bd63bf49d, type: 2}
+  - {fileID: 11400000, guid: 30c8161f0f40f9f4a86f6d23ba6be90c, type: 2}
   axisHandlers:
   - {fileID: 11400000, guid: e926955d538916f42a9d3739f56026df, type: 2}
+  - {fileID: 11400000, guid: 88576bbdb0797144a93977e5fee44e23, type: 2}
+  - {fileID: 11400000, guid: ea99c5650ad7a3c4e81823123e695440, type: 2}
+  - {fileID: 11400000, guid: 4c4d74001a887ea46bb55f1d679154ed, type: 2}
   axisHandler2Ds:
   - {fileID: 11400000, guid: c759e748325133f4aa3e851dfa80920f, type: 2}
 --- !u!4 &1400201113

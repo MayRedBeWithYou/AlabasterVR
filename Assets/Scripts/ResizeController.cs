@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
 public class ResizeController : MonoBehaviour
@@ -25,7 +23,14 @@ public class ResizeController : MonoBehaviour
 
     private GrabState grab = GrabState.None;
 
+    private Vector3 refScale;
     private float refDist;
+
+    private Quaternion refRot;
+    private Vector3 refControllers;
+    private Vector3 refUp;
+    private Vector3 refPos;
+    private Vector3 refCenter;
 
     private Vector3 center => (leftController.transform.position + rightController.transform.position) / 2;
 
@@ -62,27 +67,41 @@ public class ResizeController : MonoBehaviour
     {
         if (grab == GrabState.Both)
         {
-            Vector3 pos = center - LayerManager.Instance.ActiveLayer.transform.localScale * LayerManager.Instance.ActiveLayer.Size / 2;
-            
-            LayerManager.Instance.ActiveLayer.transform.position = pos;
-            float dist = Vector3.Distance(leftController.transform.position, rightController.transform.position);
-            LayerManager.Instance.ActiveLayer.transform.localScale = Vector3.one * dist / refDist;
+            Layer layer = LayerManager.Instance.ActiveLayer;
+            float scale = Vector3.Distance(leftController.transform.position, rightController.transform.position) / refDist;
+
+            layer.transform.localScale = refScale * scale;
+            Vector3 displacement = (rightController.transform.position - leftController.transform.position).normalized;
+            Vector3 controllersUp = (leftController.transform.up + rightController.transform.up).normalized;
+
+            Quaternion quat = Quaternion.FromToRotation(refControllers, displacement) * Quaternion.FromToRotation(refUp, controllersUp);
+
+            layer.transform.position = quat * (refPos - refCenter) * scale + center;
+            layer.transform.rotation = quat * refRot;
         }
     }
 
 
     private void OnGrabHold(XRController controller)
     {
+        Layer layer = LayerManager.Instance.ActiveLayer;
         switch (grab)
         {
             case GrabState.None:
                 grab = GrabState.One;
-                LayerManager.Instance.ActiveLayer.transform.parent = controller.transform;
+                layer.transform.parent = controller.transform;
                 break;
             case GrabState.One:
                 grab = GrabState.Both;
-                LayerManager.Instance.ActiveLayer.transform.parent = LayerManager.Instance.LayersHolder.transform;
+                layer.transform.parent = LayerManager.Instance.LayersHolder.transform;
                 refDist = Vector3.Distance(leftController.transform.position, rightController.transform.position);
+                refPos = layer.transform.position;
+                refCenter = center;
+                refScale = layer.transform.localScale;
+                refRot = layer.transform.rotation;
+                refControllers = (rightController.transform.position - leftController.transform.position).normalized;
+                refUp = (leftController.transform.up + rightController.transform.up).normalized;
+                ToolController.Instance.ToggleSelectedTool(false);
                 break;
             default:
                 break;
@@ -100,15 +119,11 @@ public class ResizeController : MonoBehaviour
             case GrabState.Both:
                 grab = GrabState.One;
                 LayerManager.Instance.ActiveLayer.transform.parent = controller == leftController ? rightController.transform : leftController.transform;
+
+                ToolController.Instance.ToggleSelectedTool(true);
                 break;
             default:
                 break;
         }
-    }
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawSphere(center, 0.05f);
     }
 }

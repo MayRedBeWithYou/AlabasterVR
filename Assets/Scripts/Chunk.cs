@@ -20,7 +20,9 @@ public class Chunk : MonoBehaviour, IDisposable
     }
 
     public Vector3 offset => transform.position;
-
+    public Matrix4x4 ModelMatrix => transform.localToWorldMatrix;
+    public Matrix4x4 InverseModelMatrix => transform.worldToLocalMatrix;
+    
     private MeshFilter _filter;
     private MeshRenderer _renderer;
     private MeshCollider _collider;
@@ -56,7 +58,7 @@ public class Chunk : MonoBehaviour, IDisposable
     void Update()
     {
         if (DisplayVoxels) voxels.DrawVoxelData(offset);
-        if (voxels.Initialized) gpuMesh.DrawMesh(offset);
+        if (voxels.Initialized) gpuMesh.DrawMesh(ModelMatrix, InverseModelMatrix);
     }
 
     public void GenerateCollider()

@@ -72,6 +72,8 @@ public class LayerManager : MonoBehaviour
 
     public static event LayerChange LayerRemoved;
 
+    private int _layerCount = 1;
+
     public void Awake()
     {
         if (_instance != null && _instance != this)
@@ -92,12 +94,17 @@ public class LayerManager : MonoBehaviour
 
     public Layer AddNewLayer()
     {
-        GameObject layerObject = new GameObject($"Layer {layers.Count + 1}");
+        GameObject layerObject = new GameObject($"Layer {_layerCount++}");
         layerObject.transform.parent = LayersHolder.transform;
         Layer layer = layerObject.AddComponent<Layer>();
         layer.Resolution = Resolution;
         layer.ChunkResolution = ChunkResolution;
         layer.Size = Size;
+
+        BoxCollider box = layerObject.AddComponent<BoxCollider>();
+        box.size = Vector3.one * Size;
+        box.center = Vector3.one * Size / 2;
+
         layer.GenerateChunks(chunkPrefab);
         layers.Add(layer);
         LayerAdded?.Invoke(layer);
@@ -130,7 +137,8 @@ public class LayerManager : MonoBehaviour
                         if (!activeChunks.Contains(chunk))
                         {
                             Gizmos.color = Color.white;
-                            Gizmos.DrawWireCube(chunk.center, Vector3.one * chunk.size);
+                            Gizmos.matrix = chunk.transform.localToWorldMatrix;
+                            Gizmos.DrawWireCube(Vector3.one * chunk.size / 2f, Vector3.one * chunk.size);
                         }
 
                     }
@@ -138,7 +146,8 @@ public class LayerManager : MonoBehaviour
                 foreach (Chunk chunk in activeChunks)
                 {
                     Gizmos.color = Color.green;
-                    Gizmos.DrawWireCube(chunk.center, Vector3.one * chunk.size);
+                    Gizmos.matrix = chunk.transform.localToWorldMatrix;
+                    Gizmos.DrawWireCube(Vector3.one * chunk.size / 2f, Vector3.one * chunk.size);
                 }
 
             }

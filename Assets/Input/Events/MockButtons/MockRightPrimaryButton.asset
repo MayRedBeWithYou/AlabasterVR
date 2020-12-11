@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 451214d6715b8554890845bbe255fc33, type: 3}
-  m_Name: MockRightTrigger
+  m_Script: {fileID: 11500000, guid: 1d5f31ca2ec9b74439ef873e3e6e4f2f, type: 3}
+  m_Name: MockRightPrimaryButton
   m_EditorClassIdentifier: 
-  axis: 0
-  mockedAxis: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
-  key: 98
-  mockValue: 1
+  button: 0
+  mockedButton: {fileID: 11400000, guid: 72e585be256124e4f9091c2ee9aa9aab, type: 2}
+  key: 99
