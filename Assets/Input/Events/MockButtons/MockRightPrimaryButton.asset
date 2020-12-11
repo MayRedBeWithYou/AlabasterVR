@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: MockRightPrimaryButton
   m_EditorClassIdentifier: 
   button: 0
-  mockedButton: {fileID: 0}
-  key: 0
+  mockedButton: {fileID: 11400000, guid: 72e585be256124e4f9091c2ee9aa9aab, type: 2}
+  key: 99

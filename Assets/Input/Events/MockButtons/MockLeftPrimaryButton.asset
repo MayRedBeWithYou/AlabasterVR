@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: 6
   mockedButton: {fileID: 11400000, guid: b9d5ada87bb67ac49b3a892d0c471952, type: 2}
-  key: 122
+  key: 120

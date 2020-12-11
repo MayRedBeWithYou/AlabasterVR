@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MockLeftTrigger
   m_EditorClassIdentifier: 
   axis: 0
-  mockedAxis: {fileID: 0}
-  key: 0
+  mockedAxis: {fileID: 11400000, guid: 08c28c0bb7224c344b4aa2e029702eb0, type: 2}
+  key: 118
   mockValue: 1

@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   axis: 0
   mockedAxis: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
-  key: 32
+  key: 98
   mockValue: 1

@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MockLeftGrip
   m_EditorClassIdentifier: 
   axis: 0
-  mockedAxis: {fileID: 0}
-  key: 0
+  mockedAxis: {fileID: 11400000, guid: 7ea3eaea2db94a24086f1d0ab13c638e, type: 2}
+  key: 102
   mockValue: 1
