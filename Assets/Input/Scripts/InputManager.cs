@@ -10,7 +10,7 @@ public class InputManager : MonoBehaviour
 
     public List<AxisHandler2D> axisHandler2Ds = new List<AxisHandler2D>();
     
-    private XRController controller;
+    public XRController controller;
 
     private OnHoverEventHandler onHoverHandler = null;
 
@@ -18,7 +18,6 @@ public class InputManager : MonoBehaviour
 
     private void Awake()
     {
-        controller = GetComponent<XRController>();
         onHoverHandler = GetComponent<OnHoverEventHandler>();
         visual = GetComponent<XRInteractorLineVisual>();
 
