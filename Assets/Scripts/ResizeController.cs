@@ -3,6 +3,10 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class ResizeController : MonoBehaviour
 {
+    private static ResizeController _instance;
+
+    public static ResizeController Instance => _instance;
+
     public enum GrabState
     {
         None,
@@ -26,6 +30,8 @@ public class ResizeController : MonoBehaviour
     private Vector3 refScale;
     private float refDist;
 
+    private int handsOnUI;
+
     private Quaternion refRot;
     private Vector3 refControllers;
     private Vector3 refUp;
@@ -36,8 +42,24 @@ public class ResizeController : MonoBehaviour
 
     void Awake()
     {
+        if (_instance != null && _instance != this)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        _instance = this;
+
+        OnHoverEventHandler leftHover = leftController.GetComponent<OnHoverEventHandler>();
+        OnHoverEventHandler rightHover = rightController.GetComponent<OnHoverEventHandler>();
+
+        leftHover.OnHoverEnter.AddListener((c, ui) => { if (leftVal > 0.5f) OnGrabRelease(c); handsOnUI++; });
+        leftHover.OnHoverExit.AddListener((c, ui) => { handsOnUI--; });
+        rightHover.OnHoverEnter.AddListener((c, ui) => { if (rightVal > 0.5f) OnGrabRelease(c); handsOnUI++; });
+        rightHover.OnHoverExit.AddListener((c, ui) => { handsOnUI--; });
+
         LeftGripHandler.OnValueChange += (controller, value) =>
         {
+            if (handsOnUI > 0) return;
             if (value != leftVal)
             {
                 if (value > 0.5f != leftVal > 0.5f)
@@ -51,6 +73,7 @@ public class ResizeController : MonoBehaviour
 
         RightGripHandler.OnValueChange += (controller, value) =>
         {
+            if (handsOnUI > 0) return;
             if (value != rightVal)
             {
                 if (value > 0.5f != rightVal > 0.5f)
@@ -65,7 +88,7 @@ public class ResizeController : MonoBehaviour
 
     void Update()
     {
-        if (grab == GrabState.Both)
+        if (grab == GrabState.Both && handsOnUI == 0)
         {
             Layer layer = LayerManager.Instance.ActiveLayer;
             float scale = Vector3.Distance(leftController.transform.position, rightController.transform.position) / refDist;
@@ -114,7 +137,8 @@ public class ResizeController : MonoBehaviour
         {
             case GrabState.One:
                 grab = GrabState.None;
-                LayerManager.Instance.ActiveLayer.transform.parent = LayerManager.Instance.LayersHolder.transform;
+                if (controller.transform == LayerManager.Instance.ActiveLayer.transform.parent)
+                    LayerManager.Instance.ActiveLayer.transform.parent = LayerManager.Instance.LayersHolder.transform;
                 break;
             case GrabState.Both:
                 grab = GrabState.One;

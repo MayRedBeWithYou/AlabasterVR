@@ -22,8 +22,8 @@ public class InputManager : MonoBehaviour
         onHoverHandler = GetComponent<OnHoverEventHandler>();
         visual = GetComponent<XRInteractorLineVisual>();
 
-        onHoverHandler?.OnHoverEnter.AddListener((c) => visual.enabled = true);
-        onHoverHandler?.OnHoverExit.AddListener((c) => visual.enabled = false);
+        onHoverHandler?.OnHoverEnter.AddListener((c, ui) => visual.enabled = true);
+        onHoverHandler?.OnHoverExit.AddListener((c, ui) => visual.enabled = false);
     }
 
     private void Update()

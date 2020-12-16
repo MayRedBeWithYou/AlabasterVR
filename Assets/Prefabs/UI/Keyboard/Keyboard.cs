@@ -139,6 +139,7 @@ public class Keyboard : MonoBehaviour
     public void Close()
     {
         OnClosing?.Invoke();
+        gameObject.SetActive(false);
         Destroy(gameObject);
     }
 

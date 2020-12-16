@@ -200,6 +200,7 @@ GameObject:
   - component: {fileID: 240967877}
   - component: {fileID: 240967881}
   - component: {fileID: 240967882}
+  - component: {fileID: 240967883}
   m_Layer: 0
   m_Name: RightHand Controller
   m_TagString: Untagged
@@ -593,6 +594,20 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+--- !u!114 &240967883
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 240967875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ad9a69d9b26944b90d0d1e5f4a3a6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grip: {fileID: 11400000, guid: 64e2dd6667fd2bc4da492ae761772ac1, type: 2}
+  gripVal: 0
 --- !u!1 &271393736
 GameObject:
   m_ObjectHideFlags: 0
@@ -861,10 +876,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LayersHolder: {fileID: 1274172292}
+  LayerPrefab: {fileID: 438406209953734406, guid: 1a525a66d39717e4fbbd31eaf605eb79,
+    type: 3}
   chunkPrefab: {fileID: 1005784055029476331, guid: 81b31b7d519924846b8fcb1f026f61b5,
     type: 3}
-  _size: 3
-  _resolution: 16
+  _size: 2
+  _resolution: 8
   _chunkResolution: 16
   _drawBoundingBox: 0
   _drawGrid: 1
@@ -1145,7 +1162,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1274172292}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.5, y: 0, z: 0.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1563,6 +1580,7 @@ GameObject:
   - component: {fileID: 1669763580}
   - component: {fileID: 1669763584}
   - component: {fileID: 1669763585}
+  - component: {fileID: 1669763586}
   m_Layer: 0
   m_Name: LeftHand Controller
   m_TagString: Untagged
@@ -1934,6 +1952,20 @@ MonoBehaviour:
   OnHoverExit:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1669763586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669763578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37ad9a69d9b26944b90d0d1e5f4a3a6c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grip: {fileID: 11400000, guid: 7ea3eaea2db94a24086f1d0ab13c638e, type: 2}
+  gripVal: 0
 --- !u!1 &1793690297
 GameObject:
   m_ObjectHideFlags: 0

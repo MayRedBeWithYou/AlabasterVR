@@ -128,6 +128,7 @@ public class ToolController : MonoBehaviour
     {
         if (_activeLeftHandMenu)
         {
+            _activeLeftHandMenu.SetActive(false);
             Destroy(_activeLeftHandMenu);
             _activeLeftHandMenu = null;
         }
@@ -139,6 +140,7 @@ public class ToolController : MonoBehaviour
 
     private void CloseMainMenu()
     {
+        _activeMainMenu.SetActive(false);
         Destroy(_activeMainMenu);
         _activeMainMenu = null;
     }
