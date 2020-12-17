@@ -2,6 +2,7 @@
 #pragma kernel CSMain
 
 RWStructuredBuffer<float> sdf;
+RWStructuredBuffer<float> workBuffer;
 float toolRadius;
 float3 toolCenter;
 float chunkSize;
@@ -20,20 +21,19 @@ float3 realPos(uint3 id)
     return ids * chunkSize;
 }
 
-float rounding(float d, float h)
-{
-    return d - h;
-}
-
 [numthreads(8, 8, 8)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
+    if(id.x > 0 || id.x < 7 || id.y > 0 || id.y < 7 || id.z > 0 ||)
     uint arrCoords = coords(id);
+    workBuffer = sdf[arrCoords];
     float currentValue = sdf[arrCoords];
     float3 displacement = realPos(id) - toolCenter;
     float val = dot(displacement, displacement) - (toolRadius * toolRadius);
     if (val < 0) //target voxel is inside tool's radius
     {
+        uint3 a = id;
+        left.x 
         sdf[arrCoords] = min(currentValue, rounding(currentValue, 0.001f));
     }
 }

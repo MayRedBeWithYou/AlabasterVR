@@ -58,5 +58,15 @@ public class MockInputManager : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.LeftBracket))
+        {
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools[0];
+        }
+
+        if (Input.GetKeyDown(KeyCode.RightBracket))
+        {
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools[1];
+        }
+
     }
 }

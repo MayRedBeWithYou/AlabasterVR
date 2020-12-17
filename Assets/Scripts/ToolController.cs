@@ -91,6 +91,7 @@ public class ToolController : MonoBehaviour
         foreach (Tool tool in ToolPrefabs)
         {
             Tools.Add(Instantiate(tool, transform));
+            Tools[Tools.Count - 1].Enable();
         }
         SelectedTool = Tools[0];
     }
