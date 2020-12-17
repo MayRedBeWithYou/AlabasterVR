@@ -5,8 +5,6 @@ struct MoveData
 {
     uint3 from;
     float value;
-
-    float avg;
 };
 
 RWStructuredBuffer<float> sdf;
@@ -39,17 +37,6 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         MoveData data;
         data.from = id;
         data.value = sdf[coords(id)];
-
-
-        float avg = 0;
-        avg += sdf[coords(uint3(id.x + 1, id.y, id.z))];
-        avg += sdf[coords(uint3(id.x - 1, id.y, id.z))];
-        avg += sdf[coords(uint3(id.x, id.y + 1, id.z))];
-        avg += sdf[coords(uint3(id.x, id.y - 1, id.z))];
-        avg += sdf[coords(uint3(id.x, id.y, id.z - 1))];
-        avg += sdf[coords(uint3(id.x, id.y, id.z + 1))];
-        avg = avg / 6;
-        data.avg = avg;
         workBuffer.Append(data);
     }
 }

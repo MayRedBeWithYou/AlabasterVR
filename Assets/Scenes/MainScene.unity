@@ -864,7 +864,7 @@ MonoBehaviour:
   LayersHolder: {fileID: 1274172292}
   chunkPrefab: {fileID: 1005784055029476331, guid: 81b31b7d519924846b8fcb1f026f61b5,
     type: 3}
-  _size: 2
+  _size: 1
   _resolution: 1
   _chunkResolution: 128
   _drawBoundingBox: 1

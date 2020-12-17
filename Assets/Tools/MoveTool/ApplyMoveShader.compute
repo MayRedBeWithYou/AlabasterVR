@@ -5,7 +5,6 @@ struct MoveData
 {
     uint3 from;
     float value;
-    float avg;
 };
 
 struct DebugOutData
@@ -46,9 +45,9 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         //float t = offset / fooDist;
         
         //god code to jest dobre
-        //targetId.x = data.from.x + floor(offset.x / spacing);
-        //targetId.y = data.from.y + floor(offset.y / spacing);
-        //targetId.z = data.from.z + floor(offset.z / spacing);
+        targetId.x = data.from.x + floor(offset.x / spacing);
+        targetId.y = data.from.y + floor(offset.y / spacing);
+        targetId.z = data.from.z + floor(offset.z / spacing);
         
         
         //targetId2.x = data.from.x + ceil(offset.x / spacing);
@@ -57,11 +56,10 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         //sdf[coords(data.from)] = 1.0f;
         
         
-        //sdf[coords(targetId)] = data.value;// * t;
+        sdf[coords(targetId)] = data.value;// * t;
         
         
         //sdf[coords(targetId2)] = data.value * (1-t);
-        sdf[coords(data.from)] = data.avg;
         DebugOutData outData;
         outData.from = data.from;
         outData.to = targetId;

@@ -49,7 +49,7 @@ public class MoveTool : Tool
         res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
-        workBuffer = new ComputeBuffer(volume, sizeof(float)*2 + sizeof(uint) * 3, ComputeBufferType.Append);
+        workBuffer = new ComputeBuffer(volume, sizeof(float) + sizeof(uint) * 3, ComputeBufferType.Append);
         debugBuffer = new ComputeBuffer(volume, sizeof(float) + sizeof(uint) * 6, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
         Button.OnButtonDown += Button_OnButtonDown;
@@ -97,7 +97,6 @@ public class MoveTool : Tool
     {
         public Vector3Int from;
         public float value;
-        public float avg;
     }
 
     public struct DebugOutData
@@ -115,7 +114,7 @@ public class MoveTool : Tool
         {
             Debug.Log("wszsedlem");
             debugBuffer.SetCounterValue(0);
-            workBufferPopulated = false;
+            //workBufferPopulated = false;
 
             var kernel = ApplyMoveShader.FindKernel("CSMain");
             ApplyMoveShader.SetFloat("spacing", chunk.size / (res - 1));
