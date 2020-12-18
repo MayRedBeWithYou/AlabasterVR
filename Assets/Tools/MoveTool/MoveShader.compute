@@ -1,39 +1,36 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
+struct MoveData
+{
+    uint3 from;
+    float value;
+};
+
 RWStructuredBuffer<float> sdf;
-float toolRadius;
-float3 toolCenter;
-float chunkSize;
+StructuredBuffer<MoveData> workBuffer;
+
+float spacing;
+float3 offset;
 uint resolution;
+StructuredBuffer<uint> entries;
 
 uint coords(uint3 id)
 {
     return id.z * resolution * resolution + id.y * resolution + id.x;
 }
 
-float3 realPos(uint3 id)
-{
-    float3 ids = id;
-    float res = resolution - 1;
-    ids = id / res;
-    return ids * chunkSize;
-}
-
-float rounding(float d, float h)
-{
-    return d - h;
-}
-
-[numthreads(8, 8, 8)]
+[numthreads(512, 1, 1)]
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
-    uint arrCoords = coords(id);
-    float currentValue = sdf[arrCoords];
-    float3 displacement = realPos(id) - toolCenter;
-    float val = dot(displacement, displacement) - (toolRadius * toolRadius);
-    if (val < 0) //target voxel is inside tool's radius
+    if (id.x < entries[0])
     {
-        sdf[arrCoords] = min(currentValue, rounding(currentValue, 0.001f));
+        MoveData data;
+        data = workBuffer[id.x];
+        uint3 targetId = id;
+        targetId.x = data.from.x + floor(offset.x / spacing);
+        targetId.y = data.from.y + floor(offset.y / spacing);
+        targetId.z = data.from.z + floor(offset.z / spacing);
+        sdf[coords(targetId)] = data.value;
     }
 }
