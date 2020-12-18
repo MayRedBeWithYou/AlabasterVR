@@ -6,22 +6,24 @@ using UnityEngine.XR.Interaction.Toolkit;
 
 public class SmoothTool : Tool
 {
+    public struct SmoothData
+    {
+        public Vector3Int from;
+        public float value;
+        public float avg;
+    }
+
     public AxisHandler Trigger;
     public ComputeShader PopulateShader;
     public ComputeShader ApplyMoveShader;
-
     public GameObject cursorPrefab;
 
     private ComputeBuffer workBuffer;
     private ComputeBuffer countBuffer;
-
-
     private bool workBufferPopulated;
     private Vector3 prevPos;
     private int res;
     private int volume;
-
-    private bool triggerPressed = false;
 
     [HideInInspector]
     public CursorSDF cursor;
@@ -54,14 +56,11 @@ public class SmoothTool : Tool
         cursor.UpdateActiveChunks();
         if(Trigger.Value > 0.2)
         {
-            triggerPressed = true;
             PerformAction();
         }
         else
         {
             workBufferPopulated = false;
-
-            triggerPressed = false;
         }
     }
 
@@ -71,17 +70,10 @@ public class SmoothTool : Tool
         {
             ApplyWorkBuffer();
         }
-        if(workBufferPopulated == false)
+        if(!workBufferPopulated)
         {
             PopulateWorkBuffer();
         }
-    }
-
-    public struct MoveData
-    {
-        public Vector3Int from;
-        public float value;
-        public float avg;
     }
 
     private void ApplyWorkBuffer()

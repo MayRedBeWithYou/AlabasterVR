@@ -5,7 +5,6 @@ struct MoveData
 {
     uint3 from;
     float value;
-
     float avg;
 };
 
@@ -39,7 +38,6 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         MoveData data;
         data.from = id;
         data.value = sdf[coords(id)];
-
 
         float avg = 0;
         avg += sdf[coords(uint3(id.x + 1, id.y, id.z))];
