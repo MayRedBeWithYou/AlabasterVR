@@ -68,5 +68,10 @@ public class MockInputManager : MonoBehaviour
             ToolController.Instance.SelectedTool = ToolController.Instance.Tools[1];
         }
 
+        if (Input.GetKeyDown(KeyCode.Backslash))
+        {
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools[5];
+        }
+
     }
 }

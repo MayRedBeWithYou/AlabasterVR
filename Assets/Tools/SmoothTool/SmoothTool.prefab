@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7079215710341580045}
   - component: {fileID: 7079215710341580042}
   m_Layer: 0
-  m_Name: MoveTool
+  m_Name: SmoothTool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,13 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b13e01ccbd4ed74cb52cc450cdbd5a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toolName: "Przesu\u0144"
+  toolName: "Wyg\u0142ad\u017A"
   description: 
   sprite: {fileID: 21300000, guid: cb445ecac047d3a459da3710cd981953, type: 3}
   Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
-  Button: {fileID: 11400000, guid: 72e585be256124e4f9091c2ee9aa9aab, type: 2}
-  MoveShader: {fileID: 7200000, guid: 342a86751b4612c40a39f971deffc28a, type: 3}
-  CopyShader: {fileID: 0}
   PopulateShader: {fileID: 7200000, guid: f2602ba8dec781e4c8973dce3f82e80a, type: 3}
   ApplyMoveShader: {fileID: 7200000, guid: aa97e1f496635954b8f44a97dcce87bf, type: 3}
   cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
