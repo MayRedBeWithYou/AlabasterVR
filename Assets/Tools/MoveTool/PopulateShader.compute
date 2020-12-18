@@ -1,0 +1,42 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+
+struct MoveData
+{
+    uint3 from;
+    float value;
+};
+
+RWStructuredBuffer<float> sdf;
+AppendStructuredBuffer<MoveData> workBuffer;
+float toolRadius;
+float chunkSize;
+float3 toolCenter;
+uint resolution;
+
+uint coords(uint3 id)
+{
+    return id.z * resolution * resolution + id.y * resolution + id.x;
+}
+
+float3 realPos(uint3 id)
+{
+    float3 ids = id;
+    float res = resolution - 1;
+    ids = id / res;
+    return ids * chunkSize;
+}
+
+[numthreads(8, 8, 8)]
+void CSMain(uint3 id : SV_DispatchThreadID)
+{
+    float3 displacement = realPos(id) - toolCenter;
+    float val = dot(displacement, displacement) - (toolRadius * toolRadius);
+    if (val < 0) //inside cursor
+    {
+        MoveData data;
+        data.from = id;
+        data.value = sdf[coords(id)];
+        workBuffer.Append(data);
+    }
+}
