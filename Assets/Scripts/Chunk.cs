@@ -54,6 +54,12 @@ public class Chunk : MonoBehaviour, IDisposable
         voxels = new GPUVoxelData(resolution, size);
         gpuMesh = new GPUMesh(voxels.Volume * 5);
     }
+    public void InitFromMesh(float[] values)
+    {
+        voxels = new GPUVoxelData(resolution, size);
+        voxels.InitBufferFromMesh(values);
+        gpuMesh = new GPUMesh(voxels.Volume * 5);
+    }
 
     void Update()
     {

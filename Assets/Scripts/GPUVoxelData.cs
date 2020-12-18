@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,4 +74,18 @@ public class GPUVoxelData : IDisposable
             materialBlock
             );
     }
+
+    ////
+    private void VoxelsValuesFromMesh(float[] values)
+    {
+        VoxelBuffer.SetData(values);
+        //Debug.Log("Setting data");
+    }
+    public void InitBufferFromMesh(float[] values)
+    {
+        _voxelBuffer = new ComputeBuffer(Volume, sizeof(float));
+        VoxelsValuesFromMesh(values);
+        Initialized = true;
+    }
+
 }
