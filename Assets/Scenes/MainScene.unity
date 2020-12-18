@@ -1954,6 +1954,59 @@ MonoBehaviour:
   OnHoverExit:
     m_PersistentCalls:
       m_Calls: []
+--- !u!1 &1693578458
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1693578460}
+  - component: {fileID: 1693578459}
+  m_Layer: 0
+  m_Name: MoveTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1693578459
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693578458}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39d96332b5b98bc4d902843db5b6c55b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toolName: "Wyg\u0142ad\u017A"
+  description: 
+  sprite: {fileID: 0}
+  Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
+  MoveShader: {fileID: 0}
+  PopulateShader: {fileID: 7200000, guid: f908cb504752ba64b9d7bfc13029a363, type: 3}
+  ApplyMoveShader: {fileID: 7200000, guid: e7421e254cf438742a392640cdb775ac, type: 3}
+  cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
+    type: 3}
+  cursor: {fileID: 0}
+--- !u!4 &1693578460
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693578458}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.5256174, y: -1.6279187, z: 6.6683125}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 14
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1793690297
 GameObject:
   m_ObjectHideFlags: 0
