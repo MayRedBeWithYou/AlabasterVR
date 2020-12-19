@@ -1,5 +1,6 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
-#pragma kernel CSMain
+#pragma kernel PopulateWorkBuffer
+#pragma kernel ApplySmooth
 
 struct MoveData
 {
@@ -9,11 +10,16 @@ struct MoveData
 };
 
 RWStructuredBuffer<float> sdf;
-AppendStructuredBuffer<MoveData> workBuffer;
-float toolRadius;
-float chunkSize;
-float3 toolCenter;
+AppendStructuredBuffer<MoveData> appendWorkBuffer;
+StructuredBuffer<MoveData> structuredWorkBuffer;
+StructuredBuffer<uint> entries;
+
 uint resolution;
+
+float chunkSize;
+float toolRadius;
+float3 toolCenter;
+
 
 uint coords(uint3 id)
 {
@@ -29,7 +35,7 @@ float3 realPos(uint3 id)
 }
 
 [numthreads(8, 8, 8)]
-void CSMain(uint3 id : SV_DispatchThreadID)
+void PopulateWorkBuffer(uint3 id : SV_DispatchThreadID)
 {
     float3 displacement = realPos(id) - toolCenter;
     float val = dot(displacement, displacement) - (toolRadius * toolRadius);
@@ -48,6 +54,19 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         avg += sdf[coords(uint3(id.x, id.y, id.z + 1))];
         avg = avg / 6;
         data.avg = avg;
-        workBuffer.Append(data);
+        appendWorkBuffer.Append(data);
     }
+}
+
+[numthreads(512, 1, 1)]
+void ApplySmooth(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x < entries[0])
+    {
+        MoveData data;
+        data = structuredWorkBuffer[id.x];
+        uint3 targetId = id;
+        sdf[coords(data.from)] = data.avg;
+    }
+    //sdf[id.x] = -1.0f;
 }
