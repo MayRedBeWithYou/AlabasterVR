@@ -70,3 +70,15 @@ void ApplySmooth(uint3 id : SV_DispatchThreadID)
     }
     //sdf[id.x] = -1.0f;
 }
+
+RWStructuredBuffer<float> sdf1;
+RWStructuredBuffer<float> sdf2;
+
+[numthreads(8,8,1)]
+void SyncFaces(uint3 id :SV_DispatchThreadID)
+{
+    uint coord1 = coords(id);
+    uint coord2 = coords(uint3(id.x,id.y,resolution-1);
+    float avg = (sdf1[coord1] + sdf2[coord2]) * 0.5;
+    sdf1[coord1] = sdf2[coord2] = avg;
+}

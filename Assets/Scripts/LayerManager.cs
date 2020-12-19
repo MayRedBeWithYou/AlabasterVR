@@ -32,6 +32,7 @@ public class LayerManager : MonoBehaviour
     public int ChunkResolution => _chunkResolution;
 
     public float Spacing => Size / Resolution;
+    public float VoxelSpacing;
 
     [Header("Gizmos")]
     [SerializeField]
@@ -85,7 +86,7 @@ public class LayerManager : MonoBehaviour
 
         layers = new List<Layer>();
         activeChunks = new List<Chunk>();
-
+        VoxelSpacing = Size / (Resolution * ChunkResolution);
         Chunk chunk = chunkPrefab.GetComponent<Chunk>();
         chunk.size = Spacing;
         chunk.resolution = ChunkResolution;
@@ -157,5 +158,10 @@ public class LayerManager : MonoBehaviour
                 //Gizmos.DrawWireCube(transform.position, Vector3.one * Size / 2f);
             }
         }
+    }
+
+    public Vector3Int SnapToGridPosition(Vector3 pos)
+    {
+        return Vector3Int.RoundToInt(pos / VoxelSpacing);
     }
 }

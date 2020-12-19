@@ -15,10 +15,15 @@ public class SmoothTool : Tool
 
     public AxisHandler Trigger;
     public ComputeShader SmoothShader;
+    public ComputeShader SnapshotShader;
+
     public GameObject cursorPrefab;
 
     private ComputeBuffer workBuffer;
     private ComputeBuffer countBuffer;
+
+    private ComputeBuffer snapshot;
+
     private int res;
     private int volume;
 
@@ -43,6 +48,7 @@ public class SmoothTool : Tool
     {
         res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
+        snapshot = new ComputeBuffer(volume, sizeof(float));
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
         workBuffer = new ComputeBuffer(volume, sizeof(float)*2 + sizeof(uint) * 3, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
@@ -62,6 +68,23 @@ public class SmoothTool : Tool
         Smooth();
     }
 
+    private void MakeSnapShot()
+    {
+        foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+        {
+            var kernel = SnapshotShader.FindKernel("CSMain");
+            SnapshotShader.SetFloat("radius", cursor.radius);
+            SnapshotShader.SetFloat("chunkSize", chunk.size);
+            SnapshotShader.SetVector("position", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
+            SnapshotShader.SetInt("resolution", chunk.resolution);
+            SnapshotShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
+            SnapshotShader.SetBuffer(kernel, "snapshot", snapshot);
+
+            SnapshotShader.Dispatch(kernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
+            chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
+        }
+    }
+
     private void Smooth()
     {
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
@@ -76,20 +99,30 @@ public class SmoothTool : Tool
             SmoothShader.SetBuffer(kernel, "appendWorkBuffer", workBuffer);
             SmoothShader.Dispatch(kernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
-            break;
-        }
 
-        foreach (Chunk chunk in LayerManager.Instance.activeChunks)
-        {
-
-            var kernel = SmoothShader.FindKernel("ApplySmooth");
+            kernel = SmoothShader.FindKernel("ApplySmooth");
             SmoothShader.SetInt("resolution", chunk.resolution);
             SmoothShader.SetBuffer(kernel, "entries", countBuffer);
             SmoothShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
             SmoothShader.SetBuffer(kernel, "structuredWorkBuffer", workBuffer);
-            SmoothShader.Dispatch(kernel, volume/512 ,1,1);
+            SmoothShader.Dispatch(kernel, volume / 512, 1, 1);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
-            break;
+
+            //break;
         }
+
+
+        //foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+        //{
+
+        //    var kernel = SmoothShader.FindKernel("ApplySmooth");
+        //    SmoothShader.SetInt("resolution", chunk.resolution);
+        //    SmoothShader.SetBuffer(kernel, "entries", countBuffer);
+        //    SmoothShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
+        //    SmoothShader.SetBuffer(kernel, "structuredWorkBuffer", workBuffer);
+        //    SmoothShader.Dispatch(kernel, volume/512 ,1,1);
+        //    chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
+        //    break;
+        //}
     }
 }

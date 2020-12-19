@@ -1,0 +1,37 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel CSMain
+#pragma kernel Normalize
+
+
+RWStructuredBuffer<float> snapshot;
+RWStructuredBuffer<float> sdf;
+RWStructuredBuffer<uint> overlaps;
+
+float3 gridDisplacement;
+uint resolution;
+
+uint coords(uint3 id)
+{
+    return id.z * resolution * resolution + id.y * resolution + id.x;
+}
+
+
+[numthreads(8,8,8)]
+void CSMain (uint3 id : SV_DispatchThreadID)
+{
+    int3 gridOffset = round(gridDisplacement);
+    uint3 targetId = id + gridOffset;
+    if (targetId.x < resolution && targetId.y < resolution && targetId.z < resolution)
+    {
+        snapshot[coords(id)] = sdf[coords(targetId)];
+        ++overlaps[coords(id)];
+    }
+}
+
+[numthreads(8, 8, 8)]
+void Normalize(uint3 id : SV_DispatchThreadID)
+{
+    uint ind = coords(id);
+    snapshot[ind] = snapshot[ind] / overlaps[ind];
+    overlaps[ind] = 0;
+}
