@@ -32,7 +32,7 @@ namespace HSVPicker
                 _color = value;
 
                 RGBChanged();
-            
+
                 SendChangedEvent();
             }
         }
@@ -196,7 +196,7 @@ namespace HSVPicker
         {
             Color color = HSVUtil.ConvertHsvToRgb(_hue * 360, _saturation, _brightness, _color.a);
 
-            _color = color;
+            CurrentColor = color;
         }
 
         private void SendChangedEvent()
@@ -270,7 +270,7 @@ namespace HSVPicker
             Setup.HsvSliders.Toggle(Setup.ShowHsv);
             Setup.RgbSliders.Toggle(Setup.ShowRgb);
 
-
+            SendChangedEvent();
             UpdateColorToggleText();
         }
 

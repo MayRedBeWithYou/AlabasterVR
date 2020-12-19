@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LayerSelection : MonoBehaviour
 {
@@ -10,41 +11,41 @@ public class LayerSelection : MonoBehaviour
 
     public Dictionary<Layer, LayerItem> layers;
 
-    public void Awake()
+    public void Start()
     {
         layers = new Dictionary<Layer, LayerItem>();
 
         foreach (Layer layer in LayerManager.Instance.layers)
         {
-            GameObject go = Instantiate(layerItemPrefab, contentHolder.transform);
-            LayerItem item = go.GetComponent<LayerItem>();
-            item.Layer = layer;
-            layers.Add(layer, item);
+            LayerAdded(layer);
         }
 
-        LayerManager_ActiveLayerChanged(LayerManager.Instance.ActiveLayer);
+        ActiveLayerChanged(LayerManager.Instance.ActiveLayer);
 
-        LayerManager.ActiveLayerChanged += LayerManager_ActiveLayerChanged;
-        LayerManager.LayerAdded += LayerManager_LayerAdded;
-        LayerManager.LayerRemoved += LayerManager_LayerRemoved;
+        LayerManager.ActiveLayerChanged += ActiveLayerChanged;
+        LayerManager.LayerAdded += LayerAdded;
+        LayerManager.LayerRemoved += LayerRemoved;
     }
 
-    private void LayerManager_LayerRemoved(Layer layer)
+    private void LayerRemoved(Layer layer)
     {
         LayerItem item = layers[layer];
         layers.Remove(layer);
+        item.gameObject.SetActive(false);
         Destroy(item.gameObject);
     }
 
-    private void LayerManager_LayerAdded(Layer layer)
+    private void LayerAdded(Layer layer)
     {
         GameObject go = Instantiate(layerItemPrefab, contentHolder.transform);
+        go.name = layer.name;
         LayerItem item = go.GetComponent<LayerItem>();
         item.Layer = layer;
+        item.GetComponent<Button>().onClick.AddListener(() => item.SelectLayer());
         layers.Add(layer, item);
     }
 
-    private void LayerManager_ActiveLayerChanged(Layer layer)
+    private void ActiveLayerChanged(Layer layer)
     {
         foreach (LayerItem item in layers.Values)
         {
@@ -55,5 +56,12 @@ public class LayerSelection : MonoBehaviour
     public void AddNewLayer()
     {
         LayerManager.Instance.AddNewLayer();
+    }
+
+    public void OnDestroy()
+    {
+        LayerManager.ActiveLayerChanged -= ActiveLayerChanged;
+        LayerManager.LayerAdded -= LayerAdded;
+        LayerManager.LayerRemoved -= LayerRemoved;
     }
 }

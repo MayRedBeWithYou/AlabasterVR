@@ -29,6 +29,7 @@ namespace HSVPicker
         private void UpdateHex(Color newColor)
         {
             hexInputField.text = ColorToHex(newColor);
+            hexInputField.ForceLabelUpdate();
         }
 
         private void UpdateColor(string newHex)

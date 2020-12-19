@@ -49,7 +49,7 @@ public class ToolController : MonoBehaviour
     [HideInInspector]
     public List<Tool> Tools = new List<Tool>();
 
-    private GameObject _activeMainMenu = null;
+    private MainMenu _activeMainMenu = null;
 
     private GameObject _activeLeftHandMenu = null;
 
@@ -102,15 +102,13 @@ public class ToolController : MonoBehaviour
     {
         if (_activeMainMenu)
         {
-            CloseMainMenu();
+            _activeMainMenu.Close();
         }
         else
         {
             Vector3 lookDirection = cameraTransform.forward;
             lookDirection.y = 0;
-            _activeMainMenu = Instantiate(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
-            MainMenuController mainMenu = _activeMainMenu.GetComponent<MainMenuController>();
-            mainMenu.ExitButton.onClick.AddListener(CloseMainMenu);
+            _activeMainMenu = CreateUI(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<MainMenu>();
         }
     }
 
@@ -124,7 +122,7 @@ public class ToolController : MonoBehaviour
         }
         else
         {
-            _activeLeftHandMenu = Instantiate(ToolSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+            _activeLeftHandMenu = CreateUI(ToolSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         }
     }
 
@@ -138,15 +136,8 @@ public class ToolController : MonoBehaviour
         }
         else
         {
-            _activeLeftHandMenu = Instantiate(LayerSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+            _activeLeftHandMenu = CreateUI(LayerSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         }
-    }
-
-    private void CloseMainMenu()
-    {
-        _activeMainMenu.SetActive(false);
-        Destroy(_activeMainMenu);
-        _activeMainMenu = null;
     }
 
     public Keyboard ShowKeyboard(string text)
@@ -158,7 +149,7 @@ public class ToolController : MonoBehaviour
 
         Vector3 lookDirection = Camera.main.transform.forward;
         lookDirection.y = 0;
-        GameObject go = Instantiate(KeyboardPrefab, Camera.main.transform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
+        GameObject go = CreateUI(KeyboardPrefab, Camera.main.transform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
 
         _activeKeyboard = go.GetComponent<Keyboard>();
         _activeKeyboard.OnClosing += () => _activeKeyboard = null;
@@ -170,6 +161,14 @@ public class ToolController : MonoBehaviour
     {
         Vector3 lookDirection = cameraTransform.forward;
         lookDirection.y = 0;
-        return Instantiate(colorPickerPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<ColorPicker>();
+        ColorPicker colorPicker = CreateUI(colorPickerPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<ColorPicker>();
+        return colorPicker;
+    }
+
+    private GameObject CreateUI(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
+    {
+        GameObject go = Instantiate(prefab, position, rotation, parent);
+        go.GetComponent<Canvas>().worldCamera = cameraTransform.GetComponent<Camera>();
+        return go;
     }
 }

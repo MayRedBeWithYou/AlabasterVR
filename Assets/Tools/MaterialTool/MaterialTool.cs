@@ -29,6 +29,8 @@ public class MaterialTool : Tool
 
     private ColorPicker activeColorPicker;
 
+    public Color color = Color.white;
+
     int sphereShaderKernel;
 
     [HideInInspector]
@@ -82,10 +84,11 @@ public class MaterialTool : Tool
         else
         {
             activeColorPicker = ToolController.Instance.ShowColorPicker();
+            activeColorPicker.onValueChanged.AddListener((c) => color = c);
         }
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         cursor.UpdateActiveChunks();
         if (upButton.IsPressed)

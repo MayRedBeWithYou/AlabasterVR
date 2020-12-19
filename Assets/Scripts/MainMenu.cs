@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class MainMenuController : MonoBehaviour
+public class MainMenu : MonoBehaviour
 {
     public Button NewFileButton;
 
@@ -16,5 +16,16 @@ public class MainMenuController : MonoBehaviour
     public Button OptionsButton;
 
     public Button ExitButton;
+
+    public void Awake()
+    {
+        ExitButton.onClick.AddListener(Close);
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+        Destroy(gameObject);
+    }
 
 }
