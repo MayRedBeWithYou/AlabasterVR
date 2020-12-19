@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using HSVPicker;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -25,6 +26,8 @@ public class MaterialTool : Tool
 
     public ComputeShader addShader;
     public ComputeShader removeShader;
+
+    private ColorPicker activeColorPicker;
 
     int sphereShaderKernel;
 
@@ -62,8 +65,24 @@ public class MaterialTool : Tool
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
         toggleButton.OnButtonDown += ToggleButtonHandler;
 
+        settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
+
         positionButton.OnButtonDown += PositionButton_OnButtonDown;
         positionButton.OnButtonUp += PositionButton_OnButtonUp;
+    }
+
+    private void SettingsButton_OnButtonDown(XRController controller)
+    {
+        if (activeColorPicker != null)
+        {
+            activeColorPicker.gameObject.SetActive(false);
+            Destroy(activeColorPicker.gameObject);
+            activeColorPicker = null;
+        }
+        else
+        {
+            activeColorPicker = ToolController.Instance.ShowColorPicker();
+        }
     }
 
     private void FixedUpdate()

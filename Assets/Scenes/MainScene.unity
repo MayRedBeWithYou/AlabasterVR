@@ -1216,6 +1216,7 @@ MonoBehaviour:
     type: 3}
   LayerSelectionMenuPrefab: {fileID: 633745008470641335, guid: 7866a6f16b75fac418c12afdd6d47a0c,
     type: 3}
+  colorPickerPrefab: {fileID: 157272, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
   KeyboardPrefab: {fileID: 3361844223996469137, guid: 37a179890cd05954ab8efbb146cb1e22,
     type: 3}
   ToolPrefabs:

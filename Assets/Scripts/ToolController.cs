@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HSVPicker;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -32,6 +33,8 @@ public class ToolController : MonoBehaviour
     public GameObject ToolSelectionMenuPrefab;
     public GameObject LayerSelectionMenuPrefab;
 
+    public GameObject colorPickerPrefab;
+
     [Header("Keyboard")]
     public GameObject KeyboardPrefab;
     private Keyboard _activeKeyboard = null;
@@ -47,7 +50,7 @@ public class ToolController : MonoBehaviour
     public List<Tool> Tools = new List<Tool>();
 
     private GameObject _activeMainMenu = null;
-    
+
     private GameObject _activeLeftHandMenu = null;
 
     public delegate void ToolChanged(Tool tool);
@@ -115,6 +118,7 @@ public class ToolController : MonoBehaviour
     {
         if (_activeLeftHandMenu)
         {
+            _activeLeftHandMenu.SetActive(false);
             Destroy(_activeLeftHandMenu);
             _activeLeftHandMenu = null;
         }
@@ -147,7 +151,7 @@ public class ToolController : MonoBehaviour
 
     public Keyboard ShowKeyboard(string text)
     {
-        if(_activeKeyboard != null)
+        if (_activeKeyboard != null)
         {
             _activeKeyboard.Close();
         }
@@ -160,5 +164,12 @@ public class ToolController : MonoBehaviour
         _activeKeyboard.OnClosing += () => _activeKeyboard = null;
         _activeKeyboard.SetText(text);
         return _activeKeyboard;
+    }
+
+    public ColorPicker ShowColorPicker()
+    {
+        Vector3 lookDirection = cameraTransform.forward;
+        lookDirection.y = 0;
+        return Instantiate(colorPickerPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<ColorPicker>();
     }
 }
