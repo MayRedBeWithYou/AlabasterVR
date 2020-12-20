@@ -83,7 +83,7 @@ public class MaterialTool : Tool
         }
         else
         {
-            activeColorPicker = ToolController.Instance.ShowColorPicker();
+            activeColorPicker = UIController.Instance.ShowColorPicker();
             activeColorPicker.onValueChanged.AddListener((c) => color = c);
         }
     }

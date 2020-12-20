@@ -15,6 +15,7 @@ public class DragUIController : MonoBehaviour
 
     [SerializeField]
     private float gripVal;
+
     private bool isHolding => gripVal > 0.5f;
 
 
