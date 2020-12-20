@@ -916,8 +916,8 @@ MonoBehaviour:
   chunkPrefab: {fileID: 1005784055029476331, guid: 81b31b7d519924846b8fcb1f026f61b5,
     type: 3}
   _size: 3
-  _resolution: 3
-  _chunkResolution: 8
+  _resolution: 8
+  _chunkResolution: 16
   VoxelSpacing: 0
   _drawBoundingBox: 1
   _drawGrid: 1

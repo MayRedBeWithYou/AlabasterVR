@@ -38,17 +38,19 @@ public class SnapShotController : MonoBehaviour
         volume = resolution * resolution * resolution;
         overlapCounter = new ComputeBuffer(volume, sizeof(uint));
         data = new ComputeBuffer(volume, sizeof(float));
-        data.SetData(Enumerable.Repeat(1.0f, volume).ToArray());
-        overlapCounter.SetData(Enumerable.Repeat(0, volume).ToArray());
     }
 
     // Update is called once per frame
     void Update()
     {
-        SetPosition(ToFollow.transform.position);
+        SetPosition(ToFollow.transform.position - Vector3.one * size * 0.5f);
         if(Input.GetKeyDown(KeyCode.Alpha0))
         {
             TakeSnapshot();
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            ApplySnapshot();
         }
         Draww();
     }
@@ -56,30 +58,59 @@ public class SnapShotController : MonoBehaviour
     void TakeSnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
-            transform.position,
+            transform.position + Vector3.one*size*0.5f,
             Vector3.one * size * 0.5f,
             Quaternion.identity,
             1 << 9);
-        var kernel = SnapshotShader.FindKernel("CSMain");
+        var kernel = SnapshotShader.FindKernel("TakeSnapshot");
         var normalize = SnapshotShader.FindKernel("Normalize");
+        var clearData = SnapshotShader.FindKernel("ClearData");
         SnapshotShader.SetBuffer(kernel, "snapshot", data);
         SnapshotShader.SetBuffer(kernel, "overlaps", overlapCounter);
 
-        SnapshotShader.SetBuffer(normalize, "overlaps", overlapCounter);
         SnapshotShader.SetBuffer(normalize, "snapshot", data);
-        
+        SnapshotShader.SetBuffer(normalize, "overlaps", overlapCounter);
+
+        SnapshotShader.SetBuffer(clearData, "snapshot", data);
+        SnapshotShader.SetBuffer(clearData, "overlaps", overlapCounter);
+
+        SnapshotShader.Dispatch(clearData, volume / 512, 1, 1);
+
         foreach (Collider collider in overlappedColliders)
         {
             Chunk chunk = collider.GetComponent<Chunk>();
 
             Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
-            //Vector3Int gridOffset = LayerManager.Instance.SnapToGridPosition(snapLocalPos);
             SnapshotShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
             SnapshotShader.SetVector("gridDisplacement", snapLocalPos / spacing);
             SnapshotShader.SetInt("resolution", resolution);
             SnapshotShader.Dispatch(kernel, resolution / 8, resolution / 8, resolution / 8);
         }
-        SnapshotShader.Dispatch(normalize, resolution / 8, resolution / 8, resolution / 8);
+        SnapshotShader.Dispatch(normalize, volume/512, 1, 1);
+    }
+
+    void ApplySnapshot()
+    {
+        var overlappedColliders = Physics.OverlapBox(
+            transform.position + Vector3.one * size * 0.5f,
+            Vector3.one * size * 0.5f,
+            LayerManager.Instance.ActiveLayer.transform.rotation,
+            1 << 9);
+        var kernel = SnapshotShader.FindKernel("ApplySnapshot");
+        SnapshotShader.SetBuffer(kernel, "snapshot", data);
+
+        foreach (Collider collider in overlappedColliders)
+        {
+            Chunk chunk = collider.GetComponent<Chunk>();
+
+            Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
+            SnapshotShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
+            SnapshotShader.SetVector("gridDisplacement", snapLocalPos / spacing);
+            SnapshotShader.SetInt("resolution", resolution);
+            SnapshotShader.Dispatch(kernel, resolution / 8, resolution / 8, resolution / 8);
+            chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
+
+        }
     }
 
 

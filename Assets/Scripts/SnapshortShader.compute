@@ -1,6 +1,8 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
-#pragma kernel CSMain
+#pragma kernel TakeSnapshot
+#pragma kernel ApplySnapshot
 #pragma kernel Normalize
+#pragma kernel ClearData
 
 
 RWStructuredBuffer<float> snapshot;
@@ -17,21 +19,43 @@ uint coords(uint3 id)
 
 
 [numthreads(8,8,8)]
-void CSMain (uint3 id : SV_DispatchThreadID)
+void TakeSnapshot (uint3 id : SV_DispatchThreadID)
 {
+    int3 intId = id;
     int3 gridOffset = round(gridDisplacement);
-    uint3 targetId = id + gridOffset;
-    if (targetId.x < resolution && targetId.y < resolution && targetId.z < resolution)
+    uint3 targetId = intId + gridOffset;
+    if (targetId.x >= 0 && targetId.x < resolution && 
+        targetId.y >= 0 && targetId.y < resolution &&
+        targetId.z >= 0 && targetId.z < resolution)
     {
-        snapshot[coords(id)] = sdf[coords(targetId)];
+        snapshot[coords(id)] += sdf[coords(targetId)];
         ++overlaps[coords(id)];
     }
 }
 
 [numthreads(8, 8, 8)]
+void ApplySnapshot(uint3 id : SV_DispatchThreadID)
+{
+    int3 intId = id;
+    int3 gridOffset = round(gridDisplacement);
+    uint3 targetId = intId + gridOffset;
+    if (targetId.x >= 0 && targetId.x < resolution &&
+        targetId.y >= 0 && targetId.y < resolution &&
+        targetId.z >= 0 && targetId.z < resolution)
+    {
+        sdf[coords(targetId)] = snapshot[coords(id)];
+    }
+}
+
+[numthreads(512,1,1)]
+void ClearData(uint3 id : SV_DispatchThreadID)
+{
+    snapshot[id.x] = 0.0f;
+    overlaps[id.x] = 0;
+}
+
+[numthreads(512,1,1)]
 void Normalize(uint3 id : SV_DispatchThreadID)
 {
-    uint ind = coords(id);
-    snapshot[ind] = snapshot[ind] / overlaps[ind];
-    overlaps[ind] = 0;
+    snapshot[id.x] = snapshot[id.x] / overlaps[id.x];
 }

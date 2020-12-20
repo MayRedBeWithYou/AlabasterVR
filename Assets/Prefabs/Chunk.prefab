@@ -50,7 +50,7 @@ MonoBehaviour:
   resolution: 16
   size: 0.375
   coord: {x: 0, y: 0, z: 0}
-  DisplayVoxels: 1
+  DisplayVoxels: 0
   mesh: {fileID: 0}
 --- !u!33 &1005784055029476343
 MeshFilter:
