@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HSVPicker;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,43 +13,17 @@ public class ToolController : MonoBehaviour
     public GameObject rightController;
     public GameObject leftController;
 
-    public Transform cameraTransform;
-
-    public Transform leftPointer;
-    public Transform rightPointer;
-
-    [Header("Buttons")]
-    public ButtonHandler MainMenuButtonHandler;
-    public ButtonHandler ToolSelectionMenuButtonHandler;
-    public ButtonHandler LayerSelectionMenuButtonHandler;
-
-    [Header("Menus")]
-
-    public GameObject MainMenuPrefab;
-    public float uiDistance;
-
-    public Transform LeftHandMenuTransform;
-
-    public GameObject ToolSelectionMenuPrefab;
-    public GameObject LayerSelectionMenuPrefab;
-
-    [Header("Keyboard")]
-    public GameObject KeyboardPrefab;
-    private Keyboard _activeKeyboard = null;
-
     private static ToolController _instance;
     public static ToolController Instance => _instance;
 
     private Tool _selectedTool;
 
+    [Space(10f)]
     public List<Tool> ToolPrefabs = new List<Tool>();
 
     [HideInInspector]
     public List<Tool> Tools = new List<Tool>();
 
-    private GameObject _activeMainMenu = null;
-    
-    private GameObject _activeLeftHandMenu = null;
 
     public delegate void ToolChanged(Tool tool);
     public static event ToolChanged SelectedToolChanged;
@@ -83,82 +58,11 @@ public class ToolController : MonoBehaviour
             return;
         }
         _instance = this;
-        MainMenuButtonHandler.OnButtonDown += ShowMainMenu;
-
-        ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
-        LayerSelectionMenuButtonHandler.OnButtonDown += ShowLayerSelectionMenu;
 
         foreach (Tool tool in ToolPrefabs)
         {
             Tools.Add(Instantiate(tool, transform));
         }
         SelectedTool = Tools[0];
-    }
-
-    private void ShowMainMenu(XRController controller)
-    {
-        if (_activeMainMenu)
-        {
-            CloseMainMenu();
-        }
-        else
-        {
-            Vector3 lookDirection = cameraTransform.forward;
-            lookDirection.y = 0;
-            _activeMainMenu = Instantiate(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
-            MainMenuController mainMenu = _activeMainMenu.GetComponent<MainMenuController>();
-            mainMenu.ExitButton.onClick.AddListener(CloseMainMenu);
-        }
-    }
-
-    private void ShowToolSelectionMenu(XRController controller)
-    {
-        if (_activeLeftHandMenu)
-        {
-            Destroy(_activeLeftHandMenu);
-            _activeLeftHandMenu = null;
-        }
-        else
-        {
-            _activeLeftHandMenu = Instantiate(ToolSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
-        }
-    }
-
-    private void ShowLayerSelectionMenu(XRController controller)
-    {
-        if (_activeLeftHandMenu)
-        {
-            _activeLeftHandMenu.SetActive(false);
-            Destroy(_activeLeftHandMenu);
-            _activeLeftHandMenu = null;
-        }
-        else
-        {
-            _activeLeftHandMenu = Instantiate(LayerSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
-        }
-    }
-
-    private void CloseMainMenu()
-    {
-        _activeMainMenu.SetActive(false);
-        Destroy(_activeMainMenu);
-        _activeMainMenu = null;
-    }
-
-    public Keyboard ShowKeyboard(string text)
-    {
-        if(_activeKeyboard != null)
-        {
-            _activeKeyboard.Close();
-        }
-
-        Vector3 lookDirection = Camera.main.transform.forward;
-        lookDirection.y = 0;
-        GameObject go = Instantiate(KeyboardPrefab, Camera.main.transform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
-
-        _activeKeyboard = go.GetComponent<Keyboard>();
-        _activeKeyboard.OnClosing += () => _activeKeyboard = null;
-        _activeKeyboard.SetText(text);
-        return _activeKeyboard;
     }
 }
