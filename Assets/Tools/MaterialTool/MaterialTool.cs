@@ -29,7 +29,7 @@ public class MaterialTool : Tool
 
     private ColorPicker activeColorPicker;
 
-    public Color color = Color.white;
+    public Color color;
 
     int sphereShaderKernel;
 
@@ -83,7 +83,7 @@ public class MaterialTool : Tool
         }
         else
         {
-            activeColorPicker = UIController.Instance.ShowColorPicker();
+            activeColorPicker = UIController.Instance.ShowColorPicker(color);
             activeColorPicker.onValueChanged.AddListener((c) => color = c);
         }
     }
