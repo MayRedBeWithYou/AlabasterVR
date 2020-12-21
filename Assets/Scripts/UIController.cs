@@ -108,11 +108,12 @@ public class UIController : MonoBehaviour
         return _activeKeyboard;
     }
 
-    public ColorPicker ShowColorPicker()
+    public ColorPicker ShowColorPicker(Color color)
     {
         Vector3 lookDirection = cameraTransform.forward;
         lookDirection.y = 0;
         ColorPicker colorPicker = CreateUI(colorPickerPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<ColorPicker>();
+        colorPicker.CurrentColor = color;
         return colorPicker;
     }
 
