@@ -64,7 +64,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3a71fad1e4708c64b8e90800adad5d59, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 1ac2c73cb221d3149bb9f6b8f36f7bee, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -151,7 +151,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Plik
+  m_Text: 
 --- !u!1 &7616034493141330846
 GameObject:
   m_ObjectHideFlags: 0
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 0.5019608}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
@@ -296,8 +296,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ad8a42ebed684e4f84a6b1558920595, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  image: {fileID: 1837247169235409799}
-  path: 
-  text: {fileID: 253862911959703411}
-  fileIcon: {fileID: 21300000, guid: 3a71fad1e4708c64b8e90800adad5d59, type: 3}
+  filename: 
+  mainScript: {fileID: 1717673482883478047, guid: 7e7fee2f67645964aa6579acc29613ef,
+    type: 3}
+  pictureIcon: {fileID: 21300000, guid: 73b8a4a719fb4ab46ac68cfa82fc69f8, type: 3}
+  modelIcon: {fileID: 21300000, guid: 840e91529c91b904c81a3c4539b9aca0, type: 3}
   directoryIcon: {fileID: 21300000, guid: 1ac2c73cb221d3149bb9f6b8f36f7bee, type: 3}

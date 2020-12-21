@@ -5,57 +5,52 @@ using UnityEngine.UI;
 
 public class ExplorerItem : MonoBehaviour
 {
-    public enum ItemType
+    private FileType type;
+    public string filename;
+    public FileExplorer mainScript;
+    void Awake()
     {
-        File,
-        Directory
+
     }
-
-    private ItemType type;
-
-    public ItemType Type
+    public FileType Type
     {
         get => type;
         set
         {
             type = value;
-            image.sprite = type == ItemType.File ? fileIcon : directoryIcon;
+            var pic=gameObject.transform.GetChild(0).GetComponent<Image>();
+            
+            pic.sprite = directoryIcon;
+            if(type==FileType.Picture) pic.sprite=pictureIcon;
+            else if(type==FileType.Model) pic.sprite=modelIcon;
+            
         }
     }
 
-    public Image image;
-
-    public string path;
-
-    [SerializeField]
-    private Text text;
-
-    private string itemName;
-
-    public string ItemName
+    public string Filename
     {
-        get => itemName;
+        get => filename;
         set
         {
-            itemName = value;
-            text.text = itemName;
+            filename = value;
+            gameObject.GetComponentInChildren<Text>().text=filename;
         }
     }
-
-    public Sprite fileIcon;
-
-    public Sprite directoryIcon;
-
+    
     public void SelectItem()
     {
-        switch (type)
-        {
-            case ItemType.File:
-
-                break;
-            case ItemType.Directory:
-
-                break;
-        }
+        if(Type==FileType.Directory) mainScript.ChangeDirectory(filename);
+        else mainScript.Filename=filename;
     }
+    private Image image;
+
+    public Sprite pictureIcon;
+    public Sprite modelIcon;
+    public Sprite directoryIcon;
+}
+public enum FileType
+{
+    Directory,
+    Model,
+    Picture
 }

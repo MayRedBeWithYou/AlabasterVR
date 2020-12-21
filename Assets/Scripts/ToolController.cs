@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -99,6 +99,7 @@ public class ToolController : MonoBehaviour
     {
         if (_activeMainMenu)
         {
+            FileManager.Util.CloseFileExplorer();
             CloseMainMenu();
         }
         else
@@ -108,6 +109,8 @@ public class ToolController : MonoBehaviour
             _activeMainMenu = Instantiate(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up));
             MainMenuController mainMenu = _activeMainMenu.GetComponent<MainMenuController>();
             mainMenu.ExitButton.onClick.AddListener(CloseMainMenu);
+            mainMenu.SaveButton.onClick.AddListener(ShowSaveModel);
+            mainMenu.ImportButton.onClick.AddListener(ShowLoadModel);
         }
     }
 
@@ -137,14 +140,24 @@ public class ToolController : MonoBehaviour
             _activeLeftHandMenu = Instantiate(LayerSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         }
     }
+    private void ShowSaveModel()
+    {
+        CloseMainMenu();
+        _activeMainMenu=FileManager.Util.SaveModel();
+    }
+    private void ShowLoadModel()
+    {
+        CloseMainMenu();
+        _activeMainMenu= FileManager.Util.LoadModel();
+    }
 
     private void CloseMainMenu()
     {
+        FileManager.Util.CloseFileExplorer();
         _activeMainMenu.SetActive(false);
         Destroy(_activeMainMenu);
         _activeMainMenu = null;
     }
-
     public Keyboard ShowKeyboard(string text)
     {
         if(_activeKeyboard != null)
