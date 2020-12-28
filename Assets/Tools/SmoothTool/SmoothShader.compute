@@ -78,7 +78,7 @@ RWStructuredBuffer<float> sdf2;
 void SyncFaces(uint3 id :SV_DispatchThreadID)
 {
     uint coord1 = coords(id);
-    uint coord2 = coords(uint3(id.x,id.y,resolution-1);
+    uint coord2 = coords(uint3(id.x,id.y,resolution-1));
     float avg = (sdf1[coord1] + sdf2[coord2]) * 0.5;
     sdf1[coord1] = sdf2[coord2] = avg;
 }
