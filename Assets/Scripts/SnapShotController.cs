@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
-public class SnapShotController : MonoBehaviour
+public class SnapshotController : MonoBehaviour, IDisposable
 {
 
     public GameObject ToFollow;
@@ -130,5 +131,11 @@ public class SnapShotController : MonoBehaviour
             null,
             materialBlock
             );
+    }
+
+    public void Dispose()
+    {
+        if (data != null) data.Dispose();
+        if (overlapCounter != null) overlapCounter.Dispose();
     }
 }
