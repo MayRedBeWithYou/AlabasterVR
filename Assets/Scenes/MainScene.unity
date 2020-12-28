@@ -637,7 +637,7 @@ MonoBehaviour:
     type: 3}
   ToolSelectionMenuPrefab: {fileID: 2332784744473230363, guid: 89b43f4cef579364992c41a7707a8a97,
     type: 3}
-  LayerSelectionMenuPrefab: {fileID: 633745008470641335, guid: c39e3eb38d17dcb4580c15561e8d5130,
+  TabbedPanelMenuPrefab: {fileID: 633745008470641335, guid: c39e3eb38d17dcb4580c15561e8d5130,
     type: 3}
   colorPickerPrefab: {fileID: 157272, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
   KeyboardPrefab: {fileID: 3361844223996469137, guid: 37a179890cd05954ab8efbb146cb1e22,
@@ -949,7 +949,7 @@ GameObject:
   - component: {fileID: 980544690}
   - component: {fileID: 980544691}
   m_Layer: 0
-  m_Name: ResizeController
+  m_Name: MoveController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
