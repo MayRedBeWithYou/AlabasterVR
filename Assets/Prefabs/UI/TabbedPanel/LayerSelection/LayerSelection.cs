@@ -53,11 +53,6 @@ public class LayerSelection : MonoBehaviour
         }
     }
 
-    public void AddNewLayer()
-    {
-        LayerManager.Instance.AddNewLayer();
-    }
-
     public void OnDestroy()
     {
         LayerManager.ActiveLayerChanged -= ActiveLayerChanged;

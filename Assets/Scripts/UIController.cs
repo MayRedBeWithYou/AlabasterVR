@@ -24,7 +24,7 @@ public class UIController : MonoBehaviour
 
     public GameObject MainMenuPrefab;
     public GameObject ToolSelectionMenuPrefab;
-    public GameObject LayerSelectionMenuPrefab;
+    public GameObject TabbedPanelMenuPrefab;
     public GameObject colorPickerPrefab;
     public GameObject KeyboardPrefab;
 
@@ -87,7 +87,7 @@ public class UIController : MonoBehaviour
         }
         else
         {
-            _activeLeftHandMenu = CreateUI(LayerSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+            _activeLeftHandMenu = CreateUI(TabbedPanelMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         }
     }
 
@@ -120,7 +120,7 @@ public class UIController : MonoBehaviour
     private GameObject CreateUI(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
     {
         GameObject go = Instantiate(prefab, position, rotation, parent);
-        go.GetComponent<Canvas>().worldCamera = cameraTransform.GetComponent<Camera>();
+        if (go.GetComponent<Canvas>() != null) go.GetComponent<Canvas>().worldCamera = cameraTransform.GetComponent<Camera>();
         return go;
     }
 }

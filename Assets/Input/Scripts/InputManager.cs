@@ -9,20 +9,15 @@ public class InputManager : MonoBehaviour
     public List<AxisHandler> axisHandlers = new List<AxisHandler>();
 
     public List<AxisHandler2D> axisHandler2Ds = new List<AxisHandler2D>();
-    
+
     public XRController controller;
 
     private OnHoverEventHandler onHoverHandler = null;
 
-    private XRInteractorLineVisual visual = null;
 
     private void Awake()
     {
         onHoverHandler = GetComponent<OnHoverEventHandler>();
-        visual = GetComponent<XRInteractorLineVisual>();
-
-        onHoverHandler?.OnHoverEnter.AddListener((c, ui) => visual.enabled = true);
-        onHoverHandler?.OnHoverExit.AddListener((c, ui) => visual.enabled = false);
     }
 
     private void Update()

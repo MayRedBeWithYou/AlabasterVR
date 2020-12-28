@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class ResizeController : MonoBehaviour
+public class MoveController : MonoBehaviour
 {
-    private static ResizeController _instance;
+    private static MoveController _instance;
 
-    public static ResizeController Instance => _instance;
+    public static MoveController Instance => _instance;
 
     public enum GrabState
     {
@@ -30,8 +30,6 @@ public class ResizeController : MonoBehaviour
     private Vector3 refScale;
     private float refDist;
 
-    private int handsOnUI;
-
     private Quaternion refRot;
     private Vector3 refControllers;
     private Vector3 refUp;
@@ -39,6 +37,17 @@ public class ResizeController : MonoBehaviour
     private Vector3 refCenter;
 
     private Vector3 center => (leftController.transform.position + rightController.transform.position) / 2;
+
+    [SerializeField]
+    private GameObject grabbedObject;
+
+    private Transform originalParent;
+
+    [SerializeField]
+    private IMovable movable;
+
+    [SerializeField]
+    private IResizable resizable;
 
     void Awake()
     {
@@ -52,14 +61,8 @@ public class ResizeController : MonoBehaviour
         OnHoverEventHandler leftHover = leftController.GetComponent<OnHoverEventHandler>();
         OnHoverEventHandler rightHover = rightController.GetComponent<OnHoverEventHandler>();
 
-        leftHover.OnHoverEnter.AddListener((c, ui) => { if (leftVal > 0.5f) OnGrabRelease(c); handsOnUI++; });
-        leftHover.OnHoverExit.AddListener((c, ui) => { handsOnUI--; });
-        rightHover.OnHoverEnter.AddListener((c, ui) => { if (rightVal > 0.5f) OnGrabRelease(c); handsOnUI++; });
-        rightHover.OnHoverExit.AddListener((c, ui) => { handsOnUI--; });
-
         LeftGripHandler.OnValueChange += (controller, value) =>
         {
-            if (handsOnUI > 0) return;
             if (value != leftVal)
             {
                 if (value > 0.5f != leftVal > 0.5f)
@@ -73,7 +76,6 @@ public class ResizeController : MonoBehaviour
 
         RightGripHandler.OnValueChange += (controller, value) =>
         {
-            if (handsOnUI > 0) return;
             if (value != rightVal)
             {
                 if (value > 0.5f != rightVal > 0.5f)
@@ -88,40 +90,57 @@ public class ResizeController : MonoBehaviour
 
     void Update()
     {
-        if (grab == GrabState.Both && handsOnUI == 0)
+        if (grab == GrabState.Both)
         {
-            Layer layer = LayerManager.Instance.ActiveLayer;
             float scale = Vector3.Distance(leftController.transform.position, rightController.transform.position) / refDist;
+            if (resizable != null)
+            {
+                resizable.SetScale(refScale * scale);
+            }
 
-            layer.transform.localScale = refScale * scale;
-            Vector3 displacement = (rightController.transform.position - leftController.transform.position).normalized;
-            Vector3 controllersUp = (leftController.transform.up + rightController.transform.up).normalized;
+            if (movable != null)
+            {
+                Vector3 displacement = (rightController.transform.position - leftController.transform.position).normalized;
+                Vector3 controllersUp = (leftController.transform.up + rightController.transform.up).normalized;
 
-            Quaternion quat = Quaternion.FromToRotation(refControllers, displacement) * Quaternion.FromToRotation(refUp, controllersUp);
+                Quaternion quat = Quaternion.FromToRotation(refControllers, displacement) * Quaternion.FromToRotation(refUp, controllersUp);
 
-            layer.transform.position = quat * (refPos - refCenter) * scale + center;
-            layer.transform.rotation = quat * refRot;
+                movable.SetPosition(quat * (refPos - refCenter) * scale + center);
+                movable.SetRotation(quat * refRot);
+            }
         }
     }
 
 
     private void OnGrabHold(XRController controller)
     {
-        Layer layer = LayerManager.Instance.ActiveLayer;
         switch (grab)
         {
             case GrabState.None:
                 grab = GrabState.One;
-                layer.transform.parent = controller.transform;
+                var hover = controller.GetComponent<OnHoverEventHandler>();
+                if (hover.Current != null) grabbedObject = hover.Current;
+                else grabbedObject = LayerManager.Instance.ActiveLayer.gameObject;
+
+                originalParent = grabbedObject.transform.parent;
+
+                movable = grabbedObject.GetComponent<IMovable>();
+                resizable = grabbedObject.GetComponent<IResizable>();
+
+                if (movable != null) grabbedObject.transform.parent = controller.transform;
                 break;
             case GrabState.One:
                 grab = GrabState.Both;
-                layer.transform.parent = LayerManager.Instance.LayersHolder.transform;
+
+                var pos = grabbedObject.transform.position;
+                grabbedObject.transform.parent = originalParent;
+                grabbedObject.transform.position = pos;
+
                 refDist = Vector3.Distance(leftController.transform.position, rightController.transform.position);
-                refPos = layer.transform.position;
+                refPos = grabbedObject.transform.position;
                 refCenter = center;
-                refScale = layer.transform.localScale;
-                refRot = layer.transform.rotation;
+                refScale = grabbedObject.transform.localScale;
+                refRot = grabbedObject.transform.rotation;
                 refControllers = (rightController.transform.position - leftController.transform.position).normalized;
                 refUp = (leftController.transform.up + rightController.transform.up).normalized;
                 ToolController.Instance.ToggleSelectedTool(false);
@@ -137,13 +156,20 @@ public class ResizeController : MonoBehaviour
         {
             case GrabState.One:
                 grab = GrabState.None;
-                if (controller.transform == LayerManager.Instance.ActiveLayer.transform.parent)
-                    LayerManager.Instance.ActiveLayer.transform.parent = LayerManager.Instance.LayersHolder.transform;
+                if (controller.transform == grabbedObject.transform.parent)
+                {
+                    var pos = grabbedObject.transform.position;
+                    grabbedObject.transform.parent = originalParent;
+                    grabbedObject.transform.position = pos;
+                }
+                grabbedObject = null;
+                originalParent = null;
+                movable = null;
+                resizable = null;
                 break;
             case GrabState.Both:
                 grab = GrabState.One;
-                LayerManager.Instance.ActiveLayer.transform.parent = controller == leftController ? rightController.transform : leftController.transform;
-
+                grabbedObject.transform.parent = controller == leftController ? rightController.transform : leftController.transform;
                 ToolController.Instance.ToggleSelectedTool(true);
                 break;
             default:
