@@ -6,7 +6,7 @@ using System;
 
 public class SnapshotController : MonoBehaviour, IDisposable
 {
-
+    public ComputeBuffer Snapshot { get => data; }
     public GameObject ToFollow;
     public ComputeShader SnapshotShader;
     int resolution;
@@ -56,7 +56,7 @@ public class SnapshotController : MonoBehaviour, IDisposable
         Draww();
     }
 
-    void TakeSnapshot()
+    public void TakeSnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
             transform.position + Vector3.one*size*0.5f,
@@ -90,7 +90,7 @@ public class SnapshotController : MonoBehaviour, IDisposable
         SnapshotShader.Dispatch(normalize, volume/512, 1, 1);
     }
 
-    void ApplySnapshot()
+    public void ApplySnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
             transform.position + Vector3.one * size * 0.5f,
