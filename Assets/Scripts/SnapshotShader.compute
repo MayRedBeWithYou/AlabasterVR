@@ -1,6 +1,7 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel TakeSnapshot
 #pragma kernel ApplySnapshot
+#pragma kernel ApplySnapshotLimit
 #pragma kernel Normalize
 #pragma kernel ClearData
 
@@ -57,5 +58,8 @@ void ClearData(uint3 id : SV_DispatchThreadID)
 [numthreads(512,1,1)]
 void Normalize(uint3 id : SV_DispatchThreadID)
 {
-    snapshot[id.x] = snapshot[id.x] / overlaps[id.x];
+    if (overlaps[id.x] != 0)
+    {
+        snapshot[id.x] = snapshot[id.x] / overlaps[id.x];
+    }
 }

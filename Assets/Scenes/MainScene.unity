@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.24528301, g: 0.24528301, b: 0.24528301, a: 1}
+  m_AmbientSkyColor: {r: 0.2264151, g: 0.2264151, b: 0.2264151, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -216,6 +216,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ToFollow: {fileID: 240967875}
   SnapshotShader: {fileID: 7200000, guid: cf1623b0593f1e447b6263820a47e926, type: 3}
+  resolution: 0
+  volume: 0
+  size: 0
+  spacing: 0
   pointMaterial: {fileID: 2100000, guid: bf6703b04bad5bb47a4d824edfe7da62, type: 2}
 --- !u!4 &89813819
 Transform:
@@ -917,7 +921,7 @@ MonoBehaviour:
     type: 3}
   _size: 3
   _resolution: 8
-  _chunkResolution: 16
+  _chunkResolution: 32
   VoxelSpacing: 0
   _drawBoundingBox: 1
   _drawGrid: 1

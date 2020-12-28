@@ -9,10 +9,10 @@ public class SnapshotController : MonoBehaviour, IDisposable
     public ComputeBuffer Snapshot { get => data; }
     public GameObject ToFollow;
     public ComputeShader SnapshotShader;
-    int resolution;
-    int volume;
-    float size;
-    float spacing;
+    public int resolution;
+    public int volume;
+    public float size;
+    public float spacing;
     ComputeBuffer data;
     ComputeBuffer overlapCounter;
     public Material pointMaterial;
@@ -24,12 +24,17 @@ public class SnapshotController : MonoBehaviour, IDisposable
         transform.position = (Vector3)gridPos * spacing;
     }
 
+    public void SetCenter(Vector3 pos)
+    {
+        gridPos = LayerManager.Instance.SnapToGridPosition(pos);
+        transform.position = (Vector3)gridPos * spacing - Vector3.one * size * 0.5f - Vector3.one * spacing * 0.5f;
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position + Vector3.one * size * 0.5f, Vector3.one * size);
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         var manager = LayerManager.Instance;
@@ -41,11 +46,10 @@ public class SnapshotController : MonoBehaviour, IDisposable
         data = new ComputeBuffer(volume, sizeof(float));
     }
 
-    // Update is called once per frame
     void Update()
     {
-        SetPosition(ToFollow.transform.position - Vector3.one * size * 0.5f);
-        if(Input.GetKeyDown(KeyCode.Alpha0))
+        //SetPosition(ToFollow.transform.position - Vector3.one * size * 0.5f);
+        if (Input.GetKeyDown(KeyCode.Alpha0))
         {
             TakeSnapshot();
         }
@@ -53,7 +57,7 @@ public class SnapshotController : MonoBehaviour, IDisposable
         {
             ApplySnapshot();
         }
-        Draww();
+        //DisplayVoxels();
     }
 
     public void TakeSnapshot()
@@ -114,8 +118,7 @@ public class SnapshotController : MonoBehaviour, IDisposable
         }
     }
 
-
-    private void Draww()
+    private void DisplayVoxels()
     {
         MaterialPropertyBlock materialBlock = new MaterialPropertyBlock();
         materialBlock.SetBuffer("data", data);
