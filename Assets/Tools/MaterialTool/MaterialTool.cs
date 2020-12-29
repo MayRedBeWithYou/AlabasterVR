@@ -98,8 +98,7 @@ public class MaterialTool : Tool
             sphereShaderKernel = shader.FindKernel("CSMain");
             shader.SetFloat("radius", cursor.radius);
             shader.SetFloat("chunkSize", chunk.size);
-            shader.SetVector("position", cursor.transform.position);
-            shader.SetMatrix("modelMatrix", chunk.transform.localToWorldMatrix);
+            shader.SetVector("position", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
             shader.SetInt("resolution", chunk.resolution);
             shader.SetBuffer(sphereShaderKernel, "sdf", chunk.voxels.VoxelBuffer);
             shader.Dispatch(sphereShaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);

@@ -601,6 +601,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 64e2dd6667fd2bc4da492ae761772ac1, type: 2}
   axisHandler2Ds:
   - {fileID: 11400000, guid: 8a2d4ffca8480fb48b6ef34f6b00aaa8, type: 2}
+  controller: {fileID: 240967880}
 --- !u!114 &240967882
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -930,7 +931,7 @@ MonoBehaviour:
   _size: 2
   _resolution: 8
   _chunkResolution: 16
-  _drawBoundingBox: 0
+  _drawBoundingBox: 1
   _drawGrid: 1
   _drawOnlyActive: 1
   _activeLayer: {fileID: 0}
@@ -1426,6 +1427,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1400201113}
+  - component: {fileID: 1400201118}
   - component: {fileID: 1400201112}
   - component: {fileID: 1400201114}
   - component: {fileID: 1400201115}
@@ -1451,15 +1453,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buttonHandlers:
-  - {fileID: 11400000, guid: 9ab5832b6ec8ebb48972921bd63bf49d, type: 2}
   - {fileID: 11400000, guid: 30c8161f0f40f9f4a86f6d23ba6be90c, type: 2}
   axisHandlers:
-  - {fileID: 11400000, guid: e926955d538916f42a9d3739f56026df, type: 2}
   - {fileID: 11400000, guid: 88576bbdb0797144a93977e5fee44e23, type: 2}
-  - {fileID: 11400000, guid: ea99c5650ad7a3c4e81823123e695440, type: 2}
-  - {fileID: 11400000, guid: 4c4d74001a887ea46bb55f1d679154ed, type: 2}
+  - {fileID: 11400000, guid: e926955d538916f42a9d3739f56026df, type: 2}
   axisHandler2Ds:
   - {fileID: 11400000, guid: c759e748325133f4aa3e851dfa80920f, type: 2}
+  controller: {fileID: 240967880}
 --- !u!4 &1400201113
 Transform:
   m_ObjectHideFlags: 0
@@ -1612,6 +1612,25 @@ MonoBehaviour:
     m_RotationOrder: 4
   rotationLerpTime: 0.01
   invertY: 0
+--- !u!114 &1400201118
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1400201111}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe4ed948e727d574ea96fab6cffe83ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttonHandlers:
+  - {fileID: 11400000, guid: 9ab5832b6ec8ebb48972921bd63bf49d, type: 2}
+  axisHandlers:
+  - {fileID: 11400000, guid: 4c4d74001a887ea46bb55f1d679154ed, type: 2}
+  - {fileID: 11400000, guid: ea99c5650ad7a3c4e81823123e695440, type: 2}
+  axisHandler2Ds: []
+  controller: {fileID: 1669763583}
 --- !u!1 &1669763578
 GameObject:
   m_ObjectHideFlags: 0
@@ -1981,6 +2000,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 7ea3eaea2db94a24086f1d0ab13c638e, type: 2}
   axisHandler2Ds:
   - {fileID: 11400000, guid: c4a58d3688e95b14dafc30b13fc431ee, type: 2}
+  controller: {fileID: 1669763583}
 --- !u!114 &1669763585
 MonoBehaviour:
   m_ObjectHideFlags: 0

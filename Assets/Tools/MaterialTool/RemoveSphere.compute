@@ -1,14 +1,11 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-// Create a RenderTexture with enableRandomWrite flag and set it
-// with cs.SetTexture
 RWStructuredBuffer<float> sdf;
 float radius;
 float chunkSize;
 float3 position;
 uint resolution;
-float4x4 modelMatrix;
 
 uint coords(uint3 id)
 {
@@ -28,11 +25,9 @@ void CSMain (uint3 id : SV_DispatchThreadID)
 {
     uint arrCoords = coords(id);
     float sdfVal = sdf[arrCoords];
-    float3 pos = mul(modelMatrix, float4(realPos(id), 1)).xyz;
-    float3 displacement = pos - position;
+    float3 displacement = realPos(id) - position;
     float val = dot(displacement, displacement) - (radius * radius);
 
     val= clamp(val, -1, 1);
     sdf[arrCoords] = max(-val, sdfVal);
-
 }
