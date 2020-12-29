@@ -216,6 +216,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FileExplorerPrefab: {fileID: 3155886506763974669, guid: 7e7fee2f67645964aa6579acc29613ef,
     type: 3}
+  MessageBoxPrefab: {fileID: 1805241821112254338, guid: 8acd3a9ec0bfd83478e9124fc73f4144,
+    type: 3}
 --- !u!4 &122135607
 Transform:
   m_ObjectHideFlags: 0

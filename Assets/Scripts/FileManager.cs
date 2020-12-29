@@ -9,6 +9,8 @@ public class FileManager : MonoBehaviour
 
     public GameObject FileExplorerPrefab;
     private GameObject _fileExplorer;
+    public GameObject MessageBoxPrefab;
+    private GameObject _messageBox;
     private float dist;
     private string path;
     void Awake()
@@ -40,19 +42,25 @@ public class FileManager : MonoBehaviour
             script.OnAccepted+=(text)=>
             {
                 if(System.String.IsNullOrWhiteSpace(text)) return;
-                path=text+".obj";
+                path=text;
                 script.Close();
+                if(!System.String.IsNullOrWhiteSpace(path))
+                {
+                    TranslateModelToObj(path);
+                }
             };
             
-            if(!System.String.IsNullOrWhiteSpace(path))
-            {
-                TranslateModelToObj(path);
-                //Debug.Log(path);
-            }
         }
         return _fileExplorer;
     }
-
+    public void ShowMessageBox(string message)
+    {
+        Vector3 lookDirection = Camera.main.transform.forward;
+        lookDirection.y = 0;
+        Vector3 prefabPosition=Camera.main.transform.position + lookDirection.normalized * (dist+0.1f);
+        GameObject go=Instantiate(MessageBoxPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
+        go.GetComponent<MessageBox>().Init(message);
+    }
     public GameObject LoadModel()
     {
         path="";
@@ -72,8 +80,7 @@ public class FileManager : MonoBehaviour
                 path=text;
                 script.Close();
             };
-            //todo:meshtosdf+fix filename error
-            //Debug.Log(path);
+            //todo:meshtosdf
         }
         return _fileExplorer;
     }
@@ -123,6 +130,20 @@ public class FileManager : MonoBehaviour
     }
     private void TranslateModelToObj(string path)
     {
+        string tempName=path;
+        int counter=1;
+        bool nameChanged=false;
+        if(File.Exists(tempName+".obj"))
+        {
+            while(File.Exists(tempName+counter.ToString()+".obj")) counter++;
+            nameChanged=true;
+            tempName=tempName+counter.ToString();
+        }
+        tempName+=".obj";
+        //todo: saving model
+
+        if(!nameChanged) ShowMessageBox("Model zapisano jako "+ Path.GetFileName(tempName));
+        else ShowMessageBox("Model o nazwie "+Path.GetFileName(path)+".obj"+ " już istniał.\n Model zapisano jako "+Path.GetFileName(tempName));
         
     }
 }

@@ -40,6 +40,8 @@ public class FileExplorer : MonoBehaviour
     [SerializeField]
     private DirectoryButtonManager currentButtonScript;
     private List<Transform> items;
+
+    private string resultPath { get{return currentDirectory.FullName+'/'+Filename;} }
     public string Filename
     {
         get 
@@ -66,7 +68,7 @@ public class FileExplorer : MonoBehaviour
         }
     }
 
-    public delegate void SelectPathCallback(string path);
+    public delegate void SelectPathCallback(string SelectedPath);
     public event SelectPathCallback OnAccepted;
 
     public delegate void CancelCallback();
@@ -79,7 +81,7 @@ public class FileExplorer : MonoBehaviour
     {
         currentDirectory=new DirectoryInfo(Directory.GetCurrentDirectory());
         items=new List<Transform>();
-        acceptButton.onClick.AddListener(() => OnAccepted?.Invoke(currentDirectory.FullName+'/'+Filename));
+        acceptButton.onClick.AddListener(() => OnAccepted?.Invoke(resultPath));
         cancelButton.onClick.AddListener(() => OnCancelled?.Invoke());
     }
     void Start()

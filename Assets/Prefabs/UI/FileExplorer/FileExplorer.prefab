@@ -1022,8 +1022,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6723308405485117451}
   m_HandleRect: {fileID: 1768779644431606005}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99992675
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1429,7 +1429,7 @@ GameObject:
   - component: {fileID: 1135507101247063812}
   m_Layer: 5
   m_Name: FileExplorer
-  m_TagString: Untagged
+  m_TagString: DragUI
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1574,7 +1574,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.0023442963, y: 0.0053710938}
+  m_AnchoredPosition: {x: 0.011052921, y: -0.008056641}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2336410699795782425
@@ -1735,7 +1735,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 7113758875519632848}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.99999994
+  m_Size: 0.99995553
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
