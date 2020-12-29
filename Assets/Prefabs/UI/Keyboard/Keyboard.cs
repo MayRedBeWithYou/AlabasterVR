@@ -145,7 +145,7 @@ public class Keyboard : MonoBehaviour
 
     public static Keyboard Show(string text = "")
     {
-        return ToolController.Instance.ShowKeyboard(text);
+        return UIController.Instance.ShowKeyboard(text);
     }
 }
 
