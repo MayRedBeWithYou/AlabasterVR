@@ -88,22 +88,16 @@ public class FileExplorer : MonoBehaviour
     {
         Filename="";
     }
+    public void SetExtensionsArray(string[] arr)
+    {
+        fileExtensions=arr;
+    }
     public void Close()
     {
         ClearItems();
         OnClosing?.Invoke();
         gameObject.SetActive(false);
         Destroy(gameObject);
-    }
-    private void ClearItems()
-    {
-        while (items.Count > 0)
-        {
-            var go=items[items.Count-1];
-            items.RemoveAt(items.Count-1);
-            go.gameObject.SetActive(false);
-            Destroy(go.gameObject);
-        }
     }
     public void UpdateDirectory()
     {
@@ -128,10 +122,27 @@ public class FileExplorer : MonoBehaviour
             AddExplorerItem(Path.GetFileName(f), FileType.Directory);
         }
         UpdateParentButtons();
+        if(!acceptButton.enabled)
+        {
+            acceptButton.enabled=true;
+            acceptButton.GetComponent<Image>().color=new Color(0.2980392f,0.6862745f,0.3137255f,1);
+        }
+        
     }
-    public void SetExtensionsArray(string[] arr)
+    public void UpdateDirectoryRoot()
     {
-        fileExtensions=arr;
+        ClearItems();
+        DriveInfo[] drives = DriveInfo.GetDrives();
+        foreach(var f in drives)
+        {
+            if(f.DriveType==DriveType.Fixed || f.DriveType==DriveType.Network || f.DriveType==DriveType.Removable) AddExplorerItem(f.Name, FileType.Directory);
+        }
+        grandparentButtonScript.Deactivate();
+        parentButtonScript.Deactivate();
+        currentButtonScript.Deactivate();
+
+        acceptButton.enabled=false;
+        acceptButton.GetComponent<Image>().color=new Color(0.5f,0.5f,0.5f,1);
     }
 
     private void AddExplorerItem(string filename, FileType type)
@@ -150,8 +161,8 @@ public class FileExplorer : MonoBehaviour
         
         if(parent==null)
         {
-            grandparentButtonScript.Activate(currentDirectory,false);
-            parentButtonScript.Deactivate();
+            grandparentButtonScript.Activate(null,false);
+            parentButtonScript.Activate(currentDirectory,false);
             currentButtonScript.Deactivate();
         }
         else
@@ -160,9 +171,9 @@ public class FileExplorer : MonoBehaviour
 
             if(grandparent==null)
             {
-                grandparentButtonScript.Activate(parent, false);
-                parentButtonScript.Activate(currentDirectory,true);
-                currentButtonScript.Deactivate();
+                grandparentButtonScript.Activate(null,false);
+                parentButtonScript.Activate(parent, false);
+                currentButtonScript.Activate(currentDirectory,true);
             }
             else
             {
@@ -174,14 +185,42 @@ public class FileExplorer : MonoBehaviour
     }
     public void ChangeDirectory(string name)
     {
-        currentDirectory=new DirectoryInfo(currentDirectory.FullName+'/'+name);
-        UpdateDirectory();
+        if(currentDirectory!=null)
+        {
+            currentDirectory=new DirectoryInfo(currentDirectory.FullName+'/'+name);
+            UpdateDirectory();
+        }
+        else
+        {
+            currentDirectory=new DirectoryInfo(name);
+            UpdateDirectory();
+        }
     }
     public void ChangeDirectory(DirectoryInfo directoryInfo)
     {
-        currentDirectory=directoryInfo;
-        UpdateDirectory();
+        if(directoryInfo!=null)
+        {
+            currentDirectory=directoryInfo;
+            UpdateDirectory();
+        }
+        else
+        {
+            currentDirectory=null;
+            UpdateDirectoryRoot();
+        }
     }
+
+    private void ClearItems()
+    {
+        while (items.Count > 0)
+        {
+            var go=items[items.Count-1];
+            items.RemoveAt(items.Count-1);
+            go.gameObject.SetActive(false);
+            Destroy(go.gameObject);
+        }
+    }
+
     public void ShowKeyboard()
     {
         if(mode==FileExplorerMode.Save)

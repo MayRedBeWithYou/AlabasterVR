@@ -21,8 +21,12 @@ public class DirectoryButtonManager : MonoBehaviour
     public void Activate(DirectoryInfo directoryInfo, bool prefix)
     {
         button.enabled=true;
-        if(prefix) buttonText.text='>'+directoryInfo.Name;
-        else buttonText.text=directoryInfo.Name; 
+        if(directoryInfo!=null)
+        {
+            if(prefix) buttonText.text='>'+directoryInfo.Name;
+            else buttonText.text=directoryInfo.Name; 
+        }
+        else buttonText.text="\\";
         dirInfo=directoryInfo;
     }
     public void OnClick()
