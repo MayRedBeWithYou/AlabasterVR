@@ -151,7 +151,7 @@ public class UIController : MonoBehaviour
     {
         Vector3 lookDirection = Camera.main.transform.forward;
         lookDirection.y = 0;
-        Vector3 prefabPosition=Camera.main.transform.position + lookDirection.normalized * (uiDistance);
+        Vector3 prefabPosition=Camera.main.transform.position + lookDirection.normalized * (uiDistance+0.1f);
         var fileExplorer=CreateUI(FileExplorerPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
         var script=fileExplorer.GetComponent<FileExplorer>();
         script.OnCancelled+=()=>script.Close();

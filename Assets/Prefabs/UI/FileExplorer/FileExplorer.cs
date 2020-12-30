@@ -226,7 +226,11 @@ public class FileExplorer : MonoBehaviour
             {
                 for(int i=0;i<forbidden.Length;i++)
                 {
-                    if(text.Contains(forbidden[i]))return;
+                    if(text.Contains(forbidden[i]))
+                    {
+                        UIController.Instance.ShowMessageBox("Użyto niedozwolonego znaku:\n"+forbidden[i]);
+                        return;
+                    }
                 }
                 Filename=text;
                 keyboard.Close();
