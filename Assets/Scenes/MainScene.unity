@@ -214,10 +214,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8ba52cba0326854e8202144c8297b09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FileExplorerPrefab: {fileID: 3155886506763974669, guid: 7e7fee2f67645964aa6579acc29613ef,
-    type: 3}
-  MessageBoxPrefab: {fileID: 1805241821112254338, guid: 8acd3a9ec0bfd83478e9124fc73f4144,
-    type: 3}
 --- !u!4 &122135607
 Transform:
   m_ObjectHideFlags: 0
@@ -699,6 +695,10 @@ MonoBehaviour:
   ToolSelectionMenuPrefab: {fileID: 2332784744473230363, guid: 89b43f4cef579364992c41a7707a8a97,
     type: 3}
   LayerSelectionMenuPrefab: {fileID: 633745008470641335, guid: 7866a6f16b75fac418c12afdd6d47a0c,
+    type: 3}
+  FileExplorerPrefab: {fileID: 3155886506763974669, guid: 7e7fee2f67645964aa6579acc29613ef,
+    type: 3}
+  MessageBoxPrefab: {fileID: 1805241821112254338, guid: 8acd3a9ec0bfd83478e9124fc73f4144,
     type: 3}
   colorPickerPrefab: {fileID: 157272, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
   KeyboardPrefab: {fileID: 3361844223996469137, guid: 37a179890cd05954ab8efbb146cb1e22,
@@ -1200,7 +1200,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1298109535
 GameObject:

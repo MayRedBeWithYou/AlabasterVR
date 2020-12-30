@@ -74,9 +74,6 @@ public class FileExplorer : MonoBehaviour
     public delegate void CancelCallback();
     public event CancelCallback OnCancelled;
 
-    public delegate void CloseCallback();
-    public event CloseCallback OnClosing;
-
     void Awake()
     {
         currentDirectory=new DirectoryInfo(Directory.GetCurrentDirectory());
@@ -95,7 +92,6 @@ public class FileExplorer : MonoBehaviour
     public void Close()
     {
         ClearItems();
-        OnClosing?.Invoke();
         gameObject.SetActive(false);
         Destroy(gameObject);
     }

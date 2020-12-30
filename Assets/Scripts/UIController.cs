@@ -25,11 +25,14 @@ public class UIController : MonoBehaviour
     public GameObject MainMenuPrefab;
     public GameObject ToolSelectionMenuPrefab;
     public GameObject LayerSelectionMenuPrefab;
+    public GameObject FileExplorerPrefab;
+    public GameObject MessageBoxPrefab;
     public GameObject colorPickerPrefab;
     public GameObject KeyboardPrefab;
 
     private Keyboard _activeKeyboard = null;
     private MainMenu _activeMainMenu = null;
+    private FileExplorer _activeFileExplorer=null;
     private GameObject _activeLeftHandMenu = null;
 
     public void Awake()
@@ -47,8 +50,6 @@ public class UIController : MonoBehaviour
         LayerSelectionMenuButtonHandler.OnButtonDown += ShowLayerSelectionMenu;
     }
 
-
-
     private void ShowMainMenu(XRController controller)
     {
         if (_activeMainMenu)
@@ -60,6 +61,8 @@ public class UIController : MonoBehaviour
             Vector3 lookDirection = cameraTransform.forward;
             lookDirection.y = 0;
             _activeMainMenu = CreateUI(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<MainMenu>();
+            _activeMainMenu.SaveButton.onClick.AddListener(ShowSaveModel);
+            _activeMainMenu.ImportButton.onClick.AddListener(ShowLoadModel);
         }
     }
 
@@ -116,11 +119,42 @@ public class UIController : MonoBehaviour
         colorPicker.CurrentColor = color;
         return colorPicker;
     }
+    public void ShowMessageBox(string message)
+    {
+        Vector3 lookDirection = Camera.main.transform.forward;
+        lookDirection.y = 0;
+        Vector3 prefabPosition=Camera.main.transform.position + lookDirection.normalized * (uiDistance);
+        GameObject go=CreateUI(MessageBoxPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
+        go.GetComponent<MessageBox>().Init(message);
+    }
+    private void ShowSaveModel()
+    {
+        if(_activeMainMenu!=null)_activeMainMenu.Close();
+        if(_activeFileExplorer!=null)_activeFileExplorer.Close();
+        _activeFileExplorer=FileManager.Instance.SaveModel(PrepreparedFileExplorer());
+    }
+
+    private void ShowLoadModel()
+    {
+        if(_activeMainMenu!=null)_activeMainMenu.Close();
+        if(_activeFileExplorer!=null)_activeFileExplorer.Close();
+        _activeFileExplorer= FileManager.Instance.LoadModel(PrepreparedFileExplorer());
+    }
 
     private GameObject CreateUI(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
     {
         GameObject go = Instantiate(prefab, position, rotation, parent);
         go.GetComponent<Canvas>().worldCamera = cameraTransform.GetComponent<Camera>();
         return go;
+    }
+    private FileExplorer PrepreparedFileExplorer()
+    {
+        Vector3 lookDirection = Camera.main.transform.forward;
+        lookDirection.y = 0;
+        Vector3 prefabPosition=Camera.main.transform.position + lookDirection.normalized * (uiDistance);
+        var fileExplorer=CreateUI(FileExplorerPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
+        var script=fileExplorer.GetComponent<FileExplorer>();
+        script.OnCancelled+=()=>script.Close();
+        return script;
     }
 }
