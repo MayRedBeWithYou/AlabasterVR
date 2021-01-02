@@ -162,6 +162,21 @@ public class LayerManager : MonoBehaviour
 
     public Vector3Int SnapToGridPosition(Vector3 pos)
     {
-        return Vector3Int.RoundToInt(pos / VoxelSpacing);
+        var layerPos = ActiveLayer.transform.position;
+        //layerPos.x = layerPos.x % VoxelSpacing;
+        //layerPos.y = layerPos.y % VoxelSpacing;
+        //layerPos.z = layerPos.z % VoxelSpacing;
+
+        return Vector3Int.RoundToInt((pos + layerPos) / VoxelSpacing);
+    }
+
+    public Vector3 SnapToGridPositionReal(Vector3 pos)
+    {
+        var layerPos = ActiveLayer.transform.position;
+        layerPos.x = layerPos.x % VoxelSpacing;
+        layerPos.y = layerPos.y % VoxelSpacing;
+        layerPos.z = layerPos.z % VoxelSpacing;
+
+        return (Vector3)(Vector3Int.RoundToInt(pos / VoxelSpacing)) * VoxelSpacing + layerPos ;
     }
 }

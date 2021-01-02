@@ -20,8 +20,15 @@ public class SnapshotController : MonoBehaviour, IDisposable
 
     public void SetPosition(Vector3 pos)
     {
+        transform.rotation = LayerManager.Instance.ActiveLayer.transform.rotation; 
         gridPos = LayerManager.Instance.SnapToGridPosition(pos);
         transform.position = (Vector3)gridPos * spacing;
+    }
+
+    public void SetPositionReal(Vector3 pos)
+    {
+        transform.rotation = LayerManager.Instance.ActiveLayer.transform.rotation;
+        transform.position = LayerManager.Instance.SnapToGridPositionReal(pos);
     }
 
     public void SetCenter(Vector3 pos)
@@ -30,10 +37,10 @@ public class SnapshotController : MonoBehaviour, IDisposable
         transform.position = (Vector3)gridPos * spacing - Vector3.one * size * 0.5f - Vector3.one * spacing * 0.5f;
     }
 
-    private void OnDrawGizmos()
-    {
-        Gizmos.DrawWireCube(transform.position + Vector3.one * size * 0.5f, Vector3.one * size);
-    }
+    //private void OnDrawGizmos()
+    //{
+    //    Gizmos.DrawWireCube(transform.position + Vector3.one * size * 0.5f, Vector3.one * size);
+    //}
 
     void Start()
     {
@@ -44,17 +51,25 @@ public class SnapshotController : MonoBehaviour, IDisposable
         volume = resolution * resolution * resolution;
         overlapCounter = new ComputeBuffer(volume, sizeof(uint));
         data = new ComputeBuffer(volume, sizeof(float));
+        transform.GetChild(0).transform.localScale = Vector3.one * size;
+        //transform.GetChild(0).transform.localPosition = Vector3.one * size * 0.5f;
     }
 
     void Update()
     {
-        //SetPosition(ToFollow.transform.position - Vector3.one * size * 0.5f);
+        if(Input.GetKeyDown(KeyCode.Alpha8))
+        {
+            SetPositionReal(ToFollow.transform.position);// - Vector3.one * size * 0.5f);
+            //Debug.Log("Snapshot repositioned");
+        }
         if (Input.GetKeyDown(KeyCode.Alpha0))
         {
+            Debug.Log("Snapshot taken");
             TakeSnapshot();
         }
         if (Input.GetKeyDown(KeyCode.Alpha9))
         {
+            Debug.Log("Snapshot applied");
             ApplySnapshot();
         }
         //DisplayVoxels();
@@ -63,9 +78,9 @@ public class SnapshotController : MonoBehaviour, IDisposable
     public void TakeSnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
-            transform.position + Vector3.one*size*0.5f,
+            transform.position,
             Vector3.one * size * 0.5f,
-            Quaternion.identity,
+            LayerManager.Instance.ActiveLayer.transform.rotation,
             1 << 9);
         var kernel = SnapshotShader.FindKernel("TakeSnapshot");
         var normalize = SnapshotShader.FindKernel("Normalize");
@@ -84,8 +99,11 @@ public class SnapshotController : MonoBehaviour, IDisposable
         foreach (Collider collider in overlappedColliders)
         {
             Chunk chunk = collider.GetComponent<Chunk>();
-
-            Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
+            //Vector3 foo = LayerManager.Instance.ActiveLayer.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
+            Vector3 foo = transform.position;
+            Vector3 snapLocalPos = chunk.transform.InverseTransformPoint(foo);
+            snapLocalPos -= size * Vector3.one * 0.5f;
+            //Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(foo);
             SnapshotShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
             SnapshotShader.SetVector("gridDisplacement", snapLocalPos / spacing);
             SnapshotShader.SetInt("resolution", resolution);
@@ -97,7 +115,7 @@ public class SnapshotController : MonoBehaviour, IDisposable
     public void ApplySnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
-            transform.position + Vector3.one * size * 0.5f,
+            transform.position,
             Vector3.one * size * 0.5f,
             LayerManager.Instance.ActiveLayer.transform.rotation,
             1 << 9);
@@ -108,13 +126,17 @@ public class SnapshotController : MonoBehaviour, IDisposable
         {
             Chunk chunk = collider.GetComponent<Chunk>();
 
-            Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
+            //Vector3 foo = LayerManager.Instance.ActiveLayer.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
+            Vector3 foo = transform.position;
+            Vector3 snapLocalPos = chunk.transform.InverseTransformPoint(foo);
+            snapLocalPos -= size * Vector3.one * 0.5f;
+
+            //Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(foo);
             SnapshotShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
             SnapshotShader.SetVector("gridDisplacement", snapLocalPos / spacing);
             SnapshotShader.SetInt("resolution", resolution);
             SnapshotShader.Dispatch(kernel, resolution / 8, resolution / 8, resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
-
         }
     }
 

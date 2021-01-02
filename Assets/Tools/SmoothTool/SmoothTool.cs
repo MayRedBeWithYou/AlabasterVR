@@ -69,14 +69,18 @@ public class SmoothTool : Tool
 
     private void Smooth()
     {
-        snapshot.SetCenter(cursor.transform.position);
+        snapshot.SetPositionReal(cursor.transform.position);
+
+        //snapshot.SetCenter(cursor.transform.position);
         snapshot.TakeSnapshot();
 
         workBuffer.SetCounterValue(0);
         var kernel = SmoothShader.FindKernel("PopulateWorkBuffer");
         SmoothShader.SetFloat("toolRadius", cursor.radius);
         SmoothShader.SetFloat("chunkSize", snapshot.size);
-        SmoothShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
+        SmoothShader.SetVector("toolCenter", snapshot.transform.InverseTransformPoint(cursor.transform.position) + Vector3.one * snapshot.size * 0.5f);
+
+        //SmoothShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
         SmoothShader.SetInt("resolution", snapshot.resolution);
         SmoothShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);
         SmoothShader.SetBuffer(kernel, "appendWorkBuffer", workBuffer);
