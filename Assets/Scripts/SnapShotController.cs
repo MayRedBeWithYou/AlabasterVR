@@ -29,6 +29,7 @@ public class SnapshotController : MonoBehaviour, IDisposable
     {
         transform.rotation = LayerManager.Instance.ActiveLayer.transform.rotation;
         transform.position = LayerManager.Instance.SnapToGridPositionReal(pos);
+        transform.localScale = LayerManager.Instance.ActiveLayer.transform.localScale;
     }
 
     public void SetCenter(Vector3 pos)
