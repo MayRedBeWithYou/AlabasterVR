@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TabGroup : MonoBehaviour
+public class TabbedPanel : MonoBehaviour
 {
     public List<TabButton> tabButtons;
     public Color hoveredColor;

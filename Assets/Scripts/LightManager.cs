@@ -39,7 +39,7 @@ public class LightManager : MonoBehaviour
         lights = new List<SceneLight>();
 
         SceneLight light = Instantiate(LightPrefab, LightHolder.transform).GetComponent<SceneLight>();
-        light.name = $"Light {lightCount++}";
+        light.name = $"Main light";
 
         light.transform.position = new Vector3(0, 3, 0);
         light.transform.rotation = Quaternion.Euler(50, -30, 0);

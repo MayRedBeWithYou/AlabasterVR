@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandler, IPointerExitHandler
 {
-    public TabGroup tabGroup;
+    public TabbedPanel tabGroup;
 
     public GameObject panel;
 

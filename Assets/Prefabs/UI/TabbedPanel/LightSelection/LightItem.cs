@@ -46,6 +46,11 @@ public class LightItem : MonoBehaviour
     public void ToggleLight()
     {
         _sceneLight.ToggleLight(!_sceneLight.Enabled);
+        SetToggleIcon();
+    }
+
+    public void SetToggleIcon()
+    {
         if (_sceneLight.Enabled) _toggleButton.GetComponentInChildren<Image>().color = Color.white;
         else _toggleButton.GetComponentInChildren<Image>().color = Color.black;
     }

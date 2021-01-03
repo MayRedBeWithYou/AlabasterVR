@@ -37,6 +37,7 @@ public class LightSelection : MonoBehaviour
         go.name = light.name;
         LightItem item = go.GetComponent<LightItem>();
         item.Light = light;
+        item.SetToggleIcon();
         lights.Add(light, item);
     }
 
