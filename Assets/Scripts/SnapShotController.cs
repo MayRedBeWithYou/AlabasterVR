@@ -107,6 +107,7 @@ public class SnapshotController : MonoBehaviour, IDisposable
             //Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(foo);
             SnapshotShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
             SnapshotShader.SetVector("gridDisplacement", snapLocalPos / spacing);
+            //Debug.Log($"{snapLocalPos.x} {spacing} {(snapLocalPos/spacing).x}");
             SnapshotShader.SetInt("resolution", resolution);
             SnapshotShader.Dispatch(kernel, resolution / 8, resolution / 8, resolution / 8);
         }

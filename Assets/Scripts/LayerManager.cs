@@ -86,7 +86,7 @@ public class LayerManager : MonoBehaviour
 
         layers = new List<Layer>();
         activeChunks = new List<Chunk>();
-        VoxelSpacing = Size / (Resolution * ChunkResolution);
+        VoxelSpacing = Size / Resolution / (ChunkResolution - 1);//Size / (Resolution * ChunkResolution);
         Chunk chunk = chunkPrefab.GetComponent<Chunk>();
         chunk.size = Spacing;
         chunk.resolution = ChunkResolution;
@@ -177,6 +177,6 @@ public class LayerManager : MonoBehaviour
         layerPos.y = layerPos.y % VoxelSpacing;
         layerPos.z = layerPos.z % VoxelSpacing;
 
-        return (Vector3)(Vector3Int.RoundToInt(pos / VoxelSpacing)) * VoxelSpacing + layerPos ;
+        return ((Vector3)(Vector3Int.FloorToInt(pos / VoxelSpacing)) +Vector3.one * 0.5f) * VoxelSpacing + layerPos ;
     }
 }

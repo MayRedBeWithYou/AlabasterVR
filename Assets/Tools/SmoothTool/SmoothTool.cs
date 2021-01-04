@@ -102,5 +102,8 @@ public class SmoothTool : Tool
         SmoothShader.Dispatch(applyWorkBufferKernel, volume / 512, 1, 1);
 
         snapshot.ApplySnapshot();
+        //snapshot.TakeSnapshot();
+        //snapshot.ApplySnapshot();
+
     }
 }
