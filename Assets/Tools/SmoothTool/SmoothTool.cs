@@ -26,6 +26,9 @@ public class SmoothTool : Tool
     private int res;
     private int volume;
 
+    private int populateWorkBufferKernel;
+    private int applyWorkBufferKernel;
+
     [HideInInspector]
     public CursorSDF cursor;
 
@@ -40,6 +43,10 @@ public class SmoothTool : Tool
 
     public override void Disable()
     {
+        if (cursor != null)
+        {
+            cursor.ToggleRenderer(false);
+        }
         base.Disable();
     }
 
@@ -51,6 +58,8 @@ public class SmoothTool : Tool
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
         workBuffer = new ComputeBuffer(volume, sizeof(float)*2 + sizeof(uint) * 3, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
+        populateWorkBufferKernel = SmoothShader.FindKernel("PopulateWorkBuffer");
+        applyWorkBufferKernel = SmoothShader.FindKernel("ApplySmooth");
     }
 
     private void FixedUpdate()
@@ -69,30 +78,29 @@ public class SmoothTool : Tool
 
     private void Smooth()
     {
-        snapshot.SetPositionReal(cursor.transform.position);
+        var activeLayer = LayerManager.Instance.ActiveLayer;
 
-        //snapshot.SetCenter(cursor.transform.position);
+        snapshot.SetPositionReal(cursor.transform.position);
         snapshot.TakeSnapshot();
 
         workBuffer.SetCounterValue(0);
         var kernel = SmoothShader.FindKernel("PopulateWorkBuffer");
-        SmoothShader.SetFloat("toolRadius", cursor.radius);
+        SmoothShader.SetFloat("toolRadius", cursor.radius* 0.8f * (1f/snapshot.transform.localScale.x));
         SmoothShader.SetFloat("chunkSize", snapshot.size);
         SmoothShader.SetVector("toolCenter", snapshot.transform.InverseTransformPoint(cursor.transform.position) + Vector3.one * snapshot.size * 0.5f);
 
-        //SmoothShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
         SmoothShader.SetInt("resolution", snapshot.resolution);
-        SmoothShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);
-        SmoothShader.SetBuffer(kernel, "appendWorkBuffer", workBuffer);
-        SmoothShader.Dispatch(kernel, snapshot.resolution / 8, snapshot.resolution / 8, snapshot.resolution / 8);
+        SmoothShader.SetBuffer(populateWorkBufferKernel, "sdf", snapshot.Snapshot);
+        SmoothShader.SetBuffer(populateWorkBufferKernel, "appendWorkBuffer", workBuffer);
+        SmoothShader.Dispatch(populateWorkBufferKernel, snapshot.resolution / 8, snapshot.resolution / 8, snapshot.resolution / 8);
         ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
 
-        kernel = SmoothShader.FindKernel("ApplySmooth");
         SmoothShader.SetInt("resolution", snapshot.resolution);
-        SmoothShader.SetBuffer(kernel, "entries", countBuffer);
-        SmoothShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);
-        SmoothShader.SetBuffer(kernel, "structuredWorkBuffer", workBuffer);
-        SmoothShader.Dispatch(kernel, volume / 512, 1, 1);
+        SmoothShader.SetBuffer(applyWorkBufferKernel, "entries", countBuffer);
+        SmoothShader.SetBuffer(applyWorkBufferKernel, "sdf", snapshot.Snapshot);
+        SmoothShader.SetBuffer(applyWorkBufferKernel, "structuredWorkBuffer", workBuffer);
+        SmoothShader.Dispatch(applyWorkBufferKernel, volume / 512, 1, 1);
+
         snapshot.ApplySnapshot();
     }
 }

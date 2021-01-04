@@ -50,8 +50,8 @@ void PopulateWorkBuffer(uint3 id : SV_DispatchThreadID)
         avg += sdf[coords(uint3(id.x - 1, id.y, id.z))];
         avg += sdf[coords(uint3(id.x, id.y + 1, id.z))];
         avg += sdf[coords(uint3(id.x, id.y - 1, id.z))];
-        avg += sdf[coords(uint3(id.x, id.y, id.z - 1))];
         avg += sdf[coords(uint3(id.x, id.y, id.z + 1))];
+        avg += sdf[coords(uint3(id.x, id.y, id.z - 1))];
         avg = avg / 6;
         data.avg = avg;
         appendWorkBuffer.Append(data);

@@ -93,13 +93,15 @@ public class MaterialTool : Tool
     private void PerformAction()
     {
         ComputeShader shader = isAdding ? addShader : removeShader;
+        var activeLayer = LayerManager.Instance.ActiveLayer;
+        shader.SetFloat("chunkSize", activeLayer.Spacing);
+        shader.SetInt("resolution", activeLayer.ChunkResolution);
+        shader.SetFloat("radius", cursor.radius * (1f/activeLayer.transform.localScale.x)); //Scale is uniform in all directions, so it does not matter which component of vector we take.
+
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
             sphereShaderKernel = shader.FindKernel("CSMain");
-            shader.SetFloat("radius", cursor.radius);
-            shader.SetFloat("chunkSize", chunk.size);
             shader.SetVector("position", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
-            shader.SetInt("resolution", chunk.resolution);
             shader.SetBuffer(sphereShaderKernel, "sdf", chunk.voxels.VoxelBuffer);
             shader.Dispatch(sphereShaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
