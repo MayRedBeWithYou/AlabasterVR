@@ -301,6 +301,12 @@ namespace HSVPicker
             Setup.ColorCode.Toggle(setupShowHeader != ColorPickerSetup.ColorHeaderShowing.ShowColor);
 
         }
+
+        public void Close()
+        {
+            gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
     }
 
 }

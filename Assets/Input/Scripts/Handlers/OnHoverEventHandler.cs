@@ -10,10 +10,10 @@ using UnityEngine.XR.Interaction.Toolkit.UI;
 using static UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceModel;
 
 [Serializable]
-public class OnHoverEnterEvent : UnityEvent<XRController, Canvas> { }
+public class OnHoverEnterEvent : UnityEvent<XRController, GameObject> { }
 
 [Serializable]
-public class OnHoverExitEvent : UnityEvent<XRController, Canvas> { }
+public class OnHoverExitEvent : UnityEvent<XRController, GameObject> { }
 
 public class OnHoverEventHandler : MonoBehaviour
 {
@@ -23,33 +23,40 @@ public class OnHoverEventHandler : MonoBehaviour
     public OnHoverEnterEvent OnHoverEnter;
     public OnHoverExitEvent OnHoverExit;
 
-    private Canvas currentUI;
+    private XRInteractorLineVisual visual = null;
 
-    public Canvas CurrentUI
+    [SerializeField]
+    private GameObject current;
+
+    public GameObject Current
     {
-        get => currentUI;
+        get => current;
         set
         {
-            if (currentUI == null && !ReferenceEquals(currentUI, null))
+            if (current == null && !ReferenceEquals(current, null))
             {
-                OnHoverExit?.Invoke(controller, currentUI);
-                currentUI = null;
+                OnHoverExit?.Invoke(controller, current);
+                current = null;
+                ToggleInteractor(false);
             }
-            if (value != currentUI)
+            if (value != current)
             {
                 if (value is null)
                 {
-                    OnHoverExit?.Invoke(controller, currentUI);
-                    currentUI = null;
+                    OnHoverExit?.Invoke(controller, current);
+                    current = null;
+                    ToggleInteractor(false);
                 }
                 else
                 {
-                    if (currentUI != null)
+                    if (current != null)
                     {
-                        OnHoverExit?.Invoke(controller, currentUI);
+                        OnHoverExit?.Invoke(controller, current);
+                        ToggleInteractor(false);
                     }
-                    currentUI = value;
-                    OnHoverEnter?.Invoke(controller, currentUI);
+                    current = value;
+                    OnHoverEnter?.Invoke(controller, current);
+                    ToggleInteractor(true);
                 }
             }
         }
@@ -58,8 +65,9 @@ public class OnHoverEventHandler : MonoBehaviour
 
     private void Awake()
     {
-        interactor = gameObject.GetComponent<XRRayInteractor>();
-        controller = gameObject.GetComponent<XRController>();
+        interactor = GetComponent<XRRayInteractor>();
+        visual = GetComponent<XRInteractorLineVisual>();
+        controller = GetComponent<XRController>();
     }
 
     void Update()
@@ -72,20 +80,35 @@ public class OnHoverEventHandler : MonoBehaviour
         Vector3 b = Vector3.zero;
         int c = 0;
         bool d = false;
-        if (interactor.TryGetHitInfo(ref a, ref b, ref c, ref d))
+
+        if (interactor.GetCurrentRaycastHit(out RaycastHit hit))
+        {
+            Current = hit.collider.gameObject.GetComponentInParent<SceneLight>().gameObject;
+            visual.lineLength = hit.distance;
+        }
+
+        else if (interactor.TryGetHitInfo(ref a, ref b, ref c, ref d))
         {
             TrackedDeviceModel model;
             if (interactor.TryGetUIModel(out model))
             {
                 ImplementationData data = (ImplementationData)model.GetType().GetProperty("implementationData", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(model, null);
                 RaycastResult result = data.lastFrameRaycast;
+                visual.lineLength = result.distance;
 
-                CurrentUI = result.gameObject.GetComponentInParent<Canvas>();
+                var canvas = result.gameObject.GetComponentInParent<Canvas>();
+                if (canvas != null) Current = canvas.gameObject;
+                else Current = result.gameObject;
             }
         }
         else
         {
-            CurrentUI = null;
+            Current = null;
         }
+    }
+
+    public void ToggleInteractor(bool value)
+    {
+        visual.enabled = value;
     }
 }
