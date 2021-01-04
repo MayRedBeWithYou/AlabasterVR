@@ -7,27 +7,29 @@ public class DirectoryButtonManager : MonoBehaviour
     public FileExplorer mainScript;
     Button button;
     Text buttonText;
+
     public void Awake()
     {
-        button=gameObject.GetComponent<Button>();
-        buttonText=gameObject.GetComponentInChildren<Text>();
+        button = GetComponent<Button>();
+        buttonText = GetComponentInChildren<Text>();
     }
+
     public void Deactivate()
     {
-        button.enabled=false;
-        buttonText.text="";
-        dirInfo=null;
+        button.enabled = false;
+        buttonText.text = "";
+        dirInfo = null;
     }
     public void Activate(DirectoryInfo directoryInfo, bool prefix)
     {
-        button.enabled=true;
-        if(directoryInfo!=null)
+        button.enabled = true;
+        if (directoryInfo != null)
         {
-            if(prefix) buttonText.text='>'+directoryInfo.Name;
-            else buttonText.text=directoryInfo.Name; 
+            if (prefix) buttonText.text = $"> {directoryInfo.Name}";
+            else buttonText.text = directoryInfo.Name;
         }
-        else buttonText.text="\\";
-        dirInfo=directoryInfo;
+        else buttonText.text = "\\";
+        dirInfo = directoryInfo;
     }
     public void OnClick()
     {

@@ -299,6 +299,8 @@ MonoBehaviour:
   filename: 
   mainScript: {fileID: 1717673482883478047, guid: 7e7fee2f67645964aa6579acc29613ef,
     type: 3}
+  icon: {fileID: 1837247169235409799}
+  nameText: {fileID: 253862911959703411}
   pictureIcon: {fileID: 21300000, guid: 73b8a4a719fb4ab46ac68cfa82fc69f8, type: 3}
   modelIcon: {fileID: 21300000, guid: 840e91529c91b904c81a3c4539b9aca0, type: 3}
   directoryIcon: {fileID: 21300000, guid: 1ac2c73cb221d3149bb9f6b8f36f7bee, type: 3}

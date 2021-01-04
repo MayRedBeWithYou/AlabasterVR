@@ -32,7 +32,7 @@ public class UIController : MonoBehaviour
 
     private Keyboard _activeKeyboard = null;
     private MainMenu _activeMainMenu = null;
-    private FileExplorer _activeFileExplorer=null;
+    private FileExplorer _activeFileExplorer = null;
     private GameObject _activeLeftHandMenu = null;
 
     public void Awake()
@@ -123,22 +123,22 @@ public class UIController : MonoBehaviour
     {
         Vector3 lookDirection = Camera.main.transform.forward;
         lookDirection.y = 0;
-        Vector3 prefabPosition=Camera.main.transform.position + lookDirection.normalized * (uiDistance);
-        GameObject go=CreateUI(MessageBoxPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
+        Vector3 prefabPosition = Camera.main.transform.position + lookDirection.normalized * (uiDistance);
+        GameObject go = CreateUI(MessageBoxPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
         go.GetComponent<MessageBox>().Init(message);
     }
     private void ShowSaveModel()
     {
-        if(_activeMainMenu!=null)_activeMainMenu.Close();
-        if(_activeFileExplorer!=null)_activeFileExplorer.Close();
-        _activeFileExplorer=FileManager.Instance.SaveModel(PrepreparedFileExplorer());
+        if (_activeMainMenu != null) _activeMainMenu.Close();
+        if (_activeFileExplorer != null) _activeFileExplorer.Close();
+        _activeFileExplorer = FileManager.Instance.SaveModel(PrepreparedFileExplorer());
     }
 
     private void ShowLoadModel()
     {
-        if(_activeMainMenu!=null)_activeMainMenu.Close();
-        if(_activeFileExplorer!=null)_activeFileExplorer.Close();
-        _activeFileExplorer= FileManager.Instance.LoadModel(PrepreparedFileExplorer());
+        if (_activeMainMenu != null) _activeMainMenu.Close();
+        if (_activeFileExplorer != null) _activeFileExplorer.Close();
+        _activeFileExplorer = FileManager.Instance.LoadModel(PrepreparedFileExplorer());
     }
 
     private GameObject CreateUI(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
@@ -147,14 +147,15 @@ public class UIController : MonoBehaviour
         go.GetComponent<Canvas>().worldCamera = cameraTransform.GetComponent<Camera>();
         return go;
     }
+
     private FileExplorer PrepreparedFileExplorer()
     {
         Vector3 lookDirection = Camera.main.transform.forward;
         lookDirection.y = 0;
-        Vector3 prefabPosition=Camera.main.transform.position + lookDirection.normalized * (uiDistance+0.1f);
-        var fileExplorer=CreateUI(FileExplorerPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
-        var script=fileExplorer.GetComponent<FileExplorer>();
-        script.OnCancelled+=()=>script.Close();
+        Vector3 prefabPosition = Camera.main.transform.position + lookDirection.normalized * (uiDistance + 0.1f);
+        var fileExplorer = CreateUI(FileExplorerPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
+        var script = fileExplorer.GetComponent<FileExplorer>();
+        script.OnCancelled += () => script.Close();
         return script;
     }
 }

@@ -6,32 +6,40 @@ using UnityEngine.UI;
 using System.Linq;
 
 public enum FileExplorerMode
-    {
-        Open,
-        Save
-    }
+{
+    Open,
+    Save
+}
 public class FileExplorer : MonoBehaviour
 {
-    private char[]forbidden={'#','%','&','{','}','\\', '<','>','*','?','/',' ', '$','!','\'','"',':','@','+','`','|','='};
+    private char[] forbidden = { '#', '%', '&', '{', '}', '\\', '<', '>', '*', '?', '/', ' ', '$', '!', '\'', '"', ':', '@', '+', '`', '|', '=' };
+
+    [Header("Parameters")]
     public FileExplorerMode mode;
     public string SelectedPath;
-    private string filename="";
+    private string filename = "";
     private DirectoryInfo currentDirectory;
     public string[] fileExtensions;
+
     [SerializeField]
     private GameObject itemPrefab;
     [SerializeField]
     private GameObject contentHolder;
     [SerializeField]
-    private Text inputText;
-    
+    private InputField inputText;
+    [SerializeField]
+    private Text placeholderText;
+
     [Header("Buttons")]
     [SerializeField]
     private Button acceptButton;
 
     [SerializeField]
     private Button cancelButton;
-    
+
+    public Color validColor;
+    public Color invalidColor;
+
     [Header("Path buttons scripts")]
     [SerializeField]
     private DirectoryButtonManager grandparentButtonScript;
@@ -41,30 +49,34 @@ public class FileExplorer : MonoBehaviour
     private DirectoryButtonManager currentButtonScript;
     private List<Transform> items;
 
-    private string resultPath { get{return currentDirectory.FullName+'/'+Filename;} }
+    private string resultPath
+    {
+        get
+        {
+            return currentDirectory.FullName + '/' + Filename;
+        }
+    }
+
     public string Filename
     {
-        get 
+        get
         {
             return filename;
         }
         set
         {
-            filename=value;
-            if(value=="")
+            filename = value;
+            inputText.text = value;
+            if (value == "")
             {
-                inputText.color=new Color(0.1960784f,0.1960784f,0.1960784f,0.5019608f);
-                
-                inputText.fontStyle=FontStyle.Italic;
-                if(mode==FileExplorerMode.Open) inputText.text="Wybierz plik z panelu";
-                else inputText.text="Wpisz nazwę pliku";
+                if (mode == FileExplorerMode.Open)
+                {
+                    placeholderText.text = "Wybierz plik z panelu";
+                    inputText.interactable = false;
+                }
+                else placeholderText.text = "Wpisz nazwę pliku";
             }
-            else
-            {
-                inputText.color=new Color(0.1960784f,0.1960784f,0.1960784f,1f);
-                inputText.text=value;
-                inputText.fontStyle=FontStyle.Normal;
-            }
+            inputText.ForceLabelUpdate();
         }
     }
 
@@ -76,132 +88,136 @@ public class FileExplorer : MonoBehaviour
 
     void Awake()
     {
-        currentDirectory=new DirectoryInfo(Directory.GetCurrentDirectory());
-        items=new List<Transform>();
+        currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+        items = new List<Transform>();
         acceptButton.onClick.AddListener(() => OnAccepted?.Invoke(resultPath));
         cancelButton.onClick.AddListener(() => OnCancelled?.Invoke());
     }
+
     void Start()
     {
-        Filename="";
+        Filename = "";
     }
+
     public void SetExtensionsArray(string[] arr)
     {
-        fileExtensions=arr;
+        fileExtensions = arr;
     }
+
     public void Close()
     {
         ClearItems();
         gameObject.SetActive(false);
         Destroy(gameObject);
     }
+
     public void UpdateDirectory()
     {
         ClearItems();
-                
-        if(mode==FileExplorerMode.Open)
+
+        if (mode == FileExplorerMode.Open)
         {
             IEnumerable<FileInfo> files = currentDirectory.EnumerateFiles();
-            IEnumerable<FileInfo> preselectedFiles=files.Where(f => fileExtensions.Contains(f.Extension));
+            IEnumerable<FileInfo> preselectedFiles = files.Where(f => fileExtensions.Contains(f.Extension));
 
-            FileType type=FileType.Picture;
-            if(fileExtensions[0]==".obj")type=FileType.Model;
+            FileType type = FileType.Picture;
+            if (fileExtensions[0] == ".obj") type = FileType.Model;
 
-            foreach(var f in preselectedFiles)
+            foreach (var f in preselectedFiles)
             {
                 AddExplorerItem(f.Name, type);
             }
         }
-        var dirs=Directory.EnumerateDirectories(currentDirectory.FullName);
-        foreach(var f in dirs)
+        var dirs = Directory.EnumerateDirectories(currentDirectory.FullName);
+        foreach (var f in dirs)
         {
             AddExplorerItem(Path.GetFileName(f), FileType.Directory);
         }
         UpdateParentButtons();
-        if(!acceptButton.enabled)
+        if (!acceptButton.enabled)
         {
-            acceptButton.enabled=true;
-            acceptButton.GetComponent<Image>().color=new Color(0.2980392f,0.6862745f,0.3137255f,1);
+            acceptButton.enabled = true;
+            acceptButton.GetComponent<Image>().color = validColor;
         }
-        
+
     }
     public void UpdateDirectoryRoot()
     {
         ClearItems();
         DriveInfo[] drives = DriveInfo.GetDrives();
-        foreach(var f in drives)
+        foreach (var f in drives)
         {
-            if(f.DriveType==DriveType.Fixed || f.DriveType==DriveType.Network || f.DriveType==DriveType.Removable) AddExplorerItem(f.Name, FileType.Directory);
+            if (f.DriveType == DriveType.Fixed || f.DriveType == DriveType.Network || f.DriveType == DriveType.Removable) AddExplorerItem(f.Name, FileType.Directory);
         }
         grandparentButtonScript.Deactivate();
         parentButtonScript.Deactivate();
         currentButtonScript.Deactivate();
 
-        acceptButton.enabled=false;
-        acceptButton.GetComponent<Image>().color=new Color(0.5f,0.5f,0.5f,1);
+        acceptButton.enabled = false;
+        acceptButton.GetComponent<Image>().color = invalidColor;
     }
 
     private void AddExplorerItem(string filename, FileType type)
     {
-        GameObject go=Instantiate(itemPrefab, contentHolder.transform);
+        GameObject go = Instantiate(itemPrefab, contentHolder.transform);
         items.Add(go.transform);
-        var script=go.GetComponent<ExplorerItem>();
-        script.Filename=filename;
-        script.Type=type;
-        script.mainScript=this;
+        var script = go.GetComponent<ExplorerItem>();
+        script.Filename = filename;
+        script.Type = type;
+        script.explorer = this;
 
     }
     private void UpdateParentButtons()
     {
-        DirectoryInfo parent=currentDirectory.Parent;
-        
-        if(parent==null)
+        DirectoryInfo parent = currentDirectory.Parent;
+
+        if (parent == null)
         {
-            grandparentButtonScript.Activate(null,false);
-            parentButtonScript.Activate(currentDirectory,false);
+            grandparentButtonScript.Activate(null, false);
+            parentButtonScript.Activate(currentDirectory, false);
             currentButtonScript.Deactivate();
         }
         else
         {
-            DirectoryInfo grandparent=parent.Parent;
+            DirectoryInfo grandparent = parent.Parent;
 
-            if(grandparent==null)
+            if (grandparent == null)
             {
-                grandparentButtonScript.Activate(null,false);
+                grandparentButtonScript.Activate(null, false);
                 parentButtonScript.Activate(parent, false);
-                currentButtonScript.Activate(currentDirectory,true);
+                currentButtonScript.Activate(currentDirectory, true);
             }
             else
             {
                 grandparentButtonScript.Activate(grandparent, false);
-                parentButtonScript.Activate(parent,true);
-                currentButtonScript.Activate(currentDirectory,true);
+                parentButtonScript.Activate(parent, true);
+                currentButtonScript.Activate(currentDirectory, true);
             }
         }
     }
     public void ChangeDirectory(string name)
     {
-        if(currentDirectory!=null)
+        if (currentDirectory != null)
         {
-            currentDirectory=new DirectoryInfo(currentDirectory.FullName+'/'+name);
+            currentDirectory = new DirectoryInfo(currentDirectory.FullName + '/' + name);
             UpdateDirectory();
         }
         else
         {
-            currentDirectory=new DirectoryInfo(name);
+            currentDirectory = new DirectoryInfo(name);
             UpdateDirectory();
         }
     }
     public void ChangeDirectory(DirectoryInfo directoryInfo)
     {
-        if(directoryInfo!=null)
+        if (directoryInfo != null)
         {
-            currentDirectory=directoryInfo;
+            currentDirectory = directoryInfo;
             UpdateDirectory();
         }
         else
         {
-            currentDirectory=null;
+            currentDirectory = null;
             UpdateDirectoryRoot();
         }
     }
@@ -210,8 +226,8 @@ public class FileExplorer : MonoBehaviour
     {
         while (items.Count > 0)
         {
-            var go=items[items.Count-1];
-            items.RemoveAt(items.Count-1);
+            var go = items[items.Count - 1];
+            items.RemoveAt(items.Count - 1);
             go.gameObject.SetActive(false);
             Destroy(go.gameObject);
         }
@@ -219,20 +235,20 @@ public class FileExplorer : MonoBehaviour
 
     public void ShowKeyboard()
     {
-        if(mode==FileExplorerMode.Save)
+        if (mode == FileExplorerMode.Save)
         {
             Keyboard keyboard = Keyboard.Show(Filename);
             keyboard.OnAccepted += (text) =>
             {
-                for(int i=0;i<forbidden.Length;i++)
+                for (int i = 0; i < forbidden.Length; i++)
                 {
-                    if(text.Contains(forbidden[i]))
+                    if (text.Contains(forbidden[i]))
                     {
-                        UIController.Instance.ShowMessageBox("Użyto niedozwolonego znaku:\n"+forbidden[i]);
+                        UIController.Instance.ShowMessageBox("Użyto niedozwolonego znaku:\n" + forbidden[i]);
                         return;
                     }
                 }
-                Filename=text;
+                Filename = text;
                 keyboard.Close();
             };
             keyboard.OnCancelled += () => keyboard.Close();
