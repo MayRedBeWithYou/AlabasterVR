@@ -97,7 +97,7 @@ public class LayerManager : MonoBehaviour
     public Layer AddNewLayer()
     {
         GameObject layerObject = Instantiate(LayerPrefab, LayersHolder.transform);
-        layerObject.name = $"Layer {_layerCount++}";
+        layerObject.name = $"Warstwa {_layerCount++}";
         layerObject.transform.position = LayersHolder.transform.position;
         Layer layer = layerObject.GetComponent<Layer>();
         layer.Resolution = Resolution;
