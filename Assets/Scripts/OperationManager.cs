@@ -35,6 +35,7 @@ public class OperationManager : MonoBehaviour
         redoButton.OnButtonDown += (c) => Redo();
     }
 
+
     public void Clear()
     {
         undoOperations.Clear();
@@ -80,8 +81,15 @@ public class OperationManager : MonoBehaviour
 
         public override void OnInspectorGUI()
         {
+            base.OnInspectorGUI();
+
             var bold = new GUIStyle();
             bold.fontStyle = FontStyle.Bold;
+            bold.normal.textColor = Color.white;
+            GUILayout.Space(10);
+            GUILayout.BeginHorizontal();
+            GUILayout.BeginVertical();
+
             GUILayout.Label("Undo", bold);
             var manager = (OperationManager)target;
 
@@ -89,13 +97,16 @@ public class OperationManager : MonoBehaviour
             {
                 GUILayout.Label(op.GetType().Name);
             }
-
+            GUILayout.EndVertical();
+            GUILayout.BeginVertical();
             GUILayout.Label("Redo", bold);
 
             foreach (IOperation op in manager.redoOperations)
             {
                 GUILayout.Label(op.GetType().Name);
             }
+            GUILayout.EndVertical();
+            GUILayout.EndHorizontal();
         }
     }
 }
