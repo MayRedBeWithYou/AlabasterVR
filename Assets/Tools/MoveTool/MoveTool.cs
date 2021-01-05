@@ -12,8 +12,9 @@ public class MoveTool : Tool
         public float value;
     }
 
+
     public AxisHandler Trigger;
-    public ComputeShader MoveShader;
+    //public ComputeShader MoveShader;
     public ComputeShader PopulateShader;
     public ComputeShader ApplyMoveShader;
 
@@ -21,6 +22,7 @@ public class MoveTool : Tool
 
     private ComputeBuffer workBuffer;
     private ComputeBuffer countBuffer;
+    private SnapshotController snapshot;
 
     private bool workBufferPopulated;
     private Vector3 prevPos;
@@ -46,6 +48,8 @@ public class MoveTool : Tool
 
     public void Start()
     {
+        snapshot = GameObject.Find("Snapshot").GetComponent<SnapshotController>();
+
         res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
@@ -81,39 +85,36 @@ public class MoveTool : Tool
 
     private void ApplyWorkBuffer()
     {
-        foreach (Chunk chunk in LayerManager.Instance.activeChunks)
-        {
-            var kernel = ApplyMoveShader.FindKernel("CSMain");
-            ApplyMoveShader.SetFloat("spacing", chunk.size / (res - 1));
-            ApplyMoveShader.SetVector("offset", cursor.transform.position - prevPos);
-            ApplyMoveShader.SetInt("resolution", chunk.resolution);
-            ApplyMoveShader.SetBuffer(kernel, "entries", countBuffer);
-            ApplyMoveShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
-            ApplyMoveShader.SetBuffer(kernel, "workBuffer", workBuffer);
-            ApplyMoveShader.Dispatch(kernel, volume/512 ,1,1);
-            chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
-            break;
-        }
+        snapshot.SetPositionReal(cursor.transform.position);
+     
+        var kernel = ApplyMoveShader.FindKernel("CSMain");
+        ApplyMoveShader.SetFloat("spacing", snapshot.spacing / (res - 1));
+        ApplyMoveShader.SetVector("offset", cursor.transform.position - prevPos);
+        ApplyMoveShader.SetInt("resolution", snapshot.resolution);
+        ApplyMoveShader.SetBuffer(kernel, "entries", countBuffer);
+        ApplyMoveShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);
+        ApplyMoveShader.SetBuffer(kernel, "workBuffer", workBuffer);
+        ApplyMoveShader.Dispatch(kernel, volume/512 ,1,1);
+        snapshot.ApplySnapshot();
+        //chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
     }
 
     private void PopulateWorkBuffer()
     {
+        snapshot.SetPositionReal(cursor.transform.position);
+        snapshot.TakeSnapshot();
 
-        foreach (Chunk chunk in LayerManager.Instance.activeChunks)
-        {
-            workBuffer.SetCounterValue(0);
-            var kernel = PopulateShader.FindKernel("CSMain");
-            PopulateShader.SetFloat("toolRadius", cursor.radius);
-            PopulateShader.SetFloat("chunkSize", chunk.size);
-            PopulateShader.SetVector("toolCenter", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
-            PopulateShader.SetInt("resolution", chunk.resolution);
-            PopulateShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
-            PopulateShader.SetBuffer(kernel, "workBuffer", workBuffer);
-            PopulateShader.Dispatch(kernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
-            prevPos = cursor.transform.position;
-            ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
-            workBufferPopulated = true;
-            break;
-        }
+        workBuffer.SetCounterValue(0);
+        var kernel = PopulateShader.FindKernel("CSMain");
+        PopulateShader.SetFloat("toolRadius", cursor.radius);
+        PopulateShader.SetFloat("chunkSize", snapshot.size);
+        PopulateShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
+        PopulateShader.SetInt("resolution", snapshot.resolution);
+        PopulateShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);
+        PopulateShader.SetBuffer(kernel, "workBuffer", workBuffer);
+        PopulateShader.Dispatch(kernel, snapshot.resolution / 8, snapshot.resolution / 8, snapshot.resolution / 8);
+        prevPos = cursor.transform.position;
+        ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
+        workBufferPopulated = true;
     }
 }
