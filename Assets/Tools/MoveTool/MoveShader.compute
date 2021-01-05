@@ -4,7 +4,7 @@
 struct MoveData
 {
     uint3 from;
-    float value;
+    float3 gradient;
 };
 
 RWStructuredBuffer<float> sdf;
@@ -27,10 +27,8 @@ void CSMain(uint3 id : SV_DispatchThreadID)
     {
         MoveData data;
         data = workBuffer[id.x];
-        uint3 targetId = id;
-        targetId.x = data.from.x + floor(offset.x / spacing);
-        targetId.y = data.from.y + floor(offset.y / spacing);
-        targetId.z = data.from.z + floor(offset.z / spacing);
-        sdf[coords(targetId)] = data.value;
+        float value = sdf[coords(data.from)] - dot(offset, data.gradient);
+        value = clamp(-1.0f, 1.0f, value);
+        sdf[coords(data.from)] = value;
     }
 }

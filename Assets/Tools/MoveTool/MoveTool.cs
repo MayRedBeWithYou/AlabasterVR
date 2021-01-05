@@ -9,7 +9,7 @@ public class MoveTool : Tool
     public struct MoveData
     {
         public Vector3Int from;
-        public float value;
+        public Vector3 gradient;
     }
 
 
@@ -53,7 +53,7 @@ public class MoveTool : Tool
         res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
-        workBuffer = new ComputeBuffer(volume, sizeof(float) + sizeof(uint) * 3, ComputeBufferType.Append);
+        workBuffer = new ComputeBuffer(volume, sizeof(float) * 3 + sizeof(uint) * 3, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
     }
 
@@ -85,8 +85,7 @@ public class MoveTool : Tool
 
     private void ApplyWorkBuffer()
     {
-        snapshot.SetPositionReal(cursor.transform.position);
-     
+        snapshot.SetPositionReal(prevPos);//cursor.transform.position);
         var kernel = ApplyMoveShader.FindKernel("CSMain");
         ApplyMoveShader.SetFloat("spacing", snapshot.spacing / (res - 1));
         ApplyMoveShader.SetVector("offset", cursor.transform.position - prevPos);
@@ -96,6 +95,7 @@ public class MoveTool : Tool
         ApplyMoveShader.SetBuffer(kernel, "workBuffer", workBuffer);
         ApplyMoveShader.Dispatch(kernel, volume/512 ,1,1);
         snapshot.ApplySnapshot();
+        workBufferPopulated = false;
         //chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
     }
 
@@ -106,9 +106,9 @@ public class MoveTool : Tool
 
         workBuffer.SetCounterValue(0);
         var kernel = PopulateShader.FindKernel("CSMain");
-        PopulateShader.SetFloat("toolRadius", cursor.radius);
+        PopulateShader.SetFloat("toolRadius", cursor.radius * (1f / snapshot.transform.localScale.x));
         PopulateShader.SetFloat("chunkSize", snapshot.size);
-        PopulateShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
+        PopulateShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position) + Vector3.one * snapshot.size * 0.5f);
         PopulateShader.SetInt("resolution", snapshot.resolution);
         PopulateShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);
         PopulateShader.SetBuffer(kernel, "workBuffer", workBuffer);
