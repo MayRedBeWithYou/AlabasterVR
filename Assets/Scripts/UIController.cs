@@ -29,6 +29,7 @@ public class UIController : MonoBehaviour
     public GameObject MessageBoxPrefab;
     public GameObject colorPickerPrefab;
     public GameObject KeyboardPrefab;
+    public GameObject PictureCanvasPrefab;
 
     private Keyboard _activeKeyboard = null;
     private MainMenu _activeMainMenu = null;
@@ -140,7 +141,19 @@ public class UIController : MonoBehaviour
         if (_activeFileExplorer != null) _activeFileExplorer.Close();
         _activeFileExplorer = FileManager.Instance.LoadModel(PrepreparedFileExplorer());
     }
-
+    public FileExplorer ShowRefPicture()
+    {
+        if (_activeFileExplorer != null) _activeFileExplorer.Close();
+        _activeFileExplorer = FileManager.Instance.LoadImageReference(PrepreparedFileExplorer());
+        return _activeFileExplorer;
+    }
+    public PictureCanvas ShowPictureCanvas()
+    {
+        Vector3 lookDirection = Camera.main.transform.forward;
+        lookDirection.y = 0;
+        Vector3 prefabPosition = Camera.main.transform.position + lookDirection.normalized * (uiDistance * 2);
+        return CreateUI(PictureCanvasPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<PictureCanvas>();
+    }
     private GameObject CreateUI(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
     {
         GameObject go = Instantiate(prefab, position, rotation, parent);

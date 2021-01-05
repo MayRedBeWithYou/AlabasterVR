@@ -49,7 +49,7 @@ public class Keyboard : MonoBehaviour
 
     public void LateUpdate()
     {
-        if(isSet)
+        if (isSet)
         {
             isSet = false;
             inputField.caretPosition = inputField.text.Length;

@@ -76,7 +76,7 @@ public class TabbedPanel : MonoBehaviour
 
     public void AddNewImage()
     {
-
+        RefPictureManager.Instance.AddRefPicture();
         selectedTab = tabButtons[2];
     }
 

@@ -53,14 +53,6 @@ public class FileManager : MonoBehaviour
         script.mode = FileExplorerMode.Open;
         script.SetExtensionsArray(new string[] { ".jpg", ".png" });
         script.UpdateDirectory();
-        script.OnAccepted += (text) =>
-          {
-              if (System.String.IsNullOrWhiteSpace(text)) return;
-              path = text;
-              script.Close();
-          };
-
-        //todo: prepare prefab and put image into it
         return script;
     }
 
@@ -80,6 +72,5 @@ public class FileManager : MonoBehaviour
 
         if (!nameChanged) UIController.Instance.ShowMessageBox("Model zapisano jako " + Path.GetFileName(tempName));
         else UIController.Instance.ShowMessageBox($"Model o nazwie {Path.GetFileName(path)}.obj już istniał.\nModel zapisano jako {Path.GetFileName(tempName)}.");
-
     }
 }

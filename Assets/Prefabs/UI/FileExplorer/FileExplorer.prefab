@@ -1297,9 +1297,10 @@ GameObject:
   - component: {fileID: 6266093224949564535}
   - component: {fileID: 1717673482883478047}
   - component: {fileID: 1135507101247063812}
+  - component: {fileID: 3392161802798021172}
   m_Layer: 5
   m_Name: FileExplorer
-  m_TagString: DragUI
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1413,6 +1414,18 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 2147483647
+--- !u!114 &3392161802798021172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3155886506763974669}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bdf465859430af4b9ed3b81fd02ca5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3770190792259587505
 GameObject:
   m_ObjectHideFlags: 0
@@ -1447,7 +1460,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00993903, y: 0.0056152344}
+  m_AnchoredPosition: {x: 0.0013788491, y: -0.007080078}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2336410699795782425
@@ -1607,7 +1620,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 4255451073462057792}
   m_HandleRect: {fileID: 7113758875519632848}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 0.99995553
   m_NumberOfSteps: 0
   m_OnValueChanged:
