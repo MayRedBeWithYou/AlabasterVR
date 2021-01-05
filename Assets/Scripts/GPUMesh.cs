@@ -12,7 +12,7 @@ public class GPUMesh : IDisposable
     private ComputeBuffer drawArgs;
 
     [RuntimeInitializeOnLoadMethod]
-    private static void Initialize()
+    public static void Initialize()
     {
         proceduralMaterial = Resources.Load<Material>("Materials/proceduralMaterial");
         marchingCubesShader = Resources.Load<ComputeShader>("MarchingCubes/marchingCubesGPU");

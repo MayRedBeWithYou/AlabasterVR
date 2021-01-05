@@ -20,7 +20,6 @@ public class ObjTranslator : MonoBehaviour
         int offset=0;
         while(!sr.EndOfStream)
         {
-            
             string current=sr.ReadLine();
             while(!sr.EndOfStream&&(current.Length<2 || !(current[0]=='v' && current[1]==' ')))current=sr.ReadLine();
             
@@ -35,6 +34,7 @@ public class ObjTranslator : MonoBehaviour
                 triangles.AddRange(StringToFace(current,offset));
                 current=sr.ReadLine();
             }
+            if(current.Length>1&&current[0]=='f'&& current[1]==' ')triangles.AddRange(StringToFace(current,offset));
         }
         sr.Close();
 
@@ -46,17 +46,20 @@ public class ObjTranslator : MonoBehaviour
                 max=Vector3.Max(max, vertices[i]);
             }
         }
+        //Debug.Log(min);
+        //Debug.Log(max);
         Vector3 diff=max-min;
+        //Debug.Log(diff);
+        
         float meshDiameter=Mathf.Max(diff.x, diff.y, diff.z);
-        if(meshDiameter<=relativeMeshSize*size) return;
-        else
+        float scale=(relativeMeshSize*size)/meshDiameter;
+        Vector3 centeringVector=(Vector3.one*(size/2))-diff*scale/2;
+        //Debug.Log(centeringVector);
+        for(int i=0;i<vertices.Count;i++) 
         {
-            float scale=(relativeMeshSize*size)/meshDiameter;
-            for(int i=0;i<vertices.Count;i++) 
-            {
-                vertices[i]-=min;
-                vertices[i]*=scale;
-            }
+            vertices[i]=vertices[i]-min;
+            vertices[i]*=scale;
+            vertices[i]+=centeringVector;
         }
         mesh.vertices=vertices.ToArray();
         mesh.triangles=triangles.ToArray();

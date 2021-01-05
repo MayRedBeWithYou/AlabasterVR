@@ -90,7 +90,9 @@ public class LayerManager : MonoBehaviour
         chunk.size = Spacing;
         chunk.resolution = ChunkResolution;
         _activeLayer = AddNewLayer();
-        //_activeLayer = AddNewLayerFromMesh();
+        var script=GameObject.Find("FileManager").GetComponent<FileManager>();
+        script.Initialize();
+        script.Load();
     }
 
     public Layer AddNewLayer()
@@ -159,27 +161,4 @@ public class LayerManager : MonoBehaviour
             }
         }
     }
-
-
-    public Layer AddNewLayerFromMesh()
-    {
-        GameObject layerObject = new GameObject($"Layer {_layerCount++}");
-        layerObject.transform.parent = LayersHolder.transform;
-        Layer layer = layerObject.AddComponent<Layer>();
-        layer.Resolution = Resolution;
-        layer.ChunkResolution = ChunkResolution;
-        layer.Size = Size;
-
-        BoxCollider box = layerObject.AddComponent<BoxCollider>();
-        box.size = Vector3.one * Size;
-        box.center = Vector3.one * Size / 2;
-        var script=GameObject.Find("FileManager").GetComponent<FileManager>();
-        float[] values=script.Load();
-        layer.GenerateChunksFromMesh(chunkPrefab, values);
-        layers.Add(layer);
-        LayerAdded?.Invoke(layer);
-        Debug.Log($"Created layer: {layer.name}");
-        return layer;
-    }
-
 }

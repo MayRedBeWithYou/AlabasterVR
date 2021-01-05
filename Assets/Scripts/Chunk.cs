@@ -90,4 +90,5 @@ public class Chunk : MonoBehaviour, IDisposable
         gpuMesh.Dispose();
         voxels.Dispose();
     }
+    public Bounds ColliderBounds { get {return _boxCollider.bounds;}  }
 }

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 7522129539246644123}
   - component: {fileID: 8514001072410626427}
   - component: {fileID: 3857189662598426791}
-  - component: {fileID: 9101134052324551946}
   m_Layer: 0
   m_Name: SdfGenerator
   m_TagString: Untagged
@@ -49,7 +48,7 @@ MonoBehaviour:
   size: 0
   resolution: 0
   chunkResolution: 0
-  relativeMeshSize: 0.5
+  relativeMeshSize: 0.05
 --- !u!114 &3857189662598426791
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62,16 +61,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25874122007fc774c820b5d89f5c8e52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &9101134052324551946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6484433197918645996}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cad889b773e004c4db1f39e4a68f7346, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  values: []

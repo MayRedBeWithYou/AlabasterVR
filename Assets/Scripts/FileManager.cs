@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -9,13 +9,11 @@ public class FileManager : MonoBehaviour
     public GameObject SdfGeneratorPrefab;
     private GameObject _sdfGenerator;
 
-    public void Awake()
+    public void Initialize()
     {
-        var script=GameObject.Find("LayerManager").GetComponent<LayerManager>();
-        size=script.Size;
-        resolution=script.Resolution;
-        chunkResolution=script.ChunkResolution;
-        Load();
+        size=LayerManager.Instance.Size;
+        resolution=LayerManager.Instance.Resolution;
+        chunkResolution=LayerManager.Instance.ChunkResolution;
     }
     private float size; 
     private int resolution;
@@ -31,7 +29,10 @@ public class FileManager : MonoBehaviour
     }
     private string GetLoadingPath()
     {
-        string result="cube.obj";
+        string result="";
+        //result="cube.obj";
+        //result="deer.obj";
+        result="Sting-Sword-lowpoly.obj";
         return result;
     }
     public void Save()
@@ -39,9 +40,10 @@ public class FileManager : MonoBehaviour
 
     }
 
-    public float[] Load()
+    public void Load()
     {
         string fileName=GetLoadingPath();
+        
         _sdfGenerator=Instantiate(SdfGeneratorPrefab);
         var script=_sdfGenerator.GetComponent<ObjTranslator>();
         script.size=size;
@@ -49,17 +51,30 @@ public class FileManager : MonoBehaviour
         script.chunkResolution=chunkResolution;
         script.ParseFileToMesh(fileName);
         
-        float[] values=null;
-        //values=_sdfGenerator.GetComponent<MeshToSdf>().TranslateMeshToSdf();
-        /*
-        StreamWriter sw=new StreamWriter("values.log");
-        for(int i=0;i<values.Length;i++)
-        {
-            sw.WriteLine(System.String.Format("{0} : {1}",i, values[i]));
+        Mesh mesh=script.mesh;
+
+        MeshToSdfGpu.Initialize();
+        GPUMesh.Initialize();
+        ComputeBuffer triangleBuffer= MeshToSdfGpu.CreateTrianglesBuffer(mesh);
+        ObjTriangle[] trianglesArr=new ObjTriangle[mesh.triangles.Length/3];
+        triangleBuffer.GetData(trianglesArr);
+        MeshToSdfGpuCpu test=new MeshToSdfGpuCpu(new float[chunkResolution*chunkResolution*chunkResolution],trianglesArr,chunkResolution+1,trianglesArr.Length,LayerManager.Instance.Spacing,size,Vector3.zero);
+        var Layer=LayerManager.Instance.ActiveLayer;
+        LayerManager.Instance.activeChunks.Clear();
+        foreach(var chunk in Layer.chunks)
+        {   
+            if(mesh.bounds.Intersects(chunk.ColliderBounds))
+            {
+                //Debug.Log("hit: "+chunk.name);
+                test.sdf=new float[chunkResolution*chunkResolution*chunkResolution];
+                test.chunkOffset=new Vector3(chunk.coord.x * LayerManager.Instance.Spacing, chunk.coord.y * LayerManager.Instance.Spacing,chunk.coord.z * LayerManager.Instance.Spacing);
+                MeshToSdfGpu.CreateSdf(triangleBuffer,chunk,mesh.triangles.Length/3,test);
+                chunk.voxels.Initialized=true;
+                LayerManager.Instance.activeChunks.Add(chunk);
+            }
         }
-        sw.Close();
-        */
+        Debug.Log("mesh done");
+        triangleBuffer.Release();
         Destroy(_sdfGenerator);
-        return values;
     }
 }

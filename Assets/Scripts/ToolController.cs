@@ -135,6 +135,7 @@ public class ToolController : MonoBehaviour
         {
             _activeLeftHandMenu = Instantiate(LayerSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         }
+        Debug.Log(String.Format("{0} {1} {2}",leftPointer.position.x, leftPointer.position.y,leftPointer.position.z));
     }
 
     private void CloseMainMenu()
