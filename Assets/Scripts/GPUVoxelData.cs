@@ -49,7 +49,7 @@ public class GPUVoxelData : IDisposable
 
     private void ResetVoxelsValues()
     {
-        VoxelBuffer.SetData(Enumerable.Repeat(1f, Volume).ToArray());
+        VoxelBuffer.SetData(Enumerable.Repeat(0.01209677f, Volume).ToArray());
     }
 
     public void Dispose()
