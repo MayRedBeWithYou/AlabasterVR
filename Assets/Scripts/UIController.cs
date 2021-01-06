@@ -13,6 +13,7 @@ public class UIController : MonoBehaviour
     public ButtonHandler MainMenuButtonHandler;
     public ButtonHandler ToolSelectionMenuButtonHandler;
     public ButtonHandler LayerSelectionMenuButtonHandler;
+    public ButtonHandler LeftTouchHandler;
 
     [Header("Menu parameters")]
     public Transform cameraTransform;
@@ -29,6 +30,7 @@ public class UIController : MonoBehaviour
     public GameObject MessageBoxPrefab;
     public GameObject colorPickerPrefab;
     public GameObject KeyboardPrefab;
+    public GameObject LeftOverlay;
 
     private Keyboard _activeKeyboard = null;
     private MainMenu _activeMainMenu = null;
@@ -48,6 +50,10 @@ public class UIController : MonoBehaviour
 
         ToolSelectionMenuButtonHandler.OnButtonDown += ShowToolSelectionMenu;
         LayerSelectionMenuButtonHandler.OnButtonDown += ShowLayerSelectionMenu;
+
+        LeftOverlay.SetActive(false);
+        LeftTouchHandler.OnButtonDown += (c) => LeftOverlay.SetActive(true);
+        LeftTouchHandler.OnButtonUp += (c) => LeftOverlay.SetActive(false);
     }
 
     private void ShowMainMenu(XRController controller)
