@@ -9,7 +9,6 @@ public class SmoothTool : Tool
     public struct SmoothData
     {
         public Vector3Int from;
-        public float value;
         public float avg;
     }
 
@@ -56,7 +55,7 @@ public class SmoothTool : Tool
         res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
-        workBuffer = new ComputeBuffer(volume, sizeof(float)*2 + sizeof(uint) * 3, ComputeBufferType.Append);
+        workBuffer = new ComputeBuffer(volume, sizeof(float) + sizeof(uint) * 3, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
         populateWorkBufferKernel = SmoothShader.FindKernel("PopulateWorkBuffer");
         applyWorkBufferKernel = SmoothShader.FindKernel("ApplySmooth");
@@ -102,8 +101,5 @@ public class SmoothTool : Tool
         SmoothShader.Dispatch(applyWorkBufferKernel, volume / 512, 1, 1);
 
         snapshot.ApplySnapshot();
-        //snapshot.TakeSnapshot();
-        //snapshot.ApplySnapshot();
-
     }
 }
