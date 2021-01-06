@@ -16,7 +16,7 @@ public class PaintTool : Tool
 
     public ComputeShader shader;
 
-    int sphereShaderKernel;
+    int shaderKernel;
 
     [HideInInspector]
     public CursorSDF cursor;
@@ -55,13 +55,13 @@ public class PaintTool : Tool
         shader.SetFloat("chunkSize", activeLayer.Spacing);
         shader.SetInt("resolution", activeLayer.ChunkResolution);
         shader.SetFloat("radius", cursor.radius * (1f / activeLayer.transform.localScale.x)); //Scale is uniform in all directions, so it does not matter which component of vector we take.
-
+        shader.SetVector("color", new Vector3(0.0f, 0.0f, 1.0f));
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
-            sphereShaderKernel = shader.FindKernel("CSMain");
+            shaderKernel = shader.FindKernel("CSMain");
             shader.SetVector("position", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
-            shader.SetBuffer(sphereShaderKernel, "sdf", chunk.voxels.VoxelBuffer);
-            shader.Dispatch(sphereShaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
+            shader.SetBuffer(shaderKernel, "colors", chunk.voxels.ColorBuffer);
+            shader.Dispatch(shaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
         }
     }

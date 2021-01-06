@@ -1,11 +1,12 @@
 ﻿// Each #kernel tells which function to compile; you can have many kernels
 #pragma kernel CSMain
 
-RWStructuredBuffer<float> sdf;
+RWStructuredBuffer<float3> colors;
 float radius;
 float chunkSize;
 float3 position;
 uint resolution;
+float3 color;
 
 uint coords(uint3 id)
 {
@@ -24,10 +25,10 @@ float3 realPos(uint3 id)
 void CSMain(uint3 id : SV_DispatchThreadID)
 {
     uint arrCoords = coords(id);
-    float sdfVal = sdf[arrCoords];
     float3 displacement = realPos(id) - position;
     float val = dot(displacement, displacement) - (radius * radius);
-
-    val = clamp(val, -0.01209677f, 0.01209677f);
-    sdf[arrCoords] = min(val, sdfVal);
+    if (val < 0)
+    {
+        colors[arrCoords] = half4(color,1.0f);
+    }
 }

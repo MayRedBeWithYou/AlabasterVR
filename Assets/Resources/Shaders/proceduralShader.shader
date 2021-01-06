@@ -39,12 +39,14 @@
 			v2f vert(uint id : SV_VertexID, uint instanceId : SV_InstanceID)
 			{
 				v2f o;
-				float4 pos = float4(data[instanceId * 6 + id], 1);
+				float4 pos = float4(data[instanceId * 9 + id], 1);
 				pos = mul(model, pos);
 				o.vertex = UnityObjectToClipPos(pos);
-				o.normal = mul(transpose((float3x3)invModel),data[instanceId * 6 + id + 3]);
+				o.normal = mul(transpose((float3x3)invModel),data[instanceId * 9 + id + 3]);
 				o.normal = UnityObjectToWorldNormal(o.normal);
-				o.color = half4(ShadeVertexLights(o.vertex, o.normal), 1);
+				half4 lightColor = half4(ShadeVertexLights(o.vertex, o.normal), 1);
+				o.color = half4(data[instanceId * 9 + id + 6],1);//half4(ShadeVertexLights(o.vertex, o.normal), 1);
+				o.color = clamp(half4(0, 0, 0, 0), lightColor, o.color);
 				return o;
 			}
 

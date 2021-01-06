@@ -46,8 +46,7 @@ MonoBehaviour:
   toolName: Maluj
   description: 
   sprite: {fileID: 21300000, guid: 6997934d855afa7469944ec0748014bf, type: 3}
-  trigger: {fileID: 0}
-  addMaterial: {fileID: 0}
+  trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
   cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
     type: 3}
   shader: {fileID: 7200000, guid: 15f99c2a66edd5440af30623daaab782, type: 3}

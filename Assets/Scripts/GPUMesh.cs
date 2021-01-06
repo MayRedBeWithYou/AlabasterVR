@@ -20,7 +20,7 @@ public class GPUMesh : IDisposable
 
     public GPUMesh(int maxTriangleCount)
     {
-        vertexBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 18, ComputeBufferType.Append);
+        vertexBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 27, ComputeBufferType.Append);
         drawArgs = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
         drawArgs.SetData(new int[] { 3, 0, 0, 0 });
     }
@@ -30,6 +30,7 @@ public class GPUMesh : IDisposable
         int kernel = marchingCubesShader.FindKernel("March");
         vertexBuffer.SetCounterValue(0);
         marchingCubesShader.SetBuffer(kernel, "points", voxels.VoxelBuffer);
+        marchingCubesShader.SetBuffer(kernel, "colors", voxels.ColorBuffer);
         marchingCubesShader.SetBuffer(kernel, "triangles", vertexBuffer);
         marchingCubesShader.SetInt("numPointsPerAxis", voxels.Resolution);
         marchingCubesShader.SetFloat("isoLevel", isoLevel);
