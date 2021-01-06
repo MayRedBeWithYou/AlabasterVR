@@ -71,10 +71,10 @@ public class FileExplorer : MonoBehaviour
             {
                 if (mode == FileExplorerMode.Open)
                 {
-                    placeholderText.text = "Wybierz plik z panelu";
+                    placeholderText.text = "Choose a file from list";
                     inputText.interactable = false;
                 }
-                else placeholderText.text = "Wpisz nazwę pliku";
+                else placeholderText.text = "Enter file name";
             }
             inputText.ForceLabelUpdate();
         }
@@ -244,7 +244,7 @@ public class FileExplorer : MonoBehaviour
                 {
                     if (text.Contains(forbidden[i]))
                     {
-                        UIController.Instance.ShowMessageBox(keyboard.gameObject, "Użyto niedozwolonego znaku:\n" + forbidden[i]);
+                        UIController.Instance.ShowMessageBox(keyboard.gameObject, "Invalid character appeared in file name:\n" + forbidden[i]);
                         return;
                     }
                 }

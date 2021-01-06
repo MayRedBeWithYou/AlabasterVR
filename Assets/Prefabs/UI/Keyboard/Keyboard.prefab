@@ -77,7 +77,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Anuluj
+  m_Text: Cancel
 --- !u!1 &34467706543810419
 GameObject:
   m_ObjectHideFlags: 0
@@ -9758,7 +9758,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Podaj nazw\u0119..."
+  m_Text: Enter text...
 --- !u!1 &6317887221292508804
 GameObject:
   m_ObjectHideFlags: 0
@@ -11887,7 +11887,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Zatwierd\u017A"
+  m_Text: Confirm
 --- !u!1 &7537876158920816722
 GameObject:
   m_ObjectHideFlags: 0
@@ -13290,7 +13290,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Wyczy\u015B\u0107"
+  m_Text: Clear
 --- !u!1 &8468770574260638948
 GameObject:
   m_ObjectHideFlags: 0
