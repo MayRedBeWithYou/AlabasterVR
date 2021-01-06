@@ -96,7 +96,7 @@ public class MaterialTool : Tool
         var activeLayer = LayerManager.Instance.ActiveLayer;
         shader.SetFloat("chunkSize", activeLayer.Spacing);
         shader.SetInt("resolution", activeLayer.ChunkResolution);
-        shader.SetFloat("radius", cursor.radius * (1f/activeLayer.transform.localScale.x)); //Scale is uniform in all directions, so it does not matter which component of vector we take.
+        shader.SetFloat("radius", cursor.radius * (1f/activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
 
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
