@@ -39,7 +39,7 @@ public class LightManager : MonoBehaviour
         lights = new List<SceneLight>();
 
         SceneLight light = Instantiate(LightPrefab, LightHolder.transform).GetComponent<SceneLight>();
-        light.name = $"Główne światło";
+        light.name = $"Main light";
 
         light.transform.position = new Vector3(0, 3, 0);
         light.transform.rotation = Quaternion.Euler(50, -30, 0);
@@ -52,7 +52,7 @@ public class LightManager : MonoBehaviour
     public SceneLight CreateLight()
     {
         SceneLight light = Instantiate(LightPrefab, LightHolder.transform).GetComponent<SceneLight>();
-        light.name = $"Światło {lightCount++}";
+        light.name = $"Light {lightCount++}";
 
         Vector3 lookDirection = Camera.main.transform.forward;
 

@@ -16,9 +16,6 @@ public class LightItem : MonoBehaviour
     private Button _colorButton;
 
     [SerializeField]
-    private Button _settingsButton;
-
-    [SerializeField]
     private Button _removeButton;
 
     private Image _image;
@@ -39,7 +36,6 @@ public class LightItem : MonoBehaviour
     {
         _toggleButton.onClick.AddListener(ToggleLight);
         _colorButton.onClick.AddListener(ChangeColor);
-        _settingsButton.onClick.AddListener(() => { });
         _removeButton.onClick.AddListener(RemoveLight);
     }
 
