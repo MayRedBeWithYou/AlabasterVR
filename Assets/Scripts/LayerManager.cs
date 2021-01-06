@@ -127,6 +127,7 @@ public class LayerManager : MonoBehaviour
         ActiveLayer = layers[Mathf.Clamp(index, 0, layers.Count - 1)];
         Debug.Log($"Removed layer: {layer.name}");
         Destroy(layer.gameObject);
+        OperationManager.Instance.Clear();
         LayerRemoved?.Invoke(layer);
     }
 

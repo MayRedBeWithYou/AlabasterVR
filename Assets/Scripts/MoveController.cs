@@ -49,6 +49,8 @@ public class MoveController : MonoBehaviour
     [SerializeField]
     private IResizable resizable;
 
+    private TransformObject before;
+
     void Awake()
     {
         if (_instance != null && _instance != this)
@@ -120,7 +122,11 @@ public class MoveController : MonoBehaviour
                 grab = GrabState.One;
                 var hover = controller.GetComponent<OnHoverEventHandler>();
                 if (hover.Current != null) grabbedObject = hover.Current;
-                else grabbedObject = LayerManager.Instance.ActiveLayer.gameObject;
+                else
+                {
+                    grabbedObject = LayerManager.Instance.ActiveLayer.gameObject;
+                    before = new TransformObject(grabbedObject.transform.position, grabbedObject.transform.localScale, grabbedObject.transform.rotation);
+                }
 
                 originalParent = grabbedObject.transform.parent;
 
@@ -162,10 +168,18 @@ public class MoveController : MonoBehaviour
                     grabbedObject.transform.parent = originalParent;
                     grabbedObject.transform.position = pos;
                 }
+                if (before != null)
+                {
+                    TransformObject after = new TransformObject(grabbedObject.transform);
+                    LayerMoveOperation op = new LayerMoveOperation(LayerManager.Instance.ActiveLayer, before, after);
+                    OperationManager.Instance.PushOperation(op);
+                    before = null;
+                }
                 grabbedObject = null;
                 originalParent = null;
                 movable = null;
                 resizable = null;
+                
                 break;
             case GrabState.Both:
                 grab = GrabState.One;
