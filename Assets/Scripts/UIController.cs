@@ -132,19 +132,19 @@ public class UIController : MonoBehaviour
     {
         if (_activeMainMenu != null) _activeMainMenu.Close();
         if (_activeFileExplorer != null) _activeFileExplorer.Close();
-        _activeFileExplorer = FileManager.Instance.SaveModel(PrepreparedFileExplorer());
+        _activeFileExplorer = FileManager.SaveModel(PrepreparedFileExplorer());
     }
 
     private void ShowLoadModel()
     {
         if (_activeMainMenu != null) _activeMainMenu.Close();
         if (_activeFileExplorer != null) _activeFileExplorer.Close();
-        _activeFileExplorer = FileManager.Instance.LoadModel(PrepreparedFileExplorer());
+        _activeFileExplorer = FileManager.LoadModel(PrepreparedFileExplorer());
     }
     public FileExplorer ShowRefPicture()
     {
         if (_activeFileExplorer != null) _activeFileExplorer.Close();
-        _activeFileExplorer = FileManager.Instance.LoadImageReference(PrepreparedFileExplorer());
+        _activeFileExplorer = FileManager.LoadImageReference(PrepreparedFileExplorer());
         return _activeFileExplorer;
     }
     public PictureCanvas ShowPictureCanvas()
@@ -152,7 +152,8 @@ public class UIController : MonoBehaviour
         Vector3 lookDirection = Camera.main.transform.forward;
         lookDirection.y = 0;
         Vector3 prefabPosition = Camera.main.transform.position + lookDirection.normalized * (uiDistance * 2);
-        return CreateUI(PictureCanvasPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<PictureCanvas>();
+        var canvas= CreateUI(PictureCanvasPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<PictureCanvas>();
+        return canvas;
     }
     private GameObject CreateUI(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)
     {

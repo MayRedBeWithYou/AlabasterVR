@@ -1082,8 +1082,9 @@ GameObject:
   - component: {fileID: 3114523702385467698}
   - component: {fileID: 5420565922705672415}
   - component: {fileID: 7382212487349396549}
+  - component: {fileID: 8597290771885395773}
   m_Layer: 5
-  m_Name: Ref Images
+  m_Name: RefPictures
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1170,6 +1171,21 @@ MonoBehaviour:
   m_ChildControlHeight: 0
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
+--- !u!114 &8597290771885395773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2679353068854690058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cf1956ed669d5a48a68464200834089, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentHolder: {fileID: 2679353068854690058}
+  refPictureItemPrefab: {fileID: 6325207840711897341, guid: cd396742ee561214496e719c79357eff,
+    type: 3}
 --- !u!1 &2710157880970058639
 GameObject:
   m_ObjectHideFlags: 0

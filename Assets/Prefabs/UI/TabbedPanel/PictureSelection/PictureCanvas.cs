@@ -11,60 +11,36 @@ public class PictureCanvas : MonoBehaviour
     private Image image;
     private string path;
     [HideInInspector]
-    public PictureItem pictureItem;
-    public string PicName { get { return picName.text; } 
-    set { 
-            picName.text = value; 
-            if(pictureItem!=null)pictureItem.PicName=value;
-        }}
+    public string PicName { get { return picName.text; } set { picName.text = value;}}
+    public bool visible;
 
-    public void Init(string path, PictureItem pictureItem)
-    {
-        this.path = path;
-        this.pictureItem = pictureItem;
-        LoadImage(path);
-        PicName = Path.GetFileNameWithoutExtension(path);
-    }
     public void UpdateImage()
     {
         var script = UIController.Instance.ShowRefPicture();
         script.OnAccepted += (text) =>
         {
             if (System.String.IsNullOrWhiteSpace(text)) return;
-            Init(text,this.pictureItem);
+            SetPicture(text);
             script.Close();
         };
     }
+    public void SetPicture(string text)
+    {
+        path=text;
+        PicName=Path.GetFileNameWithoutExtension(text);
+        image.sprite = LoadNewSprite(text);
+    }
     public void Close()
     {
-        if (pictureItem != null)
-        {
-            RefPictureManager.Instance.pictures.Remove(pictureItem);
-            pictureItem.gameObject.SetActive(false);
-            Destroy(pictureItem.gameObject);
-            pictureItem = null;
-        }
-        gameObject.SetActive(false);
-        Destroy(gameObject);
+        RefPictureManager.Instance.RemovePicture(this);
     }
     public void Hide()
     {
-        if (pictureItem != null) pictureItem.ChangeVisibility();
-        gameObject.SetActive(!gameObject.activeSelf);
+        RefPictureManager.Instance.HidePicture(this);
     }
     public void ChangeName()
     {
-        Keyboard keyboard = Keyboard.Show(PicName);
-        keyboard.OnAccepted += (text) =>
-        {
-            PicName = text;
-            keyboard.Close();
-        };
-        keyboard.OnCancelled += () => keyboard.Close();
-    }
-    public void LoadImage(string path)
-    {
-        image.sprite = LoadNewSprite(path);
+        RefPictureManager.Instance.ChangeName(this);
     }
     private Sprite LoadNewSprite(string FilePath, float PixelsPerUnit = 100.0f, SpriteMeshType spriteType = SpriteMeshType.Tight)
     {

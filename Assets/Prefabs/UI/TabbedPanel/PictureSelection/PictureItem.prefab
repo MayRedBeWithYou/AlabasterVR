@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 3083135742180544590}
   - component: {fileID: 7488761968841449509}
   m_Layer: 5
-  m_Name: Image
+  m_Name: HideImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -723,7 +723,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hideButton: {fileID: 3681528815721197478}
+  hideImage: {fileID: 7488761968841449509}
   picName: {fileID: 4464148020017710096}
+  canvas: {fileID: 0}
 --- !u!1 &6867333852087231785
 GameObject:
   m_ObjectHideFlags: 0

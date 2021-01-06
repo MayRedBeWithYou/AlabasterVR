@@ -6,46 +6,26 @@ using System.IO;
 public class PictureItem : MonoBehaviour
 {
     [SerializeField]
-    Button hideButton;
     Image hideImage;
     [SerializeField]
     Text picName;
-    PictureCanvas pictureCanvas;
+    public PictureCanvas canvas;
     public string PicName { get { return picName.text; } set { picName.text = value; } }
-    bool visible;
     public void Close()
     {
-        if (pictureCanvas != null)
-        {
-            pictureCanvas.Close();
-            pictureCanvas = null;
-        }
-        else
-        {
-            gameObject.SetActive(false);
-            Destroy(gameObject);
-        }
+        RefPictureManager.Instance.RemovePicture(canvas);
     }
     public void Hide()
     {
-        if (pictureCanvas != null) pictureCanvas.Hide();
-        else ChangeVisibility();
+        RefPictureManager.Instance.HidePicture(canvas);
     }
     public void ChangeName()
     {
-        if (pictureCanvas != null) pictureCanvas.ChangeName();
+        RefPictureManager.Instance.ChangeName(canvas);
     }
-    public void ChangeVisibility()
+    public void ChangeVisibilityButton()
     {
-        visible = !visible;
-        if (visible) hideImage.color = Color.white;
+        if (canvas.visible) hideImage.color = Color.white;
         else hideImage.color = Color.black;
-    }
-    public void Init(string path, PictureCanvas canvas)
-    {
-        visible = true;
-        pictureCanvas = canvas;
-        pictureCanvas.Init(path, this);
-        hideImage = hideButton.GetComponentInChildren<Image>();
     }
 }
