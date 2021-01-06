@@ -688,6 +688,8 @@ MonoBehaviour:
     type: 3}
   MessageBoxPrefab: {fileID: 1805241821112254338, guid: 8acd3a9ec0bfd83478e9124fc73f4144,
     type: 3}
+  YesNoCancelPopupPrefab: {fileID: 1805241821112254338, guid: 4a44607b3583cdf46ac15ef5c1c75eb8,
+    type: 3}
   colorPickerPrefab: {fileID: 157272, guid: 916ee089a0d7b63419075f91e1c657ec, type: 3}
   KeyboardPrefab: {fileID: 3361844223996469137, guid: 37a179890cd05954ab8efbb146cb1e22,
     type: 3}
@@ -766,7 +768,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1298462510}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &401280366
 GameObject:
@@ -857,7 +859,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1298462510}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &597567887
 GameObject:
@@ -992,7 +994,6 @@ Transform:
   - {fileID: 264691738}
   - {fileID: 1304529423}
   - {fileID: 122135607}
-  - {fileID: 1906343125}
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1304,7 +1305,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1298462510}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1298109535
 GameObject:
@@ -1385,9 +1386,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 271393738}
   - {fileID: 1274172293}
   - {fileID: 444461103}
-  - {fileID: 271393738}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

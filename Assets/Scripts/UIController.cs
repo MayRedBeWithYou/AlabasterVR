@@ -28,6 +28,7 @@ public class UIController : MonoBehaviour
     public GameObject TabbedPanelMenuPrefab;
     public GameObject FileExplorerPrefab;
     public GameObject MessageBoxPrefab;
+    public GameObject YesNoCancelPopupPrefab;
     public GameObject colorPickerPrefab;
     public GameObject KeyboardPrefab;
     public GameObject LeftOverlay;
@@ -67,8 +68,8 @@ public class UIController : MonoBehaviour
             Vector3 lookDirection = cameraTransform.forward;
             lookDirection.y = 0;
             _activeMainMenu = CreateUI(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<MainMenu>();
-            _activeMainMenu.SaveButton.onClick.AddListener(ShowSaveModel);
-            _activeMainMenu.ImportButton.onClick.AddListener(ShowLoadModel);
+            _activeMainMenu.SaveButton.onClick.AddListener(() => ShowSaveModel());
+            _activeMainMenu.ImportButton.onClick.AddListener(() => ShowLoadModel());
         }
     }
 
@@ -117,6 +118,22 @@ public class UIController : MonoBehaviour
         return _activeKeyboard;
     }
 
+    public Keyboard ShowKeyboard(GameObject parent, string text)
+    {
+        if (_activeKeyboard != null)
+        {
+            _activeKeyboard.Close();
+        }
+                
+        GameObject go = CreateUI(KeyboardPrefab, parent.transform.position, parent.transform.rotation);
+        go.transform.localPosition -= Vector3.forward * Random.Range(0.001f, 0.01f);
+
+        _activeKeyboard = go.GetComponent<Keyboard>();
+        _activeKeyboard.OnClosing += () => _activeKeyboard = null;
+        _activeKeyboard.SetText(text);
+        return _activeKeyboard;
+    }
+
     public ColorPicker ShowColorPicker(Color color)
     {
         Vector3 lookDirection = cameraTransform.forward;
@@ -125,6 +142,7 @@ public class UIController : MonoBehaviour
         colorPicker.CurrentColor = color;
         return colorPicker;
     }
+
     public void ShowMessageBox(string message)
     {
         Vector3 lookDirection = Camera.main.transform.forward;
@@ -133,18 +151,48 @@ public class UIController : MonoBehaviour
         GameObject go = CreateUI(MessageBoxPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
         go.GetComponent<MessageBox>().Init(message);
     }
-    private void ShowSaveModel()
+
+    public void ShowMessageBox(GameObject parent, string message)
     {
-        if (_activeMainMenu != null) _activeMainMenu.Close();
-        if (_activeFileExplorer != null) _activeFileExplorer.Close();
-        _activeFileExplorer = FileManager.Instance.SaveModel(PrepreparedFileExplorer());
+        GameObject go = CreateUI(MessageBoxPrefab, parent.transform.position, parent.transform.rotation);
+        go.transform.localPosition -= Vector3.forward * Random.Range(0.001f, 0.01f);
+        go.GetComponent<MessageBox>().Init(message);
     }
 
-    private void ShowLoadModel()
+    public YesNoCancelPopup ShowYesNoPopup(string message)
+    {
+        Vector3 lookDirection = Camera.main.transform.forward;
+        lookDirection.y = 0;
+        Vector3 prefabPosition = Camera.main.transform.position + lookDirection.normalized * (uiDistance);
+        GameObject go = CreateUI(YesNoCancelPopupPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up));
+        go.GetComponent<YesNoCancelPopup>().Init(message);
+        return go.GetComponent<YesNoCancelPopup>();
+    }
+
+    public YesNoCancelPopup ShowYesNoPopup(GameObject parent, string message)
+    {
+        GameObject go = CreateUI(YesNoCancelPopupPrefab, parent.transform.position, parent.transform.rotation);
+        go.transform.localPosition -= Vector3.forward * Random.Range(0.001f, 0.01f);
+        go.GetComponent<YesNoCancelPopup>().Init(message);
+        return go.GetComponent<YesNoCancelPopup>();
+    }
+
+    public FileExplorer ShowSaveModel()
     {
         if (_activeMainMenu != null) _activeMainMenu.Close();
         if (_activeFileExplorer != null) _activeFileExplorer.Close();
-        _activeFileExplorer = FileManager.Instance.LoadModel(PrepreparedFileExplorer());
+        FileExplorer explorer = PrepreparedFileExplorer();
+        _activeFileExplorer = FileManager.Instance.SaveModel(explorer);
+        return explorer;
+    }
+
+    public FileExplorer ShowLoadModel()
+    {
+        if (_activeMainMenu != null) _activeMainMenu.Close();
+        if (_activeFileExplorer != null) _activeFileExplorer.Close();
+        FileExplorer explorer = PrepreparedFileExplorer();
+        _activeFileExplorer = FileManager.Instance.LoadModel(explorer);
+        return explorer;
     }
 
     private GameObject CreateUI(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)

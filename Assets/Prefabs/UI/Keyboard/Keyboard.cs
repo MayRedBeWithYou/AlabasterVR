@@ -143,6 +143,11 @@ public class Keyboard : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public static Keyboard Show(GameObject parent, string text = "")
+    {
+        return UIController.Instance.ShowKeyboard(parent, text);
+    }
+
     public static Keyboard Show(string text = "")
     {
         return UIController.Instance.ShowKeyboard(text);

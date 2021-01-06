@@ -74,7 +74,7 @@ public class LayerManager : MonoBehaviour
 
     public static event LayerChange LayerRemoved;
 
-    private int _layerCount = 1;
+    private int _layerCount = 0;
 
     public void Awake()
     {
@@ -97,7 +97,7 @@ public class LayerManager : MonoBehaviour
     public Layer AddNewLayer()
     {
         GameObject layerObject = Instantiate(LayerPrefab, LayersHolder.transform);
-        layerObject.name = $"Warstwa {_layerCount++}";
+        layerObject.name = $"Layer {++_layerCount}";
         layerObject.transform.position = LayersHolder.transform.position;
         Layer layer = layerObject.GetComponent<Layer>();
         layer.Resolution = Resolution;
@@ -129,6 +129,17 @@ public class LayerManager : MonoBehaviour
         Destroy(layer.gameObject);
         OperationManager.Instance.Clear();
         LayerRemoved?.Invoke(layer);
+    }
+
+    public void ResetLayers()
+    {
+        foreach(Layer layer in layers)
+        {
+            Destroy(layer.gameObject);
+        }
+        layers.Clear();
+        _layerCount = 0;
+        _activeLayer = AddNewLayer();
     }
 
     void OnDrawGizmos()

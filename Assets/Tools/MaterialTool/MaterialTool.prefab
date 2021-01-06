@@ -43,8 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6cad72d1ea2f274c809d651c4bbcc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toolName: Tworzywo
-  description: "Narz\u0119dzie do dok\u0142adania i odejmowania tworzywa."
+  toolName: Material
+  description: Tool for adding and removing material
   sprite: {fileID: 21300000, guid: b2d0a19bcee3ee54cb4270f50a6ea3bd, type: 3}
   trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
   settingsButton: {fileID: 11400000, guid: 6e43c03404523d04d90af0b5798b4417, type: 2}
@@ -61,3 +61,4 @@ MonoBehaviour:
   color: {r: 1, g: 1, b: 1, a: 1}
   cursor: {fileID: 0}
   isAdding: 1
+  isWorking: 0

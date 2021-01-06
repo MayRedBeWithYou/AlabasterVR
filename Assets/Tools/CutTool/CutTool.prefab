@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92fcb656378c6a144bbc42b5458918fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
-  toolName: "Ci\u0119cie"
+  toolName: Cut
+  description: 
   sprite: {fileID: 21300000, guid: 51d214051b5bf4a46ba34713609b1c22, type: 3}
