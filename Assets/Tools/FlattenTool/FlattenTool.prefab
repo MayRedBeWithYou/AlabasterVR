@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c02a757db19569e4d9c48b36d7de6e96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
-  toolName: "Wyg\u0142ad\u017A"
+  toolName: Flatten
+  description: 
   sprite: {fileID: 21300000, guid: dee1153bcc8004c4c9ec57d7a5d05064, type: 3}

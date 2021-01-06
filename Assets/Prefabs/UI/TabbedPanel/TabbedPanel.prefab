@@ -37,7 +37,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00015258789, y: -0.005935669}
+  m_AnchoredPosition: {x: 0.00015258789, y: -0.0069122314}
   m_SizeDelta: {x: -0.00015258789, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &5641579225175251568
@@ -112,7 +112,7 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 0.999993}
+  m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -514,7 +514,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Nowe \u015Bwiat\u0142o"
+  m_Text: 'New
+
+    Light'
 --- !u!1 &1724906986347612025
 GameObject:
   m_ObjectHideFlags: 0
@@ -664,7 +666,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &2905773992416862543
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1069,7 +1071,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Nowa warstwa
+  m_Text: 'New
+
+    Layer'
 --- !u!1 &2679353068854690058
 GameObject:
   m_ObjectHideFlags: 0
@@ -1544,7 +1548,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Nowy obrazek
+  m_Text: 'New
+
+    Image'
 --- !u!1 &3394816283998630960
 GameObject:
   m_ObjectHideFlags: 0
@@ -1761,7 +1767,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u015Awiat\u0142a"
+  m_Text: Lights
 --- !u!1 &4298795198796078646
 GameObject:
   m_ObjectHideFlags: 0
@@ -2033,7 +2039,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Warstwy
+  m_Text: 'Layers
 
 '
 --- !u!1 &5437729232957779530
@@ -2276,7 +2282,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Obrazy
+  m_Text: Images
 --- !u!1 &7253038080712173954
 GameObject:
   m_ObjectHideFlags: 0

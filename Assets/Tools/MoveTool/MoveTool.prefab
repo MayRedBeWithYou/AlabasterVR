@@ -43,6 +43,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b13e01ccbd4ed74cb52cc450cdbd5a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
-  toolName: "Przesu\u0144"
+  toolName: Move
+  description: 
   sprite: {fileID: 21300000, guid: cb445ecac047d3a459da3710cd981953, type: 3}
