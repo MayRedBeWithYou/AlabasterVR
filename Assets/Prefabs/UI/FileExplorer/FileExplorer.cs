@@ -237,14 +237,14 @@ public class FileExplorer : MonoBehaviour
     {
         if (mode == FileExplorerMode.Save)
         {
-            Keyboard keyboard = Keyboard.Show(Filename);
+            Keyboard keyboard = Keyboard.Show(gameObject, Filename);
             keyboard.OnAccepted += (text) =>
             {
                 for (int i = 0; i < forbidden.Length; i++)
                 {
                     if (text.Contains(forbidden[i]))
                     {
-                        UIController.Instance.ShowMessageBox("Użyto niedozwolonego znaku:\n" + forbidden[i]);
+                        UIController.Instance.ShowMessageBox(keyboard.gameObject, "Użyto niedozwolonego znaku:\n" + forbidden[i]);
                         return;
                     }
                 }
