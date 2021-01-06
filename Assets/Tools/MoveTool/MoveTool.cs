@@ -10,6 +10,7 @@ public class MoveTool : Tool
     {
         public Vector3Int from;
         public Vector3 gradient;
+        public Vector3 colorGradient;
     }
 
 
@@ -53,7 +54,7 @@ public class MoveTool : Tool
         res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
-        workBuffer = new ComputeBuffer(volume, sizeof(float) * 3 + sizeof(uint) * 3, ComputeBufferType.Append);
+        workBuffer = new ComputeBuffer(volume, sizeof(float) * 6 + sizeof(uint) * 3, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
     }
 
@@ -92,6 +93,7 @@ public class MoveTool : Tool
         ApplyMoveShader.SetInt("resolution", snapshot.resolution);
         ApplyMoveShader.SetBuffer(kernel, "entries", countBuffer);
         ApplyMoveShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);
+        ApplyMoveShader.SetBuffer(kernel, "colors", snapshot.Colors);
         ApplyMoveShader.SetBuffer(kernel, "workBuffer", workBuffer);
         ApplyMoveShader.Dispatch(kernel, volume/512 ,1,1);
         snapshot.ApplySnapshot();
@@ -111,6 +113,7 @@ public class MoveTool : Tool
         PopulateShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position) + Vector3.one * snapshot.size * 0.5f);
         PopulateShader.SetInt("resolution", snapshot.resolution);
         PopulateShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);
+        PopulateShader.SetBuffer(kernel, "colors", snapshot.Colors);
         PopulateShader.SetBuffer(kernel, "workBuffer", workBuffer);
         PopulateShader.Dispatch(kernel, snapshot.resolution / 8, snapshot.resolution / 8, snapshot.resolution / 8);
         prevPos = cursor.transform.position;
