@@ -61,4 +61,23 @@ public class GPUMesh : IDisposable
         vertexBuffer.Dispose();
         drawArgs.Dispose();
     }
+    public struct Triangle
+    {
+        public Vector3 vertexC;
+        public Vector3 vertexA;
+        public Vector3 vertexB;
+        public Vector3 normC;
+        public Vector3 normB;
+        public Vector3 normA;
+    };
+    public Triangle[] GetTriangles()
+    {
+        ComputeBuffer buffer=new ComputeBuffer(1,sizeof(int),ComputeBufferType.IndirectArguments);
+        ComputeBuffer.CopyCount(vertexBuffer,buffer,0);
+        int[]arr=new int[1];
+        buffer.GetData(arr);
+        Triangle[] result = new Triangle[arr[0]];
+        vertexBuffer.GetData(result);
+        return result;
+    }
 }
