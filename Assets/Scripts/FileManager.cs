@@ -32,6 +32,7 @@ public static class FileManager
 
         return script;
     }
+    
     public static FileExplorer LoadImageReference(FileExplorer script)
     {
         script.mode = FileExplorerMode.Open;
@@ -52,6 +53,8 @@ public static class FileManager
             tempName = tempName + counter.ToString();
         }
         tempName += ".obj";
+
+        
         //todo: saving model
 
         if (!nameChanged) UIController.Instance.ShowMessageBox("Model zapisano jako " + Path.GetFileName(tempName));
