@@ -13,6 +13,10 @@ public class OperationManager : MonoBehaviour
     public ButtonHandler undoButton;
     public ButtonHandler redoButton;
 
+    [Header("AudioClips")]
+    public AudioClip undoAudio;
+    public AudioClip redoAudio;
+
     [Header("Stacks")]
     public Stack<IOperation> undoOperations = new Stack<IOperation>();
 
@@ -22,6 +26,8 @@ public class OperationManager : MonoBehaviour
 
     public event StackChanged OnStacksChanged;
 
+    private AudioSource source;
+
     private void Awake()
     {
         if (_instance != null && _instance != this)
@@ -30,6 +36,8 @@ public class OperationManager : MonoBehaviour
             return;
         }
         _instance = this;
+
+        source = GetComponent<AudioSource>();
 
         undoButton.OnButtonDown += (c) => Undo();
         redoButton.OnButtonDown += (c) => Redo();
@@ -56,6 +64,7 @@ public class OperationManager : MonoBehaviour
         IOperation op = undoOperations.Pop();
         op.Revert();
         redoOperations.Push(op);
+        source.PlayOneShot(undoAudio);
         Debug.Log($"Undo: {op.GetType().Name}");
         OnStacksChanged?.Invoke();
     }
@@ -65,6 +74,7 @@ public class OperationManager : MonoBehaviour
         IOperation op = redoOperations.Pop();
         op.Apply();
         undoOperations.Push(op);
+        source.PlayOneShot(redoAudio);
         Debug.Log($"Redo: {op.GetType().Name}");
         OnStacksChanged?.Invoke();
     }
