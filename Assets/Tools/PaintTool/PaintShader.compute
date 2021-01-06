@@ -26,11 +26,13 @@ void CSMain(uint3 id : SV_DispatchThreadID)
 {
     uint arrCoords = coords(id);
     float3 displacement = realPos(id) - position;
-    float val = dot(displacement, displacement) - (radius * radius);
+    float displacementSquared = dot(displacement, displacement);
+    float radiusSquared = radius * radius;
+    float val = displacementSquared - radiusSquared;
     if (val < 0)
     {
-        float ratio = dot(displacement, displacement) / (radius * radius);
-        half4 outColor = half4(lerp(color, colors[arrCoords], ratio), 1.0f);
+        float ratio = 1 + (-displacementSquared / radiusSquared);
+        half4 outColor = half4(lerp(colors[arrCoords], color, ratio), 1.0f);
         colors[arrCoords] = outColor;
     }
 }
