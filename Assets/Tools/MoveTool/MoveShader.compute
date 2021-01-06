@@ -5,11 +5,13 @@ struct MoveData
 {
     uint3 from;
     float3 gradient;
-    float3 colorGradient;
+    float3 rGradient;
+    float3 gGradient;
+    float3 bGradient;
 };
 
 RWStructuredBuffer<float> sdf;
-RWStructuredBuffer<float> colors;
+RWStructuredBuffer<float3> colors;
 StructuredBuffer<MoveData> workBuffer;
 
 float spacing;
@@ -32,9 +34,19 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         float value = sdf[coords(data.from)] - dot(offset, data.gradient);
         value = clamp(-0.01209677f, 0.01209677f, value);
         sdf[coords(data.from)] = value;
+        
+        float3 outColor;
 
-        value = colors[coords(data.from)] - dot(offset, data.colorGradient);
-        value = clamp(float3(0,0,0), float3(1,1,1), value);
-        colors[coords(data.from)] = value;
+        value = colors[coords(data.from)].r - dot(offset, data.rGradient);
+        value = clamp(0, 1, value);
+        outColor.r = value;
+        value = colors[coords(data.from)].g - dot(offset, data.gGradient);
+        value = clamp(0, 1, value);
+        outColor.g = value;
+        value = colors[coords(data.from)].b - dot(offset, data.bGradient);
+        value = clamp(0, 1, value);
+        outColor.b = value;
+
+        colors[coords(data.from)] = outColor;
     }
 }

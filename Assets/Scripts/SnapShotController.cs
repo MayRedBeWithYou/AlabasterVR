@@ -171,7 +171,13 @@ public class SnapshotController : MonoBehaviour, IDisposable
 
     public void Dispose()
     {
-        if (sdf != null) sdf.Dispose();
-        if (overlapCounter != null) overlapCounter.Dispose();
+        if (sdf != null) sdf.Release();
+        if (colors != null) colors.Release();
+        if (overlapCounter != null) overlapCounter.Release();
+    }
+
+    ~SnapshotController()
+    {
+        Dispose();
     }
 }

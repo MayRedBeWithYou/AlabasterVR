@@ -5,11 +5,14 @@ struct MoveData
 {
     uint3 from;
     float3 gradient;
-    float3 colorGradient;
+    float3 rGradient;
+    float3 gGradient;
+    float3 bGradient;
+
 };
 
 RWStructuredBuffer<float> sdf;
-RWStructuredBuffer<float> colors;
+RWStructuredBuffer<float3> colors;
 AppendStructuredBuffer<MoveData> workBuffer;
 float toolRadius;
 float chunkSize;
@@ -40,11 +43,33 @@ float3 getSdfGradient(uint3 id)
     return gradient;
 }
 
-float3 getColorGradient(uint3 id)
+float3 getRGradient(uint3 id)
 {
-    float dx = colors[coords(uint3(id.x + 1, id.y, id.z))] - colors[coords(uint3(id.x - 1, id.y, id.z))];
-    float dy = colors[coords(uint3(id.x, id.y + 1, id.z))] - colors[coords(uint3(id.x, id.y - 1, id.z))];
-    float dz = colors[coords(uint3(id.x, id.y, id.z + 1))] - colors[coords(uint3(id.x, id.y, id.z - 1))];
+    float dx = colors[coords(uint3(id.x + 1, id.y, id.z))].r - colors[coords(uint3(id.x - 1, id.y, id.z))].r;
+    float dy = colors[coords(uint3(id.x, id.y + 1, id.z))].r - colors[coords(uint3(id.x, id.y - 1, id.z))].r;
+    float dz = colors[coords(uint3(id.x, id.y, id.z + 1))].r - colors[coords(uint3(id.x, id.y, id.z - 1))].r;
+    float3 gradient = { dx,dy,dz };
+    float spacing = chunkSize / (resolution - 1);
+    gradient /= (spacing * 3);
+    return gradient;
+}
+
+float3 getGGradient(uint3 id)
+{
+    float dx = colors[coords(uint3(id.x + 1, id.y, id.z))].g - colors[coords(uint3(id.x - 1, id.y, id.z))].g;
+    float dy = colors[coords(uint3(id.x, id.y + 1, id.z))].g - colors[coords(uint3(id.x, id.y - 1, id.z))].g;
+    float dz = colors[coords(uint3(id.x, id.y, id.z + 1))].g - colors[coords(uint3(id.x, id.y, id.z - 1))].g;
+    float3 gradient = { dx,dy,dz };
+    float spacing = chunkSize / (resolution - 1);
+    gradient /= (spacing * 3);
+    return gradient;
+}
+
+float3 getBGradient(uint3 id)
+{
+    float dx = colors[coords(uint3(id.x + 1, id.y, id.z))].b - colors[coords(uint3(id.x - 1, id.y, id.z))].b;
+    float dy = colors[coords(uint3(id.x, id.y + 1, id.z))].b - colors[coords(uint3(id.x, id.y - 1, id.z))].b;
+    float dz = colors[coords(uint3(id.x, id.y, id.z + 1))].b - colors[coords(uint3(id.x, id.y, id.z - 1))].b;
     float3 gradient = { dx,dy,dz };
     float spacing = chunkSize / (resolution - 1);
     gradient /= (spacing * 3);
@@ -61,10 +86,14 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         MoveData data;
         data.from = id;
         data.gradient = getSdfGradient(id);
-        data.colorGradient = getColorGradient(id);
+        data.rGradient = getRGradient(id);
+        data.gGradient = getGGradient(id);
+        data.bGradient = getBGradient(id);
         float ratio = dot(displacement, displacement) / (toolRadius * toolRadius);
         data.gradient = lerp(data.gradient, float3(0, 0, 0), ratio);
-        data.colorGradient = lerp(data.colorGradient, float3(0, 0, 0), ratio);
+        data.rGradient = lerp(data.rGradient, float3(0, 0, 0), ratio);
+        data.gGradient = lerp(data.gGradient, float3(0, 0, 0), ratio);
+        data.bGradient = lerp(data.bGradient, float3(0, 0, 0), ratio);
         workBuffer.Append(data);
     }
 }

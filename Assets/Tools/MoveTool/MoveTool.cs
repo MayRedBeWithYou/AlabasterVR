@@ -4,18 +4,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
-public class MoveTool : Tool
+public class MoveTool : Tool, IDisposable
 {
     public struct MoveData
     {
         public Vector3Int from;
         public Vector3 gradient;
-        public Vector3 colorGradient;
+        public Vector3 rGradient;
+        public Vector3 gGradient;
+        public Vector3 bGradient;
     }
 
 
     public AxisHandler Trigger;
-    //public ComputeShader MoveShader;
+
     public ComputeShader PopulateShader;
     public ComputeShader ApplyMoveShader;
 
@@ -54,7 +56,7 @@ public class MoveTool : Tool
         res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
-        workBuffer = new ComputeBuffer(volume, sizeof(float) * 6 + sizeof(uint) * 3, ComputeBufferType.Append);
+        workBuffer = new ComputeBuffer(volume, sizeof(float) * 12 + sizeof(uint) * 3, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
     }
 
@@ -119,5 +121,16 @@ public class MoveTool : Tool
         prevPos = cursor.transform.position;
         ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
         workBufferPopulated = true;
+    }
+
+    public void Dispose()
+    {
+        if (workBuffer != null) workBuffer.Dispose();
+        if (countBuffer != null) countBuffer.Dispose();
+    }
+
+    ~MoveTool()
+    {
+        Dispose();
     }
 }
