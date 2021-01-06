@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using HSVPicker;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -63,6 +64,11 @@ public class LightManager : MonoBehaviour
         lights.Add(light);
         LightAdded?.Invoke(light);
         return light;
+    }
+
+    public void AddLightChangeListener(ColorPicker picker, SceneLight light)
+    {
+        picker.onValueChanged.AddListener((c) => light.SetColor(c));
     }
 
     public void RemoveLight(SceneLight light)

@@ -57,7 +57,7 @@ public class LightItem : MonoBehaviour
         else
         {
             picker = UIController.Instance.ShowColorPicker(_sceneLight.light.color);
-            picker.onValueChanged.AddListener((c) => _sceneLight.SetColor(c));
+            LightManager.Instance.AddLightChangeListener(picker, _sceneLight);
         }
     }
 
