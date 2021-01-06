@@ -6,7 +6,9 @@
 
 
 RWStructuredBuffer<float> snapshot;
+RWStructuredBuffer<float3> colors;
 RWStructuredBuffer<float> sdf;
+RWStructuredBuffer<float3> chunkColors;
 RWStructuredBuffer<uint> overlaps;
 
 float3 gridDisplacement;
@@ -29,6 +31,7 @@ void TakeSnapshot (uint3 id : SV_DispatchThreadID)
         targetId.z >= 0 && targetId.z < resolution)
     {
         snapshot[coords(id)] += sdf[coords(targetId)];
+        colors[coords(id)] += chunkColors[coords(targetId)];
         ++overlaps[coords(id)];
     }
 }
@@ -44,6 +47,7 @@ void ApplySnapshot(uint3 id : SV_DispatchThreadID)
         targetId.z >= 0 && targetId.z < resolution)
     {
         sdf[coords(targetId)] = snapshot[coords(id)];
+        chunkColors[coords(targetId)] = colors[coords(id)];
     }
 }
 
@@ -51,6 +55,7 @@ void ApplySnapshot(uint3 id : SV_DispatchThreadID)
 void ClearData(uint3 id : SV_DispatchThreadID)
 {
     snapshot[id.x] = 0.0f;
+    colors[id.x] = float3(0.0f, 0.0f, 0.0f);
     overlaps[id.x] = 0;
 }
 
@@ -59,6 +64,7 @@ void Normalize(uint3 id : SV_DispatchThreadID)
 {
     if (overlaps[id.x] != 0)
     {
-        snapshot[id.x] = snapshot[id.x] / overlaps[id.x];
+        snapshot[id.x] /= overlaps[id.x];
+        colors[id.x] /= overlaps[id.x];
     }
 }

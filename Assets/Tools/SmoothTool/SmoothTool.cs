@@ -10,6 +10,7 @@ public class SmoothTool : Tool
     {
         public Vector3Int from;
         public float avg;
+        public Vector3 avgColor;
     }
 
     public SnapshotController snapshot;
@@ -55,7 +56,7 @@ public class SmoothTool : Tool
         res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
-        workBuffer = new ComputeBuffer(volume, sizeof(float) + sizeof(uint) * 3, ComputeBufferType.Append);
+        workBuffer = new ComputeBuffer(volume, sizeof(float) * 4 + sizeof(uint) * 3, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
         populateWorkBufferKernel = SmoothShader.FindKernel("PopulateWorkBuffer");
         applyWorkBufferKernel = SmoothShader.FindKernel("ApplySmooth");
@@ -90,6 +91,7 @@ public class SmoothTool : Tool
 
         SmoothShader.SetInt("resolution", snapshot.resolution);
         SmoothShader.SetBuffer(populateWorkBufferKernel, "sdf", snapshot.Snapshot);
+        SmoothShader.SetBuffer(populateWorkBufferKernel, "colors", snapshot.Colors);
         SmoothShader.SetBuffer(populateWorkBufferKernel, "appendWorkBuffer", workBuffer);
         SmoothShader.Dispatch(populateWorkBufferKernel, snapshot.resolution / 8, snapshot.resolution / 8, snapshot.resolution / 8);
         ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
@@ -97,6 +99,7 @@ public class SmoothTool : Tool
         SmoothShader.SetInt("resolution", snapshot.resolution);
         SmoothShader.SetBuffer(applyWorkBufferKernel, "entries", countBuffer);
         SmoothShader.SetBuffer(applyWorkBufferKernel, "sdf", snapshot.Snapshot);
+        SmoothShader.SetBuffer(applyWorkBufferKernel, "colors", snapshot.Colors);
         SmoothShader.SetBuffer(applyWorkBufferKernel, "structuredWorkBuffer", workBuffer);
         SmoothShader.Dispatch(applyWorkBufferKernel, volume / 512, 1, 1);
 
