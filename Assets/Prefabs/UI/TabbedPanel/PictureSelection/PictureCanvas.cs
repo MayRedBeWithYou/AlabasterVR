@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
-public class PictureCanvas : MonoBehaviour
+
+public class PictureCanvas : MonoBehaviour, IResizable
 {
     [SerializeField]
     private Text picName;
@@ -11,27 +12,31 @@ public class PictureCanvas : MonoBehaviour
     private Image image;
     private string path;
     [HideInInspector]
-    public string PicName { get { return picName.text; } set { picName.text = value;}}
+    public string PicName { get { return picName.text; } set { picName.text = value; } }
     public bool visible;
+
+    private FileExplorer explorer;
 
     public void UpdateImage()
     {
-        var script = UIController.Instance.ShowRefPicture();
-        script.OnAccepted += (text) =>
+        if (explorer != null) explorer.Close();
+        explorer = UIController.Instance.ShowRefPicture();
+        explorer.OnAccepted += (text) =>
         {
-            if (System.String.IsNullOrWhiteSpace(text)) return;
+            if (string.IsNullOrWhiteSpace(text)) return;
             SetPicture(text);
-            script.Close();
+            explorer.Close();
         };
     }
     public void SetPicture(string text)
     {
-        path=text;
-        PicName=Path.GetFileNameWithoutExtension(text);
+        path = text;
+        PicName = Path.GetFileNameWithoutExtension(text);
         image.sprite = LoadNewSprite(text);
     }
     public void Close()
     {
+        if (explorer != null) explorer.Close();
         RefPictureManager.Instance.RemovePicture(this);
     }
     public void Hide()
@@ -65,5 +70,10 @@ public class PictureCanvas : MonoBehaviour
             else return null;
         }
         return null;
+    }
+
+    public void SetScale(Vector3 scale)
+    {
+        transform.localScale = scale;
     }
 }

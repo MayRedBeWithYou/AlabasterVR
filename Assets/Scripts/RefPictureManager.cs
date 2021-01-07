@@ -6,6 +6,7 @@ public class RefPictureManager : MonoBehaviour
 {
     public GameObject PictureCanvasPrefab;
     public GameObject PicturesHolder;
+
     private static RefPictureManager _instance;
     public static RefPictureManager Instance { get { return _instance; } }
 
@@ -27,7 +28,7 @@ public class RefPictureManager : MonoBehaviour
         var script = UIController.Instance.ShowRefPicture();
         script.OnAccepted += (text) =>
         {
-            if (System.String.IsNullOrWhiteSpace(text)) return;
+            if (string.IsNullOrWhiteSpace(text)) return;
             PictureCanvas canvas = UIController.Instance.ShowPictureCanvas();
             pictures.Add(canvas);
             canvas.SetPicture(text);
