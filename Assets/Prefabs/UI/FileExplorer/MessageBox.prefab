@@ -115,6 +115,7 @@ GameObject:
   - component: {fileID: 7220349129608102904}
   - component: {fileID: 4396734109822320779}
   - component: {fileID: 7608720044067254928}
+  - component: {fileID: 449514248633132938}
   m_Layer: 5
   m_Name: MessageBox
   m_TagString: Untagged
@@ -217,6 +218,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   text: {fileID: 8712399407238019006}
+--- !u!114 &449514248633132938
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1805241821112254338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bdf465859430af4b9ed3b81fd02ca5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1978036877323881509
 GameObject:
   m_ObjectHideFlags: 0

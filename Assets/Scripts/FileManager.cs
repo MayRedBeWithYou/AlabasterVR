@@ -76,7 +76,6 @@ public static class FileManager
                         tmp[2].coordinates = chunk.ModelMatrix.MultiplyPoint(tris[i].vertexC);
                         ObjTriangle tri;
                         tri.verts = new int[3];
-
                         for (int j = 0; j < tmp.Length; j++)
                         {
                             if (vertices.ContainsKey(tmp[j].coordinates))
@@ -102,11 +101,31 @@ public static class FileManager
                 }
             }
         }
+        int normInd = 1;
+        int[] normalsArray = new int[vertices.Count];
+        Dictionary<float3, int> normalsDict = new Dictionary<float3, int>();
+
+        foreach (var item in vertices)
+        {
+            float3 n;
+            n.coord = item.Value.normal;
+            int realIndex;
+            if (normalsDict.TryGetValue(n, out realIndex))
+            {
+                normalsArray[item.Value.index - 1] = realIndex;
+            }
+            else
+            {
+                normalsDict.Add(n, normInd);
+                normalsArray[item.Value.index - 1] = normInd;
+                normInd++;
+            }
+        }
 
         StreamWriter sw = new StreamWriter(tempName);
         sw.WriteLine("#AlabasterVR" + Environment.NewLine);
 
-        sw.WriteLine("#vertices" + Environment.NewLine);
+        sw.WriteLine("#vertices");
         StringBuilder stringBuilder = new StringBuilder();
         foreach (var item in vertices) stringBuilder.AppendLine(item.Value.ToStringVertex());
         sw.Write(stringBuilder.ToString());
@@ -114,17 +133,17 @@ public static class FileManager
 
         sw.WriteLine("#vertex normals");
         stringBuilder = new StringBuilder();
-        foreach (var item in vertices) stringBuilder.AppendLine(item.Value.ToStringNormals());
+        foreach (var item in normalsDict) stringBuilder.AppendLine(item.Key.ToString());
         sw.Write(stringBuilder.ToString());
-        sw.WriteLine("#vertex normals count: " + vertices.Count + Environment.NewLine);
+        sw.WriteLine("#vertex normals count: " + normalsDict.Count + Environment.NewLine);
 
         sw.WriteLine("#faces");
         stringBuilder = new StringBuilder();
-        foreach (var item in triangles) stringBuilder.AppendLine(item.ToString());
+        foreach (var item in triangles) stringBuilder.AppendLine(item.ToStringCustom(normalsArray[item.verts[0] - 1], normalsArray[item.verts[1] - 1], normalsArray[item.verts[2] - 1]));
         sw.Write(stringBuilder.ToString());
-        sw.WriteLine("#faces count: " + vertices.Count+Environment.NewLine);
+        sw.WriteLine("#faces count: " + vertices.Count + Environment.NewLine);
         sw.Close();
-        
+
         if (!nameChanged) UIController.Instance.ShowMessageBox("Model zapisano jako " + Path.GetFileName(tempName));
         else UIController.Instance.ShowMessageBox($"Model o nazwie {Path.GetFileName(path)}.obj już istniał.\nModel zapisano jako {Path.GetFileName(tempName)}.");
     }
@@ -147,10 +166,13 @@ public static class FileManager
         }
         public string ToStringVertex()
         {
-            return String.Format("v {0} {1} {2}", coordinates.x.ToString(System.Globalization.CultureInfo.InvariantCulture), coordinates.y.ToString(System.Globalization.CultureInfo.InvariantCulture), coordinates.z.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            System.Globalization.CultureInfo cInfo = System.Globalization.CultureInfo.InvariantCulture;
+            return "v " + coordinates.x.ToString(cInfo) + " " + coordinates.y.ToString(cInfo) + " " + coordinates.z.ToString(cInfo);
+            //return String.Format("v {0} {1} {2}", coordinates.x.ToString(System.Globalization.CultureInfo.InvariantCulture), coordinates.y.ToString(System.Globalization.CultureInfo.InvariantCulture), coordinates.z.ToString(System.Globalization.CultureInfo.InvariantCulture));
         }
         public string ToStringNormals()
         {
+            System.Globalization.CultureInfo cInfo = System.Globalization.CultureInfo.InvariantCulture;
             return String.Format("vn {0} {1} {2}", normal.x.ToString(System.Globalization.CultureInfo.InvariantCulture), normal.y.ToString(System.Globalization.CultureInfo.InvariantCulture), normal.z.ToString(System.Globalization.CultureInfo.InvariantCulture));
         }
     }
@@ -167,9 +189,32 @@ public static class FileManager
             return verts[0].GetHashCode() ^ verts[1].GetHashCode() ^ verts[2].GetHashCode();
         }
 
+        public string ToStringCustom(int n1, int n2, int n3)
+        {
+            System.Globalization.CultureInfo cInfo = System.Globalization.CultureInfo.InvariantCulture;
+            string result = "f " + verts[0].ToString(cInfo) + "//" + n1.ToString(cInfo) +
+            " " + verts[1].ToString(cInfo) + "//" + n2.ToString(cInfo) + " " + verts[2].ToString(cInfo) + "//" + n3.ToString(cInfo);
+
+            return result;
+            //return String.Format("f {0}//{0} {1}//{1} {2}//{2}", verts[0].ToString(System.Globalization.CultureInfo.InvariantCulture), verts[1].ToString(System.Globalization.CultureInfo.InvariantCulture), verts[2].ToString(System.Globalization.CultureInfo.InvariantCulture));
+        }
+    }
+    struct float3
+    {
+        public Vector3 coord;
+        public override bool Equals(object obj)
+        {
+            float3 tmp = (float3)obj;
+            return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
+        }
+        public override int GetHashCode()
+        {
+            return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
+        }
         public override string ToString()
         {
-            return String.Format("f {0}//{0} {1}//{1} {2}//{2}", verts[0].ToString(System.Globalization.CultureInfo.InvariantCulture), verts[1].ToString(System.Globalization.CultureInfo.InvariantCulture), verts[2].ToString(System.Globalization.CultureInfo.InvariantCulture));
+            System.Globalization.CultureInfo cInfo = System.Globalization.CultureInfo.InvariantCulture;
+            return "vn " + coord.x.ToString(cInfo) + " " + coord.y.ToString(cInfo) + " " + coord.z.ToString(cInfo);
         }
     }
 }

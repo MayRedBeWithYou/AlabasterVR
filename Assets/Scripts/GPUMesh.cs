@@ -72,9 +72,9 @@ public class GPUMesh : IDisposable
     };
     public Triangle[] GetTriangles()
     {
-        ComputeBuffer buffer=new ComputeBuffer(1,sizeof(int),ComputeBufferType.IndirectArguments);
-        ComputeBuffer.CopyCount(vertexBuffer,buffer,0);
-        int[]arr=new int[1];
+        ComputeBuffer buffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.IndirectArguments);
+        ComputeBuffer.CopyCount(vertexBuffer, buffer, 0);
+        int[] arr = new int[1];
         buffer.GetData(arr);
         Triangle[] result = new Triangle[arr[0]];
         vertexBuffer.GetData(result);
