@@ -31,6 +31,7 @@ public class UIController : MonoBehaviour
     public GameObject YesNoCancelPopupPrefab;
     public GameObject colorPickerPrefab;
     public GameObject KeyboardPrefab;
+    public GameObject PictureCanvasPrefab;
     public GameObject LeftOverlay;
 
     private Keyboard _activeKeyboard = null;
@@ -124,7 +125,7 @@ public class UIController : MonoBehaviour
         {
             _activeKeyboard.Close();
         }
-                
+
         GameObject go = CreateUI(KeyboardPrefab, parent.transform.position, parent.transform.rotation);
         go.transform.localPosition -= Vector3.forward * Random.Range(0.001f, 0.01f);
 
@@ -181,18 +182,30 @@ public class UIController : MonoBehaviour
     {
         if (_activeMainMenu != null) _activeMainMenu.Close();
         if (_activeFileExplorer != null) _activeFileExplorer.Close();
-        FileExplorer explorer = PrepreparedFileExplorer();
-        _activeFileExplorer = FileManager.Instance.SaveModel(explorer);
-        return explorer;
+        _activeFileExplorer = FileManager.SaveModel(PrepreparedFileExplorer());
+        return _activeFileExplorer;
     }
 
     public FileExplorer ShowLoadModel()
     {
         if (_activeMainMenu != null) _activeMainMenu.Close();
         if (_activeFileExplorer != null) _activeFileExplorer.Close();
-        FileExplorer explorer = PrepreparedFileExplorer();
-        _activeFileExplorer = FileManager.Instance.LoadModel(explorer);
-        return explorer;
+        _activeFileExplorer = FileManager.LoadModel(PrepreparedFileExplorer());
+        return _activeFileExplorer;
+    }
+    public FileExplorer ShowRefPicture()
+    {
+        if (_activeFileExplorer != null) _activeFileExplorer.Close();
+        _activeFileExplorer = FileManager.LoadImageReference(PrepreparedFileExplorer());
+        return _activeFileExplorer;
+    }
+    public PictureCanvas ShowPictureCanvas()
+    {
+        Vector3 lookDirection = Camera.main.transform.forward;
+        lookDirection.y = 0;
+        Vector3 prefabPosition = Camera.main.transform.position + lookDirection.normalized * (uiDistance * 2);
+        var canvas = CreateUI(PictureCanvasPrefab, prefabPosition, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<PictureCanvas>();
+        return canvas;
     }
 
     private GameObject CreateUI(GameObject prefab, Vector3 position, Quaternion rotation, Transform parent = null)

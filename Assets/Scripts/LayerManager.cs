@@ -27,11 +27,14 @@ public class LayerManager : MonoBehaviour
 
     [SerializeField]
     private int _chunkResolution = 32;
+    [SerializeField]
+    private float _relativeModelSize = 0.3f;
 
     public int Resolution => _resolution;
     public float Size => _size;
 
     public int ChunkResolution => _chunkResolution;
+    public float RelativeModelSize => _relativeModelSize;
 
     public float Spacing => Size / Resolution;
 
@@ -133,7 +136,7 @@ public class LayerManager : MonoBehaviour
 
     public void ResetLayers()
     {
-        foreach(Layer layer in layers)
+        foreach (Layer layer in layers)
         {
             Destroy(layer.gameObject);
         }

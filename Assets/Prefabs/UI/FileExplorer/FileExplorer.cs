@@ -53,6 +53,7 @@ public class FileExplorer : MonoBehaviour
     {
         get
         {
+            if(Filename==null || Filename=="")return "";
             return currentDirectory.FullName + '/' + Filename;
         }
     }
