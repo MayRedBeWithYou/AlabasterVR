@@ -76,6 +76,7 @@ public class GPUMesh : IDisposable
         ComputeBuffer.CopyCount(vertexBuffer, buffer, 0);
         int[] arr = new int[1];
         buffer.GetData(arr);
+        buffer.Release();
         GPUTriangle[] result = new GPUTriangle[arr[0]];
         vertexBuffer.GetData(result);
         return result;

@@ -136,7 +136,7 @@ public class LayerManager : MonoBehaviour
 
     public void ResetLayers()
     {
-        foreach(Layer layer in layers)
+        foreach (Layer layer in layers)
         {
             Destroy(layer.gameObject);
         }

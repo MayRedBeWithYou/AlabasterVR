@@ -5,7 +5,6 @@ using System.IO;
 using System;
 using System.Text;
 using System.Globalization;
-//using System.Diagnostics;
 public static class FileManager
 {
     public static int precisionMultiplier = 100;
@@ -208,7 +207,7 @@ public static class FileManager
         //reduce unnecessary normal vectors
         foreach (var item in vertices)
         {
-            float3 n = new float3() { coord = item.Value.normal.normalized };
+            float3 n = new float3() { coord = item.Value.normal };
             int realIndex;
             if (normalsDict.TryGetValue(n, out realIndex))
             {
@@ -243,8 +242,8 @@ public static class FileManager
         sw.WriteLine("#faces count: " + triangles.Count + Environment.NewLine);
         sw.Close();
 
-        if (!nameChanged) UIController.Instance.ShowMessageBox("Model zapisano jako " + Path.GetFileName(tempName));
-        else UIController.Instance.ShowMessageBox($"Model o nazwie {Path.GetFileName(path)}.obj już istniał.\nModel zapisano jako {Path.GetFileName(tempName)}.");
+        if (!nameChanged) UIController.Instance.ShowMessageBox("Model saved as " + Path.GetFileName(tempName));
+        else UIController.Instance.ShowMessageBox($"File {Path.GetFileName(path)}.obj already existed.\nModel saved as {Path.GetFileName(tempName)}.");
     }
 
     private static Vector3 ParseToVector3(string text)
@@ -293,22 +292,22 @@ public static class FileManager
         public override bool Equals(object obj)
         {
             ObjVertex tmp = (ObjVertex)obj;
-            //return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
-            int x = (int)(precisionMultiplier * coord.x);
+            return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
+            /*int x = (int)(precisionMultiplier * coord.x);
             int y = (int)(precisionMultiplier * coord.y);
             int z = (int)(precisionMultiplier * coord.z);
             int x2 = (int)(precisionMultiplier * tmp.coord.x);
             int y2 = (int)(precisionMultiplier * tmp.coord.y);
             int z2 = (int)(precisionMultiplier * tmp.coord.z);
-            return x.Equals(x2) && y.Equals(y2) && z.Equals(z2);
+            return x.Equals(x2) && y.Equals(y2) && z.Equals(z2);*/
         }
         public override int GetHashCode()
         {
-            //return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
-            int x = (int)(precisionMultiplier * coord.x);
+            return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
+            /*int x = (int)(precisionMultiplier * coord.x);
             int y = (int)(precisionMultiplier * coord.y);
             int z = (int)(precisionMultiplier * coord.z);
-            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
+            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();*/
         }
         public override string ToString()
         {
@@ -342,22 +341,22 @@ public static class FileManager
         public override bool Equals(object obj)
         {
             float3 tmp = (float3)obj;
-            //return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);            
-            int x = (int)(precisionMultiplier * coord.x);
+            return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
+            /*int x = (int)(precisionMultiplier * coord.x);
             int y = (int)(precisionMultiplier * coord.y);
             int z = (int)(precisionMultiplier * coord.z);
             int x2 = (int)(precisionMultiplier * tmp.coord.x);
             int y2 = (int)(precisionMultiplier * tmp.coord.y);
             int z2 = (int)(precisionMultiplier * tmp.coord.z);
-            return x.Equals(x2) && y.Equals(y2) && z.Equals(z2);
+            return x.Equals(x2) && y.Equals(y2) && z.Equals(z2);*/
         }
         public override int GetHashCode()
         {
-            //return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
-            int x = (int)(precisionMultiplier * coord.x);
+            return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
+            /*int x = (int)(precisionMultiplier * coord.x);
             int y = (int)(precisionMultiplier * coord.y);
             int z = (int)(precisionMultiplier * coord.z);
-            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
+            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();*/
         }
         public override string ToString()
         {
