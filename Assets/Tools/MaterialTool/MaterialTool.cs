@@ -38,6 +38,10 @@ public class MaterialTool : Tool
 
     public bool isAdding = true;
 
+    public bool isWorking = false;
+
+    public Dictionary<Chunk, float[]> beforeEdit;
+
     public override void Enable()
     {
         if (cursor != null)
@@ -91,6 +95,33 @@ public class MaterialTool : Tool
     private void Update()
     {
         cursor.UpdateActiveChunks();
+        if (isWorking)
+        {
+            if (trigger.Value <= 0.2)
+            {
+                isWorking = false;
+                Dictionary<Chunk, float[]> afterEdit = new Dictionary<Chunk, float[]>();
+                foreach(Chunk chunk in beforeEdit.Keys)
+                {
+                    float[] voxels = new float[chunk.voxels.VoxelBuffer.count]; ;
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    afterEdit.Add(chunk, voxels);
+                }
+
+                MaterialOperation op = new MaterialOperation(beforeEdit, afterEdit);
+                OperationManager.Instance.PushOperation(op);
+            }
+            foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+            {
+                if (!beforeEdit.ContainsKey(chunk))
+                {
+                    float[] voxels = new float[chunk.voxels.VoxelBuffer.count]; ;
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    beforeEdit.Add(chunk, voxels);
+                }
+            }
+            PerformAction();
+        }
         if (upButton.IsPressed)
         {
             cursor.IncreaseRadius();
@@ -101,7 +132,11 @@ public class MaterialTool : Tool
         }
         if (trigger.Value > 0.2)
         {
-            PerformAction();
+            if (!isWorking)
+            {
+                isWorking = true;
+                beforeEdit = new Dictionary<Chunk, float[]>();
+            }
         }
     }
 
