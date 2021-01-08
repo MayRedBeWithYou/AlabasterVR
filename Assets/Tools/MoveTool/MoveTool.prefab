@@ -43,11 +43,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d96332b5b98bc4d902843db5b6c55b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toolName: "Move"
+  toolName: Move
   description: 
   sprite: {fileID: 21300000, guid: e54823305b3c5d242b499a6c6606a844, type: 3}
+  upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
+  downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
+  positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
   Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
-  MoveShader: {fileID: 0}
   PopulateShader: {fileID: 7200000, guid: f908cb504752ba64b9d7bfc13029a363, type: 3}
   ApplyMoveShader: {fileID: 7200000, guid: e7421e254cf438742a392640cdb775ac, type: 3}
   cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,

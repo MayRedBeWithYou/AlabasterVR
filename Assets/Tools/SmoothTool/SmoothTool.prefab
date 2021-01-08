@@ -46,6 +46,10 @@ MonoBehaviour:
   toolName: "Wyg\u0142ad\u017A"
   description: 
   sprite: {fileID: 21300000, guid: cb445ecac047d3a459da3710cd981953, type: 3}
+  positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
+  upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
+  downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
+  snapshot: {fileID: 0}
   Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
   SmoothShader: {fileID: 7200000, guid: aa97e1f496635954b8f44a97dcce87bf, type: 3}
   cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,

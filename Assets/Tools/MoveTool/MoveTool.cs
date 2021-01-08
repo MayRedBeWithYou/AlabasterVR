@@ -15,8 +15,15 @@ public class MoveTool : Tool, IDisposable
         public Vector3 bGradient;
     }
 
+    [Header("Handlers")]
+
+    public ButtonHandler upButton;
+    public ButtonHandler downButton;
+    public ButtonHandler positionButton;
 
     public AxisHandler Trigger;
+
+    [Header("Compute")]
 
     public ComputeShader PopulateShader;
     public ComputeShader ApplyMoveShader;
@@ -41,15 +48,20 @@ public class MoveTool : Tool, IDisposable
         {
             cursor.ToggleRenderer(true);
         }
+        positionButton.OnButtonDown += PositionButton_OnButtonDown;
+        positionButton.OnButtonUp += PositionButton_OnButtonUp;
         base.Enable();
     }
 
     public override void Disable()
     {
+        cursor.ToggleRenderer(false);
+        positionButton.OnButtonDown -= PositionButton_OnButtonDown;
+        positionButton.OnButtonUp -= PositionButton_OnButtonUp;
         base.Disable();
     }
 
-    public void Start()
+    public void Awake()
     {
         snapshot = GameObject.Find("Snapshot").GetComponent<SnapshotController>();
 
@@ -58,10 +70,19 @@ public class MoveTool : Tool, IDisposable
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
         workBuffer = new ComputeBuffer(volume, sizeof(float) * 12 + sizeof(uint) * 3, ComputeBufferType.Append);
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
+        cursor.gameObject.name = "MoveCursor";
     }
 
     private void FixedUpdate()
     {
+        if (upButton.IsPressed)
+        {
+            cursor.IncreaseRadius();
+        }
+        if (downButton.IsPressed)
+        {
+            cursor.DecreaseRadius();
+        }
         cursor.UpdateActiveChunks();
         if(Trigger.Value > 0.2)
         {
@@ -85,6 +106,15 @@ public class MoveTool : Tool, IDisposable
         }
     }
 
+    private void PositionButton_OnButtonDown(XRController controller)
+    {
+        cursor.transform.parent = null;
+    }
+
+    private void PositionButton_OnButtonUp(XRController controller)
+    {
+        cursor.transform.parent = ToolController.Instance.rightController.transform;
+    }
 
     private void ApplyWorkBuffer()
     {
