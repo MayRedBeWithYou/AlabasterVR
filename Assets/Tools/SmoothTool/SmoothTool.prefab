@@ -43,9 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b13e01ccbd4ed74cb52cc450cdbd5a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  toolName: "Wyg\u0142ad\u017A"
+  toolName: Smooth
   description: 
-  sprite: {fileID: 21300000, guid: cb445ecac047d3a459da3710cd981953, type: 3}
+  sprite: {fileID: 21300000, guid: dee1153bcc8004c4c9ec57d7a5d05064, type: 3}
   positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
   upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
   downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}

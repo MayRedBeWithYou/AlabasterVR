@@ -85,6 +85,7 @@ public class UIController : MonoBehaviour
         else
         {
             _activeLeftHandMenu = CreateUI(ToolSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+            _activeLeftHandMenu.transform.localPosition += new Vector3(0f, -0.08f, 0f);
         }
     }
 
