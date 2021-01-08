@@ -7,6 +7,7 @@ using UnityEngine;
 public class GPUVoxelData : IDisposable
 {
     private ComputeBuffer _voxelBuffer;
+    private ComputeBuffer _colorBuffer;
     public ComputeBuffer VoxelBuffer
     {
         get
@@ -19,6 +20,20 @@ public class GPUVoxelData : IDisposable
         }
 
         private set => _voxelBuffer = value;
+    }
+
+    public ComputeBuffer ColorBuffer
+    {
+        get
+        {
+            if (_colorBuffer is null)
+            {
+                InitBuffer();
+            }
+            return _colorBuffer;
+        }
+
+        private set => _colorBuffer = value;
     }
     public int Resolution { get; private set; }
     public int Volume { get; private set; }
@@ -43,18 +58,21 @@ public class GPUVoxelData : IDisposable
     public void InitBuffer()
     {
         _voxelBuffer = new ComputeBuffer(Volume, sizeof(float));
+        _colorBuffer = new ComputeBuffer(Volume, sizeof(float) * 3);
         ResetVoxelsValues();
         Initialized = true;
     }
 
     private void ResetVoxelsValues()
     {
-        VoxelBuffer.SetData(Enumerable.Repeat(1f, Volume).ToArray());
+        VoxelBuffer.SetData(Enumerable.Repeat(0.01209677f, Volume).ToArray());
+        ColorBuffer.SetData(Enumerable.Repeat(1.0f, Volume * 3).ToArray());
     }
 
     public void Dispose()
     {
         if (_voxelBuffer != null) VoxelBuffer.Dispose();
+        if (_colorBuffer != null) ColorBuffer.Dispose();
     }
 
     public void DrawVoxelData(Vector3 offset)

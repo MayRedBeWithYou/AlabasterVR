@@ -46,6 +46,11 @@ public class MaterialTool : Tool
     {
         if (cursor != null)
             cursor.ToggleRenderer(true);
+
+        settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
+
+        positionButton.OnButtonDown += PositionButton_OnButtonDown;
+        positionButton.OnButtonUp += PositionButton_OnButtonUp;
         base.Enable();
     }
 
@@ -63,18 +68,18 @@ public class MaterialTool : Tool
     public override void Disable()
     {
         cursor.ToggleRenderer(false);
+        settingsButton.OnButtonDown -= SettingsButton_OnButtonDown;
+
+        positionButton.OnButtonDown -= PositionButton_OnButtonDown;
+        positionButton.OnButtonUp -= PositionButton_OnButtonUp;
         base.Disable();
     }
 
     public void Awake()
     {
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
+        cursor.gameObject.name = "MaterialCursor";
         toggleButton.OnButtonDown += ToggleButtonHandler;
-
-        settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
-
-        positionButton.OnButtonDown += PositionButton_OnButtonDown;
-        positionButton.OnButtonUp += PositionButton_OnButtonUp;
     }
 
     private void SettingsButton_OnButtonDown(XRController controller)
@@ -94,6 +99,15 @@ public class MaterialTool : Tool
 
     private void Update()
     {
+
+        if (upButton.IsPressed)
+        {
+            cursor.IncreaseRadius();
+        }
+        if (downButton.IsPressed)
+        {
+            cursor.DecreaseRadius();
+        }
         cursor.UpdateActiveChunks();
         if (isWorking)
         {
@@ -122,14 +136,6 @@ public class MaterialTool : Tool
             }
             PerformAction();
         }
-        if (upButton.IsPressed)
-        {
-            cursor.IncreaseRadius();
-        }
-        if (downButton.IsPressed)
-        {
-            cursor.DecreaseRadius();
-        }
         if (trigger.Value > 0.2)
         {
             if (!isWorking)
@@ -150,13 +156,15 @@ public class MaterialTool : Tool
     private void PerformAction()
     {
         ComputeShader shader = isAdding ? addShader : removeShader;
+        var activeLayer = LayerManager.Instance.ActiveLayer;
+        shader.SetFloat("chunkSize", activeLayer.Spacing);
+        shader.SetInt("resolution", activeLayer.ChunkResolution);
+        shader.SetFloat("radius", cursor.radius * (1f/activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
             sphereShaderKernel = shader.FindKernel("CSMain");
-            shader.SetFloat("radius", cursor.radius);
-            shader.SetFloat("chunkSize", chunk.size);
             shader.SetVector("position", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
-            shader.SetInt("resolution", chunk.resolution);
             shader.SetBuffer(sphereShaderKernel, "sdf", chunk.voxels.VoxelBuffer);
             shader.Dispatch(sphereShaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);

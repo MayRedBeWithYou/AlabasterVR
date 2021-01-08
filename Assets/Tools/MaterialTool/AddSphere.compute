@@ -28,6 +28,6 @@ void CSMain (uint3 id : SV_DispatchThreadID)
     float3 displacement = realPos(id) - position;
     float val = dot(displacement, displacement) - (radius * radius);
 
-    val= clamp(val, -1, 1);
+    val= clamp(val, -0.01209677f, 0.01209677f);
     sdf[arrCoords] = min(val, sdfVal);
 }

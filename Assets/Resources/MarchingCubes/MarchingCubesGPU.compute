@@ -10,10 +10,14 @@ struct Triangle {
     float3 normC;
     float3 normB;
     float3 normA;
+    float3 colorC;
+    float3 colorA;
+    float3 colorB;
 };
 
 AppendStructuredBuffer<Triangle> triangles;
 StructuredBuffer<float> points;
+StructuredBuffer<float3> colors;
 int numPointsPerAxis;
 float isoLevel;
 float chunkSize;
@@ -29,6 +33,16 @@ float3 realPos(uint3 id)
 float3 interpolateVerts(float4 v1, float4 v2) {
     float t = (isoLevel - v1.w) / (v2.w - v1.w);
     return v1.xyz + t * (v2.xyz - v1.xyz);
+}
+
+float getRatio(float w1, float w2)
+{
+    return (isoLevel - w1) / (w2 - w1);
+}
+
+int indexFromCoord(uint3 id)
+{
+    return id.z * numPointsPerAxis * numPointsPerAxis + id.y * numPointsPerAxis + id.x;
 }
 
 int indexFromCoord(int x, int y, int z) {
@@ -50,6 +64,14 @@ float4 sdfValAndPos(int x, int y, int z, uint3 id)
     return retVal;
 }
 
+float4 sdfValAndColor(int x, int y, int z, uint3 id)
+{
+    float4 retVal;
+    retVal.xyz = realPos(id);
+    retVal.w = points[indexFromCoord(x, y, z)];
+    return retVal;
+}
+
 [numthreads(numThreads, numThreads, numThreads)]
 void March(int3 id : SV_DispatchThreadID)
 {
@@ -59,30 +81,42 @@ void March(int3 id : SV_DispatchThreadID)
     }
 
     // 8 corners of the current cube
-    float4 cubeCorners[8] = {
-        sdfValAndPos(id.x, id.y, id.z,id + uint3(0,0,0)),
-        sdfValAndPos(id.x + 1, id.y, id.z,id + uint3(1,0,0)),
-        sdfValAndPos(id.x + 1, id.y, id.z + 1,id + uint3(1,0,1)),
-        sdfValAndPos(id.x, id.y, id.z + 1,id + uint3(0,0,1)),
-        sdfValAndPos(id.x, id.y + 1, id.z,id + uint3(0,1,0)),
-        sdfValAndPos(id.x + 1, id.y + 1, id.z,id + uint3(1,1,0)),
-        sdfValAndPos(id.x + 1, id.y + 1, id.z + 1,id + uint3(1,1,1)),
-        sdfValAndPos(id.x, id.y + 1, id.z + 1,id + uint3(0,1,1))
+    uint3 targetIds[8] = {
+        id + uint3(0,0,0),
+        id + uint3(1,0,0),
+        id + uint3(1,0,1),
+        id + uint3(0,0,1),
+        id + uint3(0,1,0),
+        id + uint3(1,1,0),
+        id + uint3(1,1,1),
+        id + uint3(0,1,1)
     };
+
+    float cubeCorners[8] = {
+        points[indexFromCoord(targetIds[0])],
+        points[indexFromCoord(targetIds[1])],
+        points[indexFromCoord(targetIds[2])],
+        points[indexFromCoord(targetIds[3])],
+        points[indexFromCoord(targetIds[4])],
+        points[indexFromCoord(targetIds[5])],
+        points[indexFromCoord(targetIds[6])],
+        points[indexFromCoord(targetIds[7])]
+    };
+
 
     // Calculate unique index for each cube configuration.
     // There are 256 possible values
     // A value of 0 means cube is entirely inside surface; 255 entirely outside.
     // The value is used to look up the edge table, which indicates which edges of the cube are cut by the isosurface.
     int cubeIndex = 0;
-    if (cubeCorners[0].w < isoLevel) cubeIndex |= 1;
-    if (cubeCorners[1].w < isoLevel) cubeIndex |= 2;
-    if (cubeCorners[2].w < isoLevel) cubeIndex |= 4;
-    if (cubeCorners[3].w < isoLevel) cubeIndex |= 8;
-    if (cubeCorners[4].w < isoLevel) cubeIndex |= 16;
-    if (cubeCorners[5].w < isoLevel) cubeIndex |= 32;
-    if (cubeCorners[6].w < isoLevel) cubeIndex |= 64;
-    if (cubeCorners[7].w < isoLevel) cubeIndex |= 128;
+    if (cubeCorners[0] < isoLevel) cubeIndex |= 1;
+    if (cubeCorners[1] < isoLevel) cubeIndex |= 2;
+    if (cubeCorners[2] < isoLevel) cubeIndex |= 4;
+    if (cubeCorners[3] < isoLevel) cubeIndex |= 8;
+    if (cubeCorners[4] < isoLevel) cubeIndex |= 16;
+    if (cubeCorners[5] < isoLevel) cubeIndex |= 32;
+    if (cubeCorners[6] < isoLevel) cubeIndex |= 64;
+    if (cubeCorners[7] < isoLevel) cubeIndex |= 128;
 
     // Create triangles for current cube configuration
     for (int i = 0; triangulation[cubeIndex][i] != -1; i += 3) {
@@ -98,25 +132,18 @@ void March(int3 id : SV_DispatchThreadID)
         int b2 = cornerIndexBFromEdge[triangulation[cubeIndex][i + 2]];
 
         Triangle tri;
-        tri.vertexA = interpolateVerts(cubeCorners[a0], cubeCorners[b0]);
-        tri.vertexB = interpolateVerts(cubeCorners[a1], cubeCorners[b1]);
-        tri.vertexC = interpolateVerts(cubeCorners[a2], cubeCorners[b2]);
+        tri.vertexA = lerp(realPos(targetIds[a0]), realPos(targetIds[b0]), getRatio(cubeCorners[a0], cubeCorners[b0]));
+        tri.vertexB = lerp(realPos(targetIds[a1]), realPos(targetIds[b1]), getRatio(cubeCorners[a1], cubeCorners[b1]));
+        tri.vertexC = lerp(realPos(targetIds[a2]), realPos(targetIds[b2]), getRatio(cubeCorners[a2], cubeCorners[b2]));
         float3 normal = getNormal(tri.vertexA, tri.vertexB, tri.vertexC);
         tri.normA = normal;
         tri.normB = normal;
         tri.normC = normal;
 
-        //tri.vertexA = cubeCorners[a0];
-        //tri.vertexB = cubeCorners[a1];
-        //tri.vertexC = cubeCorners[a2];
-        //tri.vertexA.xyz = 0; 
-        //tri.vertexB.x = 1;
-        //tri.vertexB.yz = 0;
-        //tri.vertexC.y = 1;
-        //tri.vertexC.xz = 0;
+        tri.colorA = lerp(colors[indexFromCoord(targetIds[a0])], colors[indexFromCoord(targetIds[b0])], getRatio(cubeCorners[a0], cubeCorners[b0]));
+        tri.colorB = lerp(colors[indexFromCoord(targetIds[a1])], colors[indexFromCoord(targetIds[b1])], getRatio(cubeCorners[a1], cubeCorners[b1]));
+        tri.colorC = lerp(colors[indexFromCoord(targetIds[a2])], colors[indexFromCoord(targetIds[b2])], getRatio(cubeCorners[a2], cubeCorners[b2]));
+
         triangles.Append(tri);
-
     }
-
-
 }
