@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using HSVPicker;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
@@ -26,12 +27,20 @@ public class MaterialTool : Tool
     public ComputeShader addShader;
     public ComputeShader removeShader;
 
+    private ColorPicker activeColorPicker;
+
+    public Color color;
+
     int sphereShaderKernel;
 
     [HideInInspector]
     public CursorSDF cursor;
 
     public bool isAdding = true;
+
+    public bool isWorking = false;
+
+    public Dictionary<Chunk, float[]> beforeEdit;
 
     public override void Enable()
     {
@@ -62,13 +71,57 @@ public class MaterialTool : Tool
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
         toggleButton.OnButtonDown += ToggleButtonHandler;
 
+        settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
+
         positionButton.OnButtonDown += PositionButton_OnButtonDown;
         positionButton.OnButtonUp += PositionButton_OnButtonUp;
     }
 
-    private void FixedUpdate()
+    private void SettingsButton_OnButtonDown(XRController controller)
+    {
+        if (activeColorPicker != null)
+        {
+            activeColorPicker.gameObject.SetActive(false);
+            Destroy(activeColorPicker.gameObject);
+            activeColorPicker = null;
+        }
+        else
+        {
+            activeColorPicker = UIController.Instance.ShowColorPicker(color);
+            activeColorPicker.onValueChanged.AddListener((c) => color = c);
+        }
+    }
+
+    private void Update()
     {
         cursor.UpdateActiveChunks();
+        if (isWorking)
+        {
+            if (trigger.Value <= 0.2)
+            {
+                isWorking = false;
+                Dictionary<Chunk, float[]> afterEdit = new Dictionary<Chunk, float[]>();
+                foreach(Chunk chunk in beforeEdit.Keys)
+                {
+                    float[] voxels = new float[chunk.voxels.VoxelBuffer.count]; ;
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    afterEdit.Add(chunk, voxels);
+                }
+
+                MaterialOperation op = new MaterialOperation(beforeEdit, afterEdit);
+                OperationManager.Instance.PushOperation(op);
+            }
+            foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+            {
+                if (!beforeEdit.ContainsKey(chunk))
+                {
+                    float[] voxels = new float[chunk.voxels.VoxelBuffer.count]; ;
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    beforeEdit.Add(chunk, voxels);
+                }
+            }
+            PerformAction();
+        }
         if (upButton.IsPressed)
         {
             cursor.IncreaseRadius();
@@ -79,7 +132,11 @@ public class MaterialTool : Tool
         }
         if (trigger.Value > 0.2)
         {
-            PerformAction();
+            if (!isWorking)
+            {
+                isWorking = true;
+                beforeEdit = new Dictionary<Chunk, float[]>();
+            }
         }
     }
 

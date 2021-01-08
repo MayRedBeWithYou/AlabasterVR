@@ -54,7 +54,6 @@ public class MockInputManager : MonoBehaviour
                 controller.targetCamera.transform.position = Camera.transform.position;
                 controller.targetCamera.transform.rotation = Camera.transform.rotation;
                 controller.targetCamera.transform.position += Camera.transform.forward * 0.5f;
-
             }
         }
 

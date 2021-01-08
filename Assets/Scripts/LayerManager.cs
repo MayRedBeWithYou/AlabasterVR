@@ -12,6 +12,8 @@ public class LayerManager : MonoBehaviour
 
     public GameObject LayersHolder;
 
+    public GameObject LayerPrefab;
+
     public List<Layer> layers { get; private set; }
 
     public GameObject chunkPrefab;
@@ -25,11 +27,14 @@ public class LayerManager : MonoBehaviour
 
     [SerializeField]
     private int _chunkResolution = 32;
+    [SerializeField]
+    private float _relativeModelSize = 0.3f;
 
     public int Resolution => _resolution;
     public float Size => _size;
 
     public int ChunkResolution => _chunkResolution;
+    public float RelativeModelSize => _relativeModelSize;
 
     public float Spacing => Size / Resolution;
     public float VoxelSpacing;
@@ -73,7 +78,7 @@ public class LayerManager : MonoBehaviour
 
     public static event LayerChange LayerRemoved;
 
-    private int _layerCount = 1;
+    private int _layerCount = 0;
 
     public void Awake()
     {
@@ -95,14 +100,15 @@ public class LayerManager : MonoBehaviour
 
     public Layer AddNewLayer()
     {
-        GameObject layerObject = new GameObject($"Layer {_layerCount++}");
-        layerObject.transform.parent = LayersHolder.transform;
-        Layer layer = layerObject.AddComponent<Layer>();
+        GameObject layerObject = Instantiate(LayerPrefab, LayersHolder.transform);
+        layerObject.name = $"Layer {++_layerCount}";
+        layerObject.transform.position = LayersHolder.transform.position;
+        Layer layer = layerObject.GetComponent<Layer>();
         layer.Resolution = Resolution;
         layer.ChunkResolution = ChunkResolution;
         layer.Size = Size;
 
-        BoxCollider box = layerObject.AddComponent<BoxCollider>();
+        BoxCollider box = layerObject.GetComponent<BoxCollider>();
         box.size = Vector3.one * Size;
         box.center = Vector3.one * Size / 2;
 
@@ -110,6 +116,9 @@ public class LayerManager : MonoBehaviour
         layers.Add(layer);
         LayerAdded?.Invoke(layer);
         Debug.Log($"Created layer: {layer.name}");
+
+        if (ActiveLayer != null)
+            ActiveLayer = layer;
         return layer;
     }
 
@@ -122,7 +131,19 @@ public class LayerManager : MonoBehaviour
         ActiveLayer = layers[Mathf.Clamp(index, 0, layers.Count - 1)];
         Debug.Log($"Removed layer: {layer.name}");
         Destroy(layer.gameObject);
+        OperationManager.Instance.Clear();
         LayerRemoved?.Invoke(layer);
+    }
+
+    public void ResetLayers()
+    {
+        foreach (Layer layer in layers)
+        {
+            Destroy(layer.gameObject);
+        }
+        layers.Clear();
+        _layerCount = 0;
+        _activeLayer = AddNewLayer();
     }
 
     void OnDrawGizmos()

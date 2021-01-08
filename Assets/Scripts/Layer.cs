@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Layer : MonoBehaviour
+public class Layer : MonoBehaviour, IMovable, IResizable
 {
     [Header("Parameters")]
 
@@ -42,5 +42,18 @@ public class Layer : MonoBehaviour
         }
     }
 
-   
+    public void SetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+    }
+
+    public void SetRotation(Quaternion rot)
+    {
+        transform.rotation = rot;
+    }
+
+    public void SetScale(Vector3 scale)
+    {
+        transform.localScale = scale;
+    }
 }

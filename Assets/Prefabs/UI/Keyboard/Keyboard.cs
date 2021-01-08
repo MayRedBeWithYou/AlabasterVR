@@ -49,7 +49,7 @@ public class Keyboard : MonoBehaviour
 
     public void LateUpdate()
     {
-        if(isSet)
+        if (isSet)
         {
             isSet = false;
             inputField.caretPosition = inputField.text.Length;
@@ -139,12 +139,18 @@ public class Keyboard : MonoBehaviour
     public void Close()
     {
         OnClosing?.Invoke();
+        gameObject.SetActive(false);
         Destroy(gameObject);
+    }
+
+    public static Keyboard Show(GameObject parent, string text = "")
+    {
+        return UIController.Instance.ShowKeyboard(parent, text);
     }
 
     public static Keyboard Show(string text = "")
     {
-        return ToolController.Instance.ShowKeyboard(text);
+        return UIController.Instance.ShowKeyboard(text);
     }
 }
 
