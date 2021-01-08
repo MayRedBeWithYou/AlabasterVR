@@ -1,0 +1,55 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel AddMaterial
+#pragma kernel RemoveMaterial
+
+RWStructuredBuffer<float> sdf;
+RWStructuredBuffer<float3> colors;
+float3 color;
+float radius;
+float chunkSize;
+float3 position;
+uint resolution;
+float voxelSpacing;
+
+uint coords(uint3 id)
+{
+    return id.z * resolution * resolution + id.y * resolution + id.x;
+}
+
+float3 realPos(uint3 id)
+{
+    float3 ids = id;
+    float res = resolution - 1;
+    ids = id / res;
+    return ids * chunkSize;
+}
+
+[numthreads(8,8,8)]
+void AddMaterial (uint3 id : SV_DispatchThreadID)
+{
+    uint arrCoords = coords(id);
+    float sdfVal = sdf[arrCoords];
+    float3 displacement = realPos(id) - position;
+    float val = length(displacement) - radius;//dot(displacement, displacement) - (radius * radius);
+    val = clamp(val, -voxelSpacing, voxelSpacing);
+    sdf[arrCoords] = min(val, sdfVal);
+    if (val < voxelSpacing)
+    {
+        colors[arrCoords] = color;
+    }
+}
+
+[numthreads(8, 8, 8)]
+void RemoveMaterial(uint3 id : SV_DispatchThreadID)
+{
+    uint arrCoords = coords(id);
+    float sdfVal = sdf[arrCoords];
+    float3 displacement = realPos(id) - position;
+    float val = length(displacement) - radius;
+    val = clamp(val, -voxelSpacing, voxelSpacing);
+    sdf[arrCoords] = max(-val, sdfVal);
+    if (val < voxelSpacing)
+    {
+        colors[arrCoords] = float3(1.0f,1.0f,1.0f);
+    }
+}

@@ -24,14 +24,13 @@ public class MaterialTool : Tool
     [Space(10f)]
     public GameObject cursorPrefab;
 
-    public ComputeShader addShader;
-    public ComputeShader removeShader;
+    public ComputeShader shader;
+    private int AddMaterialKernel;
+    private int RemoveMaterialKernel;
 
     private ColorPicker activeColorPicker;
 
     public Color color;
-
-    int sphereShaderKernel;
 
     [HideInInspector]
     public CursorSDF cursor;
@@ -80,6 +79,12 @@ public class MaterialTool : Tool
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
         cursor.gameObject.name = "MaterialCursor";
         toggleButton.OnButtonDown += ToggleButtonHandler;
+    }
+    public void Start()
+    {
+        AddMaterialKernel = shader.FindKernel("AddMaterial");
+        RemoveMaterialKernel = shader.FindKernel("RemoveMaterial");
+        InitializeShadersConstUniforms();
     }
 
     private void SettingsButton_OnButtonDown(XRController controller)
@@ -152,21 +157,26 @@ public class MaterialTool : Tool
         cursor.SetMaterial(isAdding ? addMaterial : removeMaterial);
 
     }
-
-    private void PerformAction()
+    private void InitializeShadersConstUniforms()
     {
-        ComputeShader shader = isAdding ? addShader : removeShader;
         var activeLayer = LayerManager.Instance.ActiveLayer;
         shader.SetFloat("chunkSize", activeLayer.Spacing);
         shader.SetInt("resolution", activeLayer.ChunkResolution);
-        shader.SetFloat("radius", cursor.radius * (1f/activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetFloat("voxelSpacing", LayerManager.Instance.VoxelSpacing);
+    }
 
+    private void PerformAction()
+    {
+        var activeLayer = LayerManager.Instance.ActiveLayer;
+        int kernel = isAdding ? AddMaterialKernel : RemoveMaterialKernel;
+        shader.SetFloat("radius", cursor.radius * (1f/activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetVector("color", new Vector3(color.r, color.g, color.b));
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
-            sphereShaderKernel = shader.FindKernel("CSMain");
             shader.SetVector("position", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
-            shader.SetBuffer(sphereShaderKernel, "sdf", chunk.voxels.VoxelBuffer);
-            shader.Dispatch(sphereShaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
+            shader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
+            shader.SetBuffer(kernel, "colors", chunk.voxels.ColorBuffer);
+            shader.Dispatch(kernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
         }
     }
