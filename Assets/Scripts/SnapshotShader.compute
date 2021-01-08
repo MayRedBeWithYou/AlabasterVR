@@ -30,9 +30,11 @@ void TakeSnapshot (uint3 id : SV_DispatchThreadID)
         targetId.y >= 0 && targetId.y < resolution &&
         targetId.z >= 0 && targetId.z < resolution)
     {
-        snapshot[coords(id)] += sdf[coords(targetId)];
-        colors[coords(id)] += chunkColors[coords(targetId)];
-        ++overlaps[coords(id)];
+        uint coordsId = coords(id);
+        uint coordsTargetId = coords(targetId);
+        snapshot[coordsId] += sdf[coordsTargetId];
+        colors[coordsId] += chunkColors[coordsTargetId];
+        ++overlaps[coordsId];
     }
 }
 
@@ -46,8 +48,10 @@ void ApplySnapshot(uint3 id : SV_DispatchThreadID)
         targetId.y >= 0 && targetId.y < resolution &&
         targetId.z >= 0 && targetId.z < resolution)
     {
-        sdf[coords(targetId)] = snapshot[coords(id)];
-        chunkColors[coords(targetId)] = colors[coords(id)];
+        uint coordsId = coords(id);
+        uint coordsTargetId = coords(targetId);
+        sdf[coordsTargetId] = snapshot[coordsId];
+        chunkColors[coordsTargetId] = colors[coordsId];
     }
 }
 
@@ -62,9 +66,10 @@ void ClearData(uint3 id : SV_DispatchThreadID)
 [numthreads(512,1,1)]
 void Normalize(uint3 id : SV_DispatchThreadID)
 {
-    if (overlaps[id.x] != 0)
+    uint overlapsCount = overlaps[id.x];
+    if (overlapsCount != 0)
     {
-        snapshot[id.x] /= overlaps[id.x];
-        colors[id.x] /= overlaps[id.x];
+        snapshot[id.x] /= overlapsCount;
+        colors[id.x] /= overlapsCount;
     }
 }

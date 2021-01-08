@@ -48,8 +48,4 @@ void RemoveMaterial(uint3 id : SV_DispatchThreadID)
     float val = length(displacement) - radius;
     val = clamp(val, -voxelSpacing, voxelSpacing);
     sdf[arrCoords] = max(-val, sdfVal);
-    if (val < voxelSpacing)
-    {
-        colors[arrCoords] = float3(1.0f,1.0f,1.0f);
-    }
 }

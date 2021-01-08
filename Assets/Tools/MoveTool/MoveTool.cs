@@ -122,6 +122,7 @@ public class MoveTool : Tool, IDisposable
         var kernel = ApplyMoveShader.FindKernel("CSMain");
         ApplyMoveShader.SetFloat("spacing", snapshot.spacing / (res - 1));
         ApplyMoveShader.SetVector("offset", snapshot.transform.InverseTransformDirection(cursor.transform.position - prevPos));
+        ApplyMoveShader.SetFloat("voxelSpacing", snapshot.spacing);
         ApplyMoveShader.SetInt("resolution", snapshot.resolution);
         ApplyMoveShader.SetBuffer(kernel, "entries", countBuffer);
         ApplyMoveShader.SetBuffer(kernel, "sdf", snapshot.Snapshot);

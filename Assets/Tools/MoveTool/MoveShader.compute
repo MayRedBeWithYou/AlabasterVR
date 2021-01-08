@@ -18,6 +18,7 @@ float spacing;
 float3 offset;
 uint resolution;
 StructuredBuffer<uint> entries;
+float voxelSpacing;
 
 uint coords(uint3 id)
 {
@@ -32,7 +33,7 @@ void CSMain(uint3 id : SV_DispatchThreadID)
         MoveData data;
         data = workBuffer[id.x];
         float value = sdf[coords(data.from)] - dot(offset, data.gradient);
-        value = clamp(-0.01209677f, 0.01209677f, value);
+        value = clamp(-voxelSpacing, voxelSpacing, value);
         sdf[coords(data.from)] = value;
         
         float3 outColor;
