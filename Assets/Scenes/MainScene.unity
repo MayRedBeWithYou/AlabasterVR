@@ -150,6 +150,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1455743658339109724}
+  - {fileID: 326024057}
   m_Father: {fileID: 1398798748}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -212,16 +213,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 89813817}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 286b16356186a764abb5da002b66f1a7, type: 3}
+  m_Script: {fileID: 11500000, guid: ab9f7fc011ea0cb45b34ea0e7bef00d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ToFollow: {fileID: 240967875}
+  ToFollow: {fileID: 0}
   SnapshotShader: {fileID: 7200000, guid: cf1623b0593f1e447b6263820a47e926, type: 3}
   resolution: 0
   volume: 0
   size: 0
   spacing: 0
-  pointMaterial: {fileID: 2100000, guid: bf6703b04bad5bb47a4d824edfe7da62, type: 2}
+  pointMaterial: {fileID: 0}
 --- !u!4 &89813819
 Transform:
   m_ObjectHideFlags: 0
@@ -235,7 +236,7 @@ Transform:
   m_Children:
   - {fileID: 1443523195}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &240967875
 GameObject:
@@ -854,7 +855,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b5f88629b8dfd54cbae8be551f7bf5b, type: 3}
-
+--- !u!4 &326024057
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 326024056}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883326313}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 18572185}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &401280366
 GameObject:
   m_ObjectHideFlags: 0
@@ -982,10 +996,9 @@ MonoBehaviour:
     type: 3}
   _size: 2
   _resolution: 8
-  VoxelSpacing: 0
-  _resolution: 8
   _chunkResolution: 16
   _relativeModelSize: 0.3
+  VoxelSpacing: 0
   _drawBoundingBox: 1
   _drawGrid: 1
   _drawOnlyActive: 1
@@ -1711,7 +1724,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1398798747}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.294, y: 0, z: -1.277}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 18572185}
@@ -2417,6 +2430,22 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   current: {fileID: 0}
+--- !u!1 &1883326313
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 326024056}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 326024057}
+  m_Layer: 0
+  m_Name: Main Camera (Missing Prefab)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1906343123
 GameObject:
   m_ObjectHideFlags: 0
