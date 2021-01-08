@@ -34,9 +34,9 @@ float3 realPos(uint3 id)
 
 float3 getSdfGradient(uint3 id)
 {
-    float dx = sdf[coords(uint3(id.x + 1, id.y, id.z))] - sdf[coords(uint3(id.x - 1, id.y, id.z))];
-    float dy = sdf[coords(uint3(id.x, id.y + 1, id.z))] - sdf[coords(uint3(id.x, id.y - 1, id.z))];
-    float dz = sdf[coords(uint3(id.x, id.y, id.z + 1))] - sdf[coords(uint3(id.x, id.y, id.z - 1))];
+    float dx = sdf[coords(uint3(id.x - 1, id.y, id.z))] - sdf[coords(uint3(id.x + 1, id.y, id.z))];
+    float dy = sdf[coords(uint3(id.x, id.y - 1, id.z))] - sdf[coords(uint3(id.x, id.y + 1, id.z))];
+    float dz = sdf[coords(uint3(id.x, id.y, id.z - 1))] - sdf[coords(uint3(id.x, id.y, id.z + 1))];
     float3 gradient = { dx,dy,dz };
     float spacing = chunkSize / (resolution - 1);
     gradient /= (spacing * 3);
@@ -45,9 +45,9 @@ float3 getSdfGradient(uint3 id)
 
 float3 getRGradient(uint3 id)
 {
-    float dx = colors[coords(uint3(id.x + 1, id.y, id.z))].r - colors[coords(uint3(id.x - 1, id.y, id.z))].r;
-    float dy = colors[coords(uint3(id.x, id.y + 1, id.z))].r - colors[coords(uint3(id.x, id.y - 1, id.z))].r;
-    float dz = colors[coords(uint3(id.x, id.y, id.z + 1))].r - colors[coords(uint3(id.x, id.y, id.z - 1))].r;
+    float dx = colors[coords(uint3(id.x - 1, id.y, id.z))].r - colors[coords(uint3(id.x + 1, id.y, id.z))].r;
+    float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].r - colors[coords(uint3(id.x, id.y + 1, id.z))].r;
+    float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].r - colors[coords(uint3(id.x, id.y, id.z + 1))].r;
     float3 gradient = { dx,dy,dz };
     float spacing = chunkSize / (resolution - 1);
     gradient /= (spacing * 3);
@@ -56,9 +56,9 @@ float3 getRGradient(uint3 id)
 
 float3 getGGradient(uint3 id)
 {
-    float dx = colors[coords(uint3(id.x + 1, id.y, id.z))].g - colors[coords(uint3(id.x - 1, id.y, id.z))].g;
-    float dy = colors[coords(uint3(id.x, id.y + 1, id.z))].g - colors[coords(uint3(id.x, id.y - 1, id.z))].g;
-    float dz = colors[coords(uint3(id.x, id.y, id.z + 1))].g - colors[coords(uint3(id.x, id.y, id.z - 1))].g;
+    float dx = colors[coords(uint3(id.x - 1, id.y, id.z))].g - colors[coords(uint3(id.x + 1, id.y, id.z))].g;
+    float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].g - colors[coords(uint3(id.x, id.y + 1, id.z))].g;
+    float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].g - colors[coords(uint3(id.x, id.y, id.z + 1))].g;
     float3 gradient = { dx,dy,dz };
     float spacing = chunkSize / (resolution - 1);
     gradient /= (spacing * 3);
@@ -67,9 +67,9 @@ float3 getGGradient(uint3 id)
 
 float3 getBGradient(uint3 id)
 {
-    float dx = colors[coords(uint3(id.x + 1, id.y, id.z))].b - colors[coords(uint3(id.x - 1, id.y, id.z))].b;
-    float dy = colors[coords(uint3(id.x, id.y + 1, id.z))].b - colors[coords(uint3(id.x, id.y - 1, id.z))].b;
-    float dz = colors[coords(uint3(id.x, id.y, id.z + 1))].b - colors[coords(uint3(id.x, id.y, id.z - 1))].b;
+    float dx = colors[coords(uint3(id.x - 1, id.y, id.z))].b - colors[coords(uint3(id.x + 1, id.y, id.z))].b;
+    float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].b - colors[coords(uint3(id.x, id.y + 1, id.z))].b;
+    float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].b - colors[coords(uint3(id.x, id.y, id.z + 1))].b;
     float3 gradient = { dx,dy,dz };
     float spacing = chunkSize / (resolution - 1);
     gradient /= (spacing * 3);
