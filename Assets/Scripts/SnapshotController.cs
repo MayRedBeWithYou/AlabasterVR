@@ -106,8 +106,6 @@ public class SnapshotController : MonoBehaviour, IDisposable
         SnapshotShader.SetBuffer(applySnapshotKernel, "colors", colors);
         SnapshotShader.SetFloat("voxelSpacing", spacing);
         SnapshotShader.SetInt("resolution", resolution);
-
-
     }
 
     public void TakeSnapshot()
