@@ -72,11 +72,25 @@ float4 sdfValAndColor(int x, int y, int z, uint3 id)
     return retVal;
 }
 
+float3 getSdfGradient(uint3 id)
+{
+    float dx = points[indexFromCoord(uint3(id.x - 1, id.y, id.z))] - points[indexFromCoord(uint3(id.x + 1, id.y, id.z))];
+    float dy = points[indexFromCoord(uint3(id.x, id.y - 1, id.z))] - points[indexFromCoord(uint3(id.x, id.y + 1, id.z))];
+    float dz = points[indexFromCoord(uint3(id.x, id.y, id.z - 1))] - points[indexFromCoord(uint3(id.x, id.y, id.z + 1))];
+    float3 gradient = { dx,dy,dz };
+    gradient /= (chunkSize / (numPointsPerAxis - 1)) * 2;
+    return gradient;
+}
+
 [numthreads(numThreads, numThreads, numThreads)]
 void March(int3 id : SV_DispatchThreadID)
 {
     // Stop one point before the end because voxel includes neighbouring points
-    if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1) {
+    /*if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1) {
+        return;
+    }*/
+
+    if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1  || id.x < 1 || id.y < 1 || id.z < 1) {
         return;
     }
 
@@ -135,11 +149,14 @@ void March(int3 id : SV_DispatchThreadID)
         tri.vertexA = lerp(realPos(targetIds[a0]), realPos(targetIds[b0]), getRatio(cubeCorners[a0], cubeCorners[b0]));
         tri.vertexB = lerp(realPos(targetIds[a1]), realPos(targetIds[b1]), getRatio(cubeCorners[a1], cubeCorners[b1]));
         tri.vertexC = lerp(realPos(targetIds[a2]), realPos(targetIds[b2]), getRatio(cubeCorners[a2], cubeCorners[b2]));
-        float3 normal = getNormal(tri.vertexA, tri.vertexB, tri.vertexC);
-        tri.normA = normal;
-        tri.normB = normal;
-        tri.normC = normal;
-
+        //float3 normal = getNormal(tri.vertexA, tri.vertexB, tri.vertexC);
+        //tri.normA = normal;
+        //tri.normB = normal;
+        //tri.normC = normal;
+        //float3 normal = getNormal(tri.vertexA, tri.vertexB, tri.vertexC);
+        tri.normA = lerp(getSdfGradient(targetIds[a0]), getSdfGradient(targetIds[b0]), getRatio(cubeCorners[a0], cubeCorners[b0]));
+        tri.normB = lerp(getSdfGradient(targetIds[a1]), getSdfGradient(targetIds[b1]), getRatio(cubeCorners[a1], cubeCorners[b1]));
+        tri.normC = lerp(getSdfGradient(targetIds[a2]), getSdfGradient(targetIds[b2]), getRatio(cubeCorners[a2], cubeCorners[b2]));
         tri.colorA = lerp(colors[indexFromCoord(targetIds[a0])], colors[indexFromCoord(targetIds[b0])], getRatio(cubeCorners[a0], cubeCorners[b0]));
         tri.colorB = lerp(colors[indexFromCoord(targetIds[a1])], colors[indexFromCoord(targetIds[b1])], getRatio(cubeCorners[a1], cubeCorners[b1]));
         tri.colorC = lerp(colors[indexFromCoord(targetIds[a2])], colors[indexFromCoord(targetIds[b2])], getRatio(cubeCorners[a2], cubeCorners[b2]));
@@ -147,3 +164,5 @@ void March(int3 id : SV_DispatchThreadID)
         triangles.Append(tri);
     }
 }
+
+
