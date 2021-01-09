@@ -47,6 +47,8 @@ public class GPUMesh : IDisposable
         materialBlock.SetBuffer("data", vertexBuffer);
         materialBlock.SetMatrix("model", modelMatrix);
         materialBlock.SetMatrix("invModel", inverseModelMatrix);
+        //var rng = new System.Random();
+        //materialBlock.SetFloat("_Metallic", (float)rng.NextDouble());
 
         Graphics.DrawProceduralIndirect(
             proceduralMaterial,

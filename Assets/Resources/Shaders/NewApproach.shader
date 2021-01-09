@@ -80,7 +80,7 @@
 //#endif
             float4 pos = float4(apos, 1);
             pos = mul(model, pos);
-            i.vertex = pos;//UnityObjectToClipPos(pos);
+            i.vertex = pos; // UnityObjectToClipPos(pos);
             i.normal = mul(transpose((float3x3)invModel), anorm);
             i.normal = UnityObjectToWorldNormal(i.normal);
             half4 lightColor = half4(ShadeVertexLights(i.vertex, i.normal), 1);
