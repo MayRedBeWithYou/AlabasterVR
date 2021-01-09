@@ -85,17 +85,17 @@ public class MoveTool : Tool, IDisposable
         prepareMoveDataKernel = MoveShader.FindKernel("PrepareMoveData");
         applyMoveDataKernel = MoveShader.FindKernel("ApplyMoveData");
 
-        MoveShader.SetFloat("chunkSize", snapshot.size);
-        MoveShader.SetInt("resolution", snapshot.resolution);
+        MoveShader.SetFloat("chunkSize", snapshot.Size);
+        MoveShader.SetInt("resolution", snapshot.Resolution);
 
-        MoveShader.SetBuffer(prepareMoveDataKernel, "sdf", snapshot.Snapshot);
-        MoveShader.SetBuffer(prepareMoveDataKernel, "colors", snapshot.Colors);
+        MoveShader.SetBuffer(prepareMoveDataKernel, "sdf", snapshot.SnapshotSdf);
+        MoveShader.SetBuffer(prepareMoveDataKernel, "colors", snapshot.SnapshotColors);
         MoveShader.SetBuffer(prepareMoveDataKernel, "workBufferIn", workBuffer);
-        MoveShader.SetBuffer(applyMoveDataKernel, "sdf", snapshot.Snapshot);
-        MoveShader.SetBuffer(applyMoveDataKernel, "colors", snapshot.Colors);
+        MoveShader.SetBuffer(applyMoveDataKernel, "sdf", snapshot.SnapshotSdf);
+        MoveShader.SetBuffer(applyMoveDataKernel, "colors", snapshot.SnapshotColors);
         MoveShader.SetBuffer(applyMoveDataKernel, "workBufferOut", workBuffer);
         MoveShader.SetBuffer(applyMoveDataKernel, "entries", countBuffer);
-        MoveShader.SetFloat("voxelSpacing", snapshot.spacing);
+        MoveShader.SetFloat("voxelSpacing", snapshot.Spacing);
     }
 
     private void FixedUpdate()
@@ -157,8 +157,8 @@ public class MoveTool : Tool, IDisposable
 
         workBuffer.SetCounterValue(0);
         MoveShader.SetFloat("toolRadius", cursor.radius * (1f / snapshot.transform.localScale.x));
-        MoveShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position) + Vector3.one * snapshot.size * 0.5f);
-        MoveShader.Dispatch(prepareMoveDataKernel, snapshot.resolution / 8, snapshot.resolution / 8, snapshot.resolution / 8);
+        MoveShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position) + Vector3.one * snapshot.Size * 0.5f);
+        MoveShader.Dispatch(prepareMoveDataKernel, snapshot.Resolution / 8, snapshot.Resolution / 8, snapshot.Resolution / 8);
         prevPos = cursor.transform.position;
         ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
         workBufferPopulated = true;

@@ -215,13 +215,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab9f7fc011ea0cb45b34ea0e7bef00d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ToFollow: {fileID: 0}
   SnapshotShader: {fileID: 7200000, guid: cf1623b0593f1e447b6263820a47e926, type: 3}
-  resolution: 0
-  volume: 0
-  size: 0
-  spacing: 0
-  pointMaterial: {fileID: 0}
+  debugMode: 0
+  ToFollow: {fileID: 0}
+  pointMaterial: {fileID: 2100000, guid: bf6703b04bad5bb47a4d824edfe7da62, type: 2}
 --- !u!4 &89813819
 Transform:
   m_ObjectHideFlags: 0
