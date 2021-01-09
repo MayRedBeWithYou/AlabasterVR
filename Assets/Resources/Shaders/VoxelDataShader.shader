@@ -56,7 +56,7 @@
 
 			fixed4 frag(float4 i:SV_POSITION, uint id : TEXCOORD1) : SV_Target
 			{
-				float newval = (data[id]+1)/2;
+				float newval = ((data[id]/spacing)+1)/2; // transform [-spacing,spacing] interval into  [0,1] interval for lerp puprose
 				return lerp(_InsideColor, _OutsideColor, newval);
 			}
 			ENDCG

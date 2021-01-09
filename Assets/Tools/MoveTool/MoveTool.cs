@@ -118,7 +118,7 @@ public class MoveTool : Tool, IDisposable
 
     private void ApplyWorkBuffer()
     {
-        snapshot.SetPositionReal(prevPos);//cursor.transform.position);
+        snapshot.SetPositionReal(prevPos);
         var kernel = ApplyMoveShader.FindKernel("CSMain");
         ApplyMoveShader.SetFloat("spacing", snapshot.spacing / (res - 1));
         ApplyMoveShader.SetVector("offset", snapshot.transform.InverseTransformDirection(cursor.transform.position - prevPos));
@@ -131,7 +131,6 @@ public class MoveTool : Tool, IDisposable
         ApplyMoveShader.Dispatch(kernel, volume/512 ,1,1);
         snapshot.ApplySnapshot();
         workBufferPopulated = false;
-        //chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
     }
 
     private void PopulateWorkBuffer()

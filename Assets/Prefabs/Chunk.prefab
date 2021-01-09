@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resolution: 16
-  size: 0.375
+  size: 0.25
   coord: {x: 0, y: 0, z: 0}
   DisplayVoxels: 0
   mesh: {fileID: 0}

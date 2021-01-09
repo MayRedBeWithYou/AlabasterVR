@@ -12,6 +12,7 @@ RWStructuredBuffer<float3> chunkColors;
 RWStructuredBuffer<uint> overlaps;
 
 float3 gridDisplacement;
+float voxelSpacing;
 uint resolution;
 
 uint coords(uint3 id)
@@ -58,8 +59,8 @@ void ApplySnapshot(uint3 id : SV_DispatchThreadID)
 [numthreads(512,1,1)]
 void ClearData(uint3 id : SV_DispatchThreadID)
 {
-    snapshot[id.x] = 0.0f;
-    colors[id.x] = float3(0.0f, 0.0f, 0.0f);
+    snapshot[id.x] = 0;
+    colors[id.x] = float3(0,0,0);
     overlaps[id.x] = 0;
 }
 
@@ -71,5 +72,9 @@ void Normalize(uint3 id : SV_DispatchThreadID)
     {
         snapshot[id.x] /= overlapsCount;
         colors[id.x] /= overlapsCount;
+    }
+    else
+    {
+        snapshot[id.x] = voxelSpacing;
     }
 }
