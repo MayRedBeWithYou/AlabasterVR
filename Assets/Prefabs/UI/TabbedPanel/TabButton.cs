@@ -15,6 +15,7 @@ public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandl
     void Awake()
     {
         background = GetComponent<Image>();
+        tabGroup.Subscribe(this);
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -30,10 +31,5 @@ public class TabButton : MonoBehaviour, IPointerEnterHandler, IPointerClickHandl
     public void OnPointerExit(PointerEventData eventData)
     {
         tabGroup.OnTabExit(this);
-    }
-
-    void Start()
-    {
-        tabGroup.Subscribe(this);
     }
 }

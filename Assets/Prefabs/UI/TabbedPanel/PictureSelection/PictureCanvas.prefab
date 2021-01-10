@@ -410,7 +410,6 @@ GameObject:
   - component: {fileID: 5178655350696293152}
   - component: {fileID: 2227527807061700691}
   - component: {fileID: 2189251096434746402}
-  - component: {fileID: 873400805036138414}
   m_Layer: 5
   m_Name: PictureCanvas
   m_TagString: Untagged
@@ -515,18 +514,6 @@ MonoBehaviour:
   picName: {fileID: 4056910497154040283}
   image: {fileID: 7399375191141154124}
   visible: 0
---- !u!114 &873400805036138414
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4242411752486670170}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bdf465859430af4b9ed3b81fd02ca5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4948254099160207889
 GameObject:
   m_ObjectHideFlags: 0

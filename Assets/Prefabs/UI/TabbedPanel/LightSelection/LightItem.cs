@@ -50,6 +50,16 @@ public class LightItem : MonoBehaviour
         if (_sceneLight.Enabled) _toggleButton.GetComponentInChildren<Image>().color = Color.white;
         else _toggleButton.GetComponentInChildren<Image>().color = Color.black;
     }
+    public void ShowSettings()
+    {
+        LightSettings settings = UIController.Instance.ShowLightSettings();
+        settings.closeButton.onClick.AddListener(() =>
+        {
+            TabbedPanel panel = UIController.Instance.ShowTabbedPanelMenu();
+            panel.selectedTab = panel.tabButtons[1];
+        });
+        settings.sceneLight = _sceneLight;
+    }
 
     public void ChangeColor()
     {
