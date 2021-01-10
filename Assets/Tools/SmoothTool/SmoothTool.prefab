@@ -50,8 +50,9 @@ MonoBehaviour:
   upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
   downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
   snapshot: {fileID: 0}
-  Trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
+  trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
   SmoothShader: {fileID: 7200000, guid: aa97e1f496635954b8f44a97dcce87bf, type: 3}
   cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
     type: 3}
   cursor: {fileID: 0}
+  isWorking: 0

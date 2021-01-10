@@ -23,7 +23,7 @@ public class SmoothTool : Tool
 
     public SnapshotController snapshot;
 
-    public AxisHandler Trigger;
+    public AxisHandler trigger;
     public ComputeShader SmoothShader;
 
     public GameObject cursorPrefab;
@@ -39,6 +39,10 @@ public class SmoothTool : Tool
 
     [HideInInspector]
     public CursorSDF cursor;
+
+    public bool isWorking = false;
+    public Dictionary<Chunk, float[]> beforeEdit;
+    public Dictionary<Chunk, float[]> beforeColor;
 
     public override void Enable()
     {
@@ -75,7 +79,7 @@ public class SmoothTool : Tool
         applyWorkBufferKernel = SmoothShader.FindKernel("ApplySmooth");
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (upButton.IsPressed)
         {
@@ -86,10 +90,52 @@ public class SmoothTool : Tool
             cursor.DecreaseRadius();
         }
         cursor.UpdateActiveChunks();
-        if(Trigger.Value > 0.2)
+
+        if (isWorking)
         {
+            if (trigger.Value <= 0.2)
+            {
+                isWorking = false;
+                Dictionary<Chunk, float[]> afterEdit = new Dictionary<Chunk, float[]>();
+                Dictionary<Chunk, float[]> afterColor = new Dictionary<Chunk, float[]>();
+                foreach (Chunk chunk in beforeEdit.Keys)
+                {
+                    float[] voxels = new float[chunk.voxels.Volume];
+                    float[] colors = new float[chunk.voxels.Volume * 3];
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    chunk.voxels.ColorBuffer.GetData(colors);
+                    afterEdit.Add(chunk, voxels);
+                    afterColor.Add(chunk, colors);
+                }
+
+                SmoothOperation op = new SmoothOperation(beforeEdit, beforeColor, afterEdit, afterColor);
+                OperationManager.Instance.PushOperation(op);
+            }
+
+            foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+            {
+                if (!beforeEdit.ContainsKey(chunk))
+                {
+                    float[] voxels = new float[chunk.voxels.Volume];
+                    float[] colors = new float[chunk.voxels.Volume * 3];
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    chunk.voxels.ColorBuffer.GetData(colors);
+                    beforeEdit.Add(chunk, voxels);
+                    beforeColor.Add(chunk, colors);
+                }
+            }
             PerformAction();
         }
+        if (trigger.Value > 0.2)
+        {
+            if (!isWorking)
+            {
+                isWorking = true;
+                beforeEdit = new Dictionary<Chunk, float[]>();
+                beforeColor = new Dictionary<Chunk, float[]>();
+            }
+        }
+
     }
 
     private void PerformAction()
