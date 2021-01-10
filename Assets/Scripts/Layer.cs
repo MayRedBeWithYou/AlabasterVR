@@ -14,6 +14,51 @@ public class Layer : MonoBehaviour, IMovable, IResizable
     public float Spacing => Size / Resolution;
 
     public Chunk[,,] chunks;
+    private float metallic;
+    private float smoothness;
+    private RenderType renderType;
+
+    public RenderType RenderType
+    {
+        get => renderType;
+        set
+        {
+            renderType = value;
+            if (chunks != null)
+                foreach (Chunk c in chunks)
+                {
+                    c.gpuMesh.renderType = value;
+                }
+        }
+    }
+
+    public float Metallic
+    {
+        get => metallic;
+        set
+        {
+            metallic = value;
+            if (chunks != null)
+                foreach (Chunk c in chunks)
+                {
+                    c.gpuMesh.metallic = value;
+                }
+        }
+    }
+
+    public float Smoothness
+    {
+        get => smoothness;
+        set
+        {
+            smoothness = value;
+            if (chunks != null)
+                foreach (Chunk c in chunks)
+                {
+                    c.gpuMesh.smoothness = value;
+                }
+        }
+    }
 
     public void GenerateChunks(GameObject ChunkPrefab)
     {
@@ -27,8 +72,7 @@ public class Layer : MonoBehaviour, IMovable, IResizable
                 {
                     var foo = LayerManager.Instance.VoxelSpacing;
                     GameObject go = Instantiate(ChunkPrefab, transform);
-                    go.transform.localPosition = new Vector3(x, y, z) * (foo*(ChunkResolution - 3));
-                    //go.transform.localPosition = new Vector3(x * (Spacing - foo), y * (Spacing - foo), z * (Spacing - foo));
+                    go.transform.localPosition = new Vector3(x, y, z) * (foo * (ChunkResolution - 3));
                     go.name = $"Chunk ({x},{y},{z})";
                     Chunk chunk = go.GetComponent<Chunk>();
                     chunk.coord = new Vector3Int(x, y, z);

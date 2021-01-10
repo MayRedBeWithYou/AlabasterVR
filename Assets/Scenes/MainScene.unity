@@ -629,12 +629,34 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1304529422}
+        m_MethodName: OnHoverEnter
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnHoverExit:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1298109536}
         m_MethodName: ToggleSelectedTool
         m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 1304529422}
+        m_MethodName: OnHoverExit
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -701,6 +723,10 @@ MonoBehaviour:
   PictureCanvasPrefab: {fileID: 4242411752486670170, guid: 9cc1536abcb2a8847b16e95f0aab80e3,
     type: 3}
   LeftOverlay: {fileID: 1363046063}
+  LayerSettingsPrefab: {fileID: 633745008470641335, guid: ccdc9786b05df17479a9492ffb2b1b92,
+    type: 3}
+  LightSettingsPrefab: {fileID: 633745008470641335, guid: 774127fec4a9dd343a02f5005aa50b9c,
+    type: 3}
 --- !u!4 &264691738
 Transform:
   m_ObjectHideFlags: 0
@@ -907,6 +933,9 @@ MonoBehaviour:
   _chunkResolution: 32
   _relativeModelSize: 0.3
   VoxelSpacing: 0
+  Metallic: 0.1
+  Smoothness: 0.3
+  renderType: 1
   _drawBoundingBox: 1
   _drawGrid: 1
   _drawOnlyActive: 1
