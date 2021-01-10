@@ -46,13 +46,16 @@ public class SmoothTool : Tool
 
     public override void Enable()
     {
-        if(cursor != null)
+        if (!gameObject.activeSelf)
         {
-            cursor.ToggleRenderer(true);
+            if (cursor != null)
+            {
+                cursor.ToggleRenderer(true);
+            }
+            positionButton.OnButtonDown += PositionButton_OnButtonDown;
+            positionButton.OnButtonUp += PositionButton_OnButtonUp;
+            base.Enable();
         }
-        positionButton.OnButtonDown += PositionButton_OnButtonDown;
-        positionButton.OnButtonUp += PositionButton_OnButtonUp;
-        base.Enable();
     }
 
     public override void Disable()
@@ -152,7 +155,7 @@ public class SmoothTool : Tool
 
         workBuffer.SetCounterValue(0);
         var kernel = SmoothShader.FindKernel("PopulateWorkBuffer");
-        SmoothShader.SetFloat("toolRadius", cursor.radius* 0.8f * (1f/snapshot.transform.localScale.x));
+        SmoothShader.SetFloat("toolRadius", cursor.radius * 0.8f * (1f / snapshot.transform.localScale.x));
         SmoothShader.SetFloat("chunkSize", snapshot.Size);
         SmoothShader.SetVector("toolCenter", snapshot.transform.InverseTransformPoint(cursor.transform.position) + Vector3.one * snapshot.Size * 0.5f);
 

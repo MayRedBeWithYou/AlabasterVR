@@ -45,14 +45,17 @@ public class MaterialTool : Tool
 
     public override void Enable()
     {
-        if (cursor != null)
-            cursor.ToggleRenderer(true);
+        if (!gameObject.activeSelf)
+        {
+            if (cursor != null)
+                cursor.ToggleRenderer(true);
+            settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
+            toggleButton.OnButtonDown += ToggleButtonHandler;
 
-        settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
-
-        positionButton.OnButtonDown += PositionButton_OnButtonDown;
-        positionButton.OnButtonUp += PositionButton_OnButtonUp;
-        base.Enable();
+            positionButton.OnButtonDown += PositionButton_OnButtonDown;
+            positionButton.OnButtonUp += PositionButton_OnButtonUp;
+            base.Enable();
+        }
     }
 
     private void PositionButton_OnButtonDown(XRController controller)
@@ -71,10 +74,11 @@ public class MaterialTool : Tool
         cursor.ToggleRenderer(false);
         settingsButton.OnButtonDown -= SettingsButton_OnButtonDown;
 
+        toggleButton.OnButtonDown -= ToggleButtonHandler;
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
         positionButton.OnButtonUp -= PositionButton_OnButtonUp;
 
-        if (activeColorPicker != null) activeColorPicker.Close();
+        if (activeColorPicker != null && ToolController.Instance.SelectedTool != this) activeColorPicker.Close();
         base.Disable();
     }
 
@@ -82,7 +86,6 @@ public class MaterialTool : Tool
     {
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
         cursor.gameObject.name = "MaterialCursor";
-        toggleButton.OnButtonDown += ToggleButtonHandler;
     }
     public void Start()
     {
@@ -182,7 +185,7 @@ public class MaterialTool : Tool
     {
         var activeLayer = LayerManager.Instance.ActiveLayer;
         int kernel = isAdding ? AddMaterialKernel : RemoveMaterialKernel;
-        shader.SetFloat("radius", cursor.radius * (1f/activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetFloat("radius", cursor.radius * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
         shader.SetVector("color", new Vector3(color.r, color.g, color.b));
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {

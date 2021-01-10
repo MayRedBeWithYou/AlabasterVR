@@ -33,12 +33,12 @@ public class ToolController : MonoBehaviour
         get => _selectedTool;
         set
         {
+            _selectedTool = value;
             foreach (Tool tool in Tools)
             {
                 if (tool == value) tool.Enable();
                 else tool.Disable();
             }
-            _selectedTool = value;
             SelectedToolChanged?.Invoke(value);
             Debug.Log($"Selected tool changed to {value.name}");
         }
