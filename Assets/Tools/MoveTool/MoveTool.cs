@@ -21,7 +21,7 @@ public class MoveTool : Tool, IDisposable
     public ButtonHandler downButton;
     public ButtonHandler positionButton;
 
-    public AxisHandler Trigger;
+    public AxisHandler trigger;
 
     [Header("Compute")]
 
@@ -43,9 +43,13 @@ public class MoveTool : Tool, IDisposable
     [HideInInspector]
     public CursorSDF cursor;
 
+    public bool isWorking = false;
+    public Dictionary<Chunk, float[]> beforeEdit;
+    public Dictionary<Chunk, float[]> beforeColor;
+
     public override void Enable()
     {
-        if(cursor != null)
+        if (cursor != null)
         {
             cursor.ToggleRenderer(true);
         }
@@ -109,9 +113,50 @@ public class MoveTool : Tool, IDisposable
             cursor.DecreaseRadius();
         }
         cursor.UpdateActiveChunks();
-        if(Trigger.Value > 0.2)
+
+        if (isWorking)
         {
+            if (trigger.Value <= 0.2)
+            {
+                isWorking = false;
+                Dictionary<Chunk, float[]> afterEdit = new Dictionary<Chunk, float[]>();
+                Dictionary<Chunk, float[]> afterColor = new Dictionary<Chunk, float[]>();
+                foreach (Chunk chunk in beforeEdit.Keys)
+                {
+                    float[] voxels = new float[chunk.voxels.Volume];
+                    float[] colors = new float[chunk.voxels.Volume * 3];
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    chunk.voxels.ColorBuffer.GetData(colors);
+                    afterEdit.Add(chunk, voxels);
+                    afterColor.Add(chunk, colors);
+                }
+
+                MoveOperation op = new MoveOperation(beforeEdit, beforeColor, afterEdit, afterColor);
+                OperationManager.Instance.PushOperation(op);
+            }
+
+            foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+            {
+                if (!beforeEdit.ContainsKey(chunk))
+                {
+                    float[] voxels = new float[chunk.voxels.Volume];
+                    float[] colors = new float[chunk.voxels.Volume * 3];
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    chunk.voxels.ColorBuffer.GetData(colors);
+                    beforeEdit.Add(chunk, voxels);
+                    beforeColor.Add(chunk, colors);
+                }
+            }
             PerformAction();
+        }
+        if (trigger.Value > 0.2)
+        {
+            if (!isWorking)
+            {
+                isWorking = true;
+                beforeEdit = new Dictionary<Chunk, float[]>();
+                beforeColor = new Dictionary<Chunk, float[]>();
+            }
         }
         else
         {
@@ -121,11 +166,11 @@ public class MoveTool : Tool, IDisposable
 
     private void PerformAction()
     {
-        if(workBufferPopulated)
+        if (workBufferPopulated)
         {
             ApplyWorkBuffer();
         }
-        if(!workBufferPopulated)
+        if (!workBufferPopulated)
         {
             PopulateWorkBuffer();
         }

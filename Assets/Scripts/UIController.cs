@@ -84,8 +84,11 @@ public class UIController : MonoBehaviour
             Destroy(_activeLeftHandMenu);
             _activeLeftHandMenu = null;
         }
-        else _activeLeftHandMenu = CreateUI(ToolSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
-
+        else
+        {
+            _activeLeftHandMenu = CreateUI(ToolSelectionMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+            _activeLeftHandMenu.transform.localPosition += new Vector3(0f, -0.08f, 0f);
+        }
     }
 
     private void ShowLayerSelectionMenu(XRController controller)

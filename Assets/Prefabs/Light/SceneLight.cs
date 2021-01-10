@@ -7,8 +7,6 @@ public class SceneLight : MonoBehaviour, IMovable
 {
     public Light light { get; private set; }
 
-    public string name;
-
     private MeshRenderer meshRenderer;
     private float range;
     private float angle;

@@ -41,6 +41,8 @@ public class MaterialTool : Tool
 
     public Dictionary<Chunk, float[]> beforeEdit;
 
+    public Dictionary<Chunk, float[]> beforeColor;
+
     public override void Enable()
     {
         if (cursor != null)
@@ -71,6 +73,8 @@ public class MaterialTool : Tool
 
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
         positionButton.OnButtonUp -= PositionButton_OnButtonUp;
+
+        if (activeColorPicker != null) activeColorPicker.Close();
         base.Disable();
     }
 
@@ -120,23 +124,30 @@ public class MaterialTool : Tool
             {
                 isWorking = false;
                 Dictionary<Chunk, float[]> afterEdit = new Dictionary<Chunk, float[]>();
-                foreach(Chunk chunk in beforeEdit.Keys)
+                Dictionary<Chunk, float[]> afterColor = new Dictionary<Chunk, float[]>();
+                foreach (Chunk chunk in beforeEdit.Keys)
                 {
-                    float[] voxels = new float[chunk.voxels.VoxelBuffer.count]; ;
+                    float[] voxels = new float[chunk.voxels.Volume];
+                    float[] colors = new float[chunk.voxels.Volume * 3];
                     chunk.voxels.VoxelBuffer.GetData(voxels);
+                    chunk.voxels.ColorBuffer.GetData(colors);
                     afterEdit.Add(chunk, voxels);
+                    afterColor.Add(chunk, colors);
                 }
 
-                MaterialOperation op = new MaterialOperation(beforeEdit, afterEdit);
+                MaterialOperation op = new MaterialOperation(beforeEdit, beforeColor, afterEdit, afterColor);
                 OperationManager.Instance.PushOperation(op);
             }
             foreach (Chunk chunk in LayerManager.Instance.activeChunks)
             {
                 if (!beforeEdit.ContainsKey(chunk))
                 {
-                    float[] voxels = new float[chunk.voxels.VoxelBuffer.count]; ;
+                    float[] voxels = new float[chunk.voxels.Volume];
+                    float[] colors = new float[chunk.voxels.Volume * 3];
                     chunk.voxels.VoxelBuffer.GetData(voxels);
+                    chunk.voxels.ColorBuffer.GetData(colors);
                     beforeEdit.Add(chunk, voxels);
+                    beforeColor.Add(chunk, colors);
                 }
             }
             PerformAction();
@@ -147,6 +158,7 @@ public class MaterialTool : Tool
             {
                 isWorking = true;
                 beforeEdit = new Dictionary<Chunk, float[]>();
+                beforeColor = new Dictionary<Chunk, float[]>();
             }
         }
     }
@@ -163,6 +175,7 @@ public class MaterialTool : Tool
         shader.SetFloat("chunkSize", activeLayer.Spacing);
         shader.SetInt("resolution", activeLayer.ChunkResolution);
         shader.SetFloat("voxelSpacing", LayerManager.Instance.VoxelSpacing);
+        shader.SetFloat("radius", cursor.radius * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
     }
 
     private void PerformAction()

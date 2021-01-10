@@ -75,4 +75,9 @@ public class LightItem : MonoBehaviour
     {
         LightManager.Instance.RemoveLight(Light);
     }
+
+    void OnDestroy()
+    {
+        if (picker != null) picker.Close(); 
+    }
 }

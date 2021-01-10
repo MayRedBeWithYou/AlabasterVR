@@ -54,3 +54,4 @@ MonoBehaviour:
   cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
     type: 3}
   cursor: {fileID: 0}
+  isWorking: 0

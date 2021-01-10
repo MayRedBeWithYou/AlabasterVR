@@ -31,6 +31,9 @@ public class PaintTool : Tool
     [HideInInspector]
     public CursorSDF cursor;
 
+    public bool isWorking = false;
+    public Dictionary<Chunk, float[]> beforeColor;
+
     public override void Enable()
     {
         if (cursor != null)
@@ -50,6 +53,8 @@ public class PaintTool : Tool
 
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
         positionButton.OnButtonUp -= PositionButton_OnButtonUp;
+
+        if (activeColorPicker != null) activeColorPicker.Close();
         base.Disable();
     }
 
@@ -59,7 +64,7 @@ public class PaintTool : Tool
         cursor.gameObject.name = "PaintCursor";
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (upButton.IsPressed)
         {
@@ -69,10 +74,41 @@ public class PaintTool : Tool
         {
             cursor.DecreaseRadius();
         }
+        if (isWorking)
+        {
+            if (trigger.Value <= 0.2)
+            {
+                isWorking = false;
+                Dictionary<Chunk, float[]> afterEdit = new Dictionary<Chunk, float[]>();
+                Dictionary<Chunk, float[]> afterColor = new Dictionary<Chunk, float[]>();
+                foreach (Chunk chunk in beforeColor.Keys)
+                {
+                    float[] colors = new float[chunk.voxels.Volume * 3];
+                    chunk.voxels.ColorBuffer.GetData(colors);
+                    afterColor.Add(chunk, colors);
+                }
+
+                ColorEditOperation op = new ColorEditOperation(beforeColor, afterColor);
+                OperationManager.Instance.PushOperation(op);
+            }
+            foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+            {
+                if (!beforeColor.ContainsKey(chunk))
+                {
+                    float[] colors = new float[chunk.voxels.Volume * 3];
+                    chunk.voxels.ColorBuffer.GetData(colors);
+                    beforeColor.Add(chunk, colors);
+                }
+            }
+            PerformAction();
+        }
         if (trigger.Value > 0.2)
         {
-            cursor.UpdateActiveChunks();
-            PerformAction();
+            if (!isWorking)
+            {
+                isWorking = true;
+                beforeColor = new Dictionary<Chunk, float[]>();
+            }
         }
     }
 
