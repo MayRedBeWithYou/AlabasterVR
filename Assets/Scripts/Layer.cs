@@ -25,8 +25,10 @@ public class Layer : MonoBehaviour, IMovable, IResizable
             {
                 for (int z = 0; z < Resolution; z++)
                 {
+                    var foo = LayerManager.Instance.VoxelSpacing;
                     GameObject go = Instantiate(ChunkPrefab, transform);
-                    go.transform.localPosition = new Vector3(x * Spacing, y * Spacing, z * Spacing);
+                    go.transform.localPosition = new Vector3(x, y, z) * (foo*(ChunkResolution - 3));
+                    //go.transform.localPosition = new Vector3(x * (Spacing - foo), y * (Spacing - foo), z * (Spacing - foo));
                     go.name = $"Chunk ({x},{y},{z})";
                     Chunk chunk = go.GetComponent<Chunk>();
                     chunk.coord = new Vector3Int(x, y, z);

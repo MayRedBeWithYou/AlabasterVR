@@ -8,8 +8,8 @@ struct Triangle {
     float3 vertexA;
     float3 vertexB;
     float3 normC;
-    float3 normB;
     float3 normA;
+    float3 normB;
     float3 colorC;
     float3 colorA;
     float3 colorB;
@@ -79,18 +79,18 @@ float3 getSdfGradient(uint3 id)
     float dz = points[indexFromCoord(uint3(id.x, id.y, id.z - 1))] - points[indexFromCoord(uint3(id.x, id.y, id.z + 1))];
     float3 gradient = { dx,dy,dz };
     gradient /= (chunkSize / (numPointsPerAxis - 1)) * 2;
-    return gradient;
+    return -gradient;
 }
 
 [numthreads(numThreads, numThreads, numThreads)]
 void March(int3 id : SV_DispatchThreadID)
 {
     // Stop one point before the end because voxel includes neighbouring points
-    /*if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1) {
-        return;
-    }*/
-
-    if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1  || id.x < 1 || id.y < 1 || id.z < 1) {
+    //if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1) {
+    //    return;
+    //}
+    int diff = 2;
+    if (id.x >= numPointsPerAxis - diff || id.y >= numPointsPerAxis - diff || id.z >= numPointsPerAxis - diff  || id.x < 1 || id.y < 1 || id.z < 1) {
         return;
     }
 
