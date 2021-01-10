@@ -8,6 +8,7 @@ using System.Globalization;
 public static class FileManager
 {
     public static int precisionMultiplier = 100;
+    public static bool noVertexNormals;
     public static FileExplorer SaveModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Save;
@@ -29,19 +30,19 @@ public static class FileManager
         script.OnAccepted += (text) =>
           {
               if (System.String.IsNullOrWhiteSpace(text)) return;
-              GPUMesh.GPUTriangle[] triangles = null;
+              MeshToSdfGpu.TranslateTrianglesToSdf(TranslateObjToModel(text), false);
+              /*
               try
               {
                   triangles = TranslateObjToModel(text);
+                  MeshToSdfGpu.TranslateTrianglesToSdf(triangles);
               }
               catch
               {
                   UIController.Instance.ShowMessageBox("Model couldn't be loaded - incorrect file format");
-                  script.Close();
-              }
+              }*/
               script.Close();
           };
-        //todo:meshtosdf
         return script;
     }
 
@@ -52,28 +53,19 @@ public static class FileManager
         script.UpdateDirectory();
         return script;
     }
-    private static GPUMesh.GPUTriangle[] TranslateObjToModel(string path)
+    private static MeshToSdfGpu.GPUTriangle[] TranslateObjToModel(string path)
     {
         StreamReader streamReader = new StreamReader(path);
         List<int[]> trianglesIndices = new List<int[]>();
         List<Vector3> vertices = new List<Vector3>();
         List<Vector3> normals = new List<Vector3>();
-
-        bool noVertexNormals = false;
+        noVertexNormals = false;
         while (!streamReader.EndOfStream)
         {
             string current = streamReader.ReadLine();
             if (current.Length > 2)
             {
-                if (current.Substring(0, 2) == "vn")
-                {
-                    normals.Add(ParseToVector3(current));
-                }
-                else if (current[0] == 'v')
-                {
-                    vertices.Add(ParseToVector3(current));
-                }
-                else if (current[0] == 'f')
+                if (current[0] == 'f')
                 {
                     var temp = ParseToFace(current);
                     for (int i = 0; i < temp.Count / 3; i++)
@@ -82,14 +74,19 @@ public static class FileManager
                         for (int j = 0; j < 3; j++)
                         {
                             if (temp[3 * i + j].x > 0) triIndices[j] = temp[3 * i + j].x - 1;
-                            else triIndices[j] = vertices.Count - temp[3 * i + j].x;
+                            else triIndices[j] = vertices.Count + temp[3 * i + j].x;
 
                             if (temp[3 * i + j].y > 0) triIndices[3 + j] = temp[3 * i + j].y - 1;
-                            else if (temp[3 * i + j].y < 0) triIndices[3 + j] = normals.Count - temp[3 * i + j].y;
+                            else if (temp[3 * i + j].y < 0) triIndices[3 + j] = normals.Count + temp[3 * i + j].y;
                             else noVertexNormals = true;
                         }
                         trianglesIndices.Add(triIndices);
                     }
+                }
+                else if (current[0] == 'v')
+                {
+                    if (current[1] == 'n') normals.Add(ParseToVector3(current));
+                    else if (current[1] == ' ') vertices.Add(ParseToVector3(current));
                 }
             }
         }
@@ -106,39 +103,51 @@ public static class FileManager
         Vector3 diff = max - min;
         float meshDiameter = Mathf.Max(diff.x, diff.y, diff.z);
         float scale = (LayerManager.Instance.RelativeModelSize * LayerManager.Instance.Size) / meshDiameter;
-        Vector3 centeringVector = (Vector3.one * (LayerManager.Instance.Size / 2)) - diff * scale / 2;
+        Vector3 sceneCenter = Vector3.one * (LayerManager.Instance.Size * 0.5f);
+        Vector3 centeringVector = sceneCenter - diff * scale * 0.5f;
         for (int i = 0; i < vertices.Count; i++)
         {
-            vertices[i] = vertices[i] - min;
+            vertices[i] -= min;
             vertices[i] *= scale;
             vertices[i] += centeringVector;
         }
-
+        min = centeringVector;
+        max = diff * scale + centeringVector;
+        Bounds boundsMine=new Bounds((min + max) * 0.5f, max - min);
+       
+        MeshToSdfGpu.bounds = new Bounds((min + max) * 0.5f, (max - min)+Vector3.one*LayerManager.Instance.Spacing / (LayerManager.Instance.ChunkResolution - 1)*2);
+        //Mesh mesh = new Mesh();
+        //mesh.vertices = vertices.ToArray();
+        
+        Vector3[] normalsArray;
         if (noVertexNormals)
         {
-            normals = new List<Vector3>(normals.Count);
+            normalsArray = new Vector3[vertices.Count];
             for (int i = 0; i < trianglesIndices.Count; i++)
             {
                 var tab = trianglesIndices[i];
                 Vector3 faceNormal = Vector3.Cross(vertices[tab[1]] - vertices[tab[0]], vertices[tab[2]] - vertices[tab[0]]).normalized;
-                normals[tab[3]] += faceNormal;
-                normals[tab[4]] += faceNormal;
-                normals[tab[5]] += faceNormal;
+                normalsArray[tab[3]] += faceNormal;
+                normalsArray[tab[4]] += faceNormal;
+                normalsArray[tab[5]] += faceNormal;
             }
         }
-        for (int i = 0; i < normals.Count; i++) normals[i] = normals[i].normalized;
-        GPUMesh.GPUTriangle[] result = new GPUMesh.GPUTriangle[trianglesIndices.Count];
+        else normalsArray = normals.ToArray();
+        normals = null;
+        for (int i = 0; i < normalsArray.Length; i++) normalsArray[i] = normalsArray[i].normalized;
+
+        MeshToSdfGpu.GPUTriangle[] result = new MeshToSdfGpu.GPUTriangle[trianglesIndices.Count];
         for (int i = 0; i < result.Length; i++)
         {
             var tab = trianglesIndices[i];
-            result[i] = new GPUMesh.GPUTriangle()
+            result[i] = new MeshToSdfGpu.GPUTriangle()
             {
                 vertexA = vertices[tab[0]],
                 vertexB = vertices[tab[1]],
                 vertexC = vertices[tab[2]],
-                normA = normals[tab[3]],
-                normB = normals[tab[4]],
-                normC = normals[tab[5]]
+                normA = normalsArray[tab[3]],
+                normB = normalsArray[tab[4]],
+                normC = normalsArray[tab[5]]
             };
         }
         return result;
@@ -267,11 +276,24 @@ public static class FileManager
         tmp = text.Split(sep, StringSplitOptions.RemoveEmptyEntries);
         for (int i = 1; i < tmp.Length; i++)
         {
-            string s1 = tmp[i].Substring(0, tmp[i].IndexOf('/'));
-            string s2 = tmp[i].Substring(tmp[i].LastIndexOf('/') + 1);
             int v, vn;
+            int firstInd = tmp[i].IndexOf('/');
+            int lastInd = tmp[i].LastIndexOf('/');
+
+            string s1 = tmp[i].Substring(0, firstInd);
             int.TryParse(s1, out v);
-            int.TryParse(s2, out vn);
+
+            if (firstInd == lastInd)
+            {
+                noVertexNormals = true;
+                vn = 0;
+            }
+            else
+            {
+                string s2 = tmp[i].Substring(lastInd + 1);
+                int.TryParse(s2, out vn);
+            }
+
             if (result.Count < 3) result.Add(new Vector2Int(v, vn));
             else
             {

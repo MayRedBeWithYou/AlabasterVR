@@ -74,4 +74,8 @@ public class GPUVoxelData : IDisposable
             materialBlock
             );
     }
+    public void InitializeFromArray(float[] values)
+    {
+        VoxelBuffer.SetData(values);
+    }
 }

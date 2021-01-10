@@ -1,0 +1,118 @@
+﻿#pragma kernel CalculateDistance
+
+static const int numThreads = 8;
+
+struct Triangle {
+    float3 vertexC;
+    float3 vertexA;
+    float3 vertexB;
+    float3 normC;
+    float3 normB;
+    float3 normA;
+};
+
+RWStructuredBuffer<float> sdf;
+StructuredBuffer<Triangle> inputTriangles;
+float3 chunkOffset;
+int numPointsPerAxis;
+int trianglesCount;
+float chunkSize;
+float size;
+float maxValue;
+int coords(int3 id)
+{
+    return id.z * numPointsPerAxis * numPointsPerAxis + id.y * numPointsPerAxis + id.x;
+}
+
+float3 realPosExternal(int3 id)
+{
+    float res = numPointsPerAxis - 1;
+    float3 ids = float3(id) / res;
+    return (ids * chunkSize)+chunkOffset;
+}
+float3 Barycentric(float3 P, int index)
+{
+    //https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+
+    float3 result=P;
+    float3 v0 =  inputTriangles[index].vertexB - inputTriangles[index].vertexA;
+    float3 v1 =  inputTriangles[index].vertexC - inputTriangles[index].vertexA;
+    float3 v2 =  P - inputTriangles[index].vertexA;
+    
+    float d00 = dot(v0, v0);
+    float d01 = dot(v0, v1);
+    float d11 = dot(v1, v1);
+    float d20 = dot(v2, v0);
+    float d21 = dot(v2, v1);
+    float invDenominator = 1/(d00 * d11 - d01 * d01);
+    result.y = (d11 * d20 - d01 * d21) * invDenominator;
+    result.z = (d00 * d21 - d01 * d20) * invDenominator;
+    result.x = 1 - result.y - result.z;
+    return result;
+}
+
+float3 ClosestPointOnSegment(float3 projectedPoint,float3 A, float3 B)
+{
+    float3 v=B-A;
+    float3 w=projectedPoint-A;
+    float t=clamp(dot(v,w)*rsqrt(dot(v,v)) ,0,1);
+    return A+v*t;
+}
+
+float3 ClosestPointOnTriangle(float3 projectedPoint, int index, float3 barMultipliers)
+{
+    float3 result=projectedPoint;
+    if(barMultipliers.x<0) 
+    {
+        result=ClosestPointOnSegment(projectedPoint,inputTriangles[index].vertexB,inputTriangles[index].vertexC);
+    }
+    if(barMultipliers.y<0) 
+    {
+        result= ClosestPointOnSegment(projectedPoint,inputTriangles[index].vertexA,inputTriangles[index].vertexC);
+    }
+    if(barMultipliers.z<0) 
+    {
+        result= ClosestPointOnSegment(projectedPoint,inputTriangles[index].vertexA,inputTriangles[index].vertexB);
+    }
+    return result;
+}
+
+float3 Normal(int index)
+{
+    float3 v=cross(inputTriangles[index].vertexB-inputTriangles[index].vertexA, inputTriangles[index].vertexC-inputTriangles[index].vertexA);
+    return v*rsqrt(dot(v,v));
+}
+
+[numthreads(numThreads, numThreads, numThreads)]
+void CalculateDistance(int3 id : SV_DispatchThreadID)
+{
+    float3 currentPosition=realPosExternal(id);
+    float val=size*size;
+    float3 closestPointNormal=currentPosition;
+    float3 closestPoint=currentPosition;
+
+    float3 t_projectedPoint=currentPosition;
+    float3 t_barsN=currentPosition;
+    float3 t_closestPoint=currentPosition;
+    float t_val=val;
+    
+    int length=trianglesCount;
+    for (int j = 0; j < length && val!=0; j++)
+    {
+        t_barsN=Normal(j);
+        t_projectedPoint=currentPosition-t_barsN*(dot(t_barsN,currentPosition-inputTriangles[j].vertexA));
+        t_barsN= Barycentric(t_projectedPoint, j);
+        t_closestPoint=ClosestPointOnTriangle(t_projectedPoint,j,t_barsN);
+        t_val=dot(currentPosition,t_closestPoint);
+        if(t_val<val)
+        {
+            val=t_val;
+            closestPoint=t_closestPoint;
+            closestPointNormal=t_barsN.x*inputTriangles[j].normA+t_barsN.y*inputTriangles[j].normB+t_barsN.z*inputTriangles[j].normC;
+        }
+    }
+    val=min(val,maxValue);
+    if(dot(currentPosition-closestPoint,closestPointNormal)<0)val=-val;
+
+    sdf[coords(id)]=val;
+}
