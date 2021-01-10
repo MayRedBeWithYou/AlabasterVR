@@ -59,7 +59,6 @@ public class PaintTool : Tool
 
         if (activeColorPicker != null && ToolController.Instance.SelectedTool != this) activeColorPicker.Close();
         base.Disable();
-
     }
 
     public void Awake()
@@ -80,6 +79,7 @@ public class PaintTool : Tool
         }
         if (isWorking)
         {
+            cursor.UpdateActiveChunks();
             if (trigger.Value <= 0.2)
             {
                 isWorking = false;
