@@ -125,6 +125,7 @@ public class LayerManager : MonoBehaviour
         layer.Size = Size;
         layer.Smoothness = Smoothness;
         layer.Metallic = Metallic;
+        layer.RenderType = renderType;
 
         BoxCollider box = layerObject.GetComponent<BoxCollider>();
         box.size = Vector3.one * Size;

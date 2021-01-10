@@ -74,9 +74,4 @@ public class SceneLight : MonoBehaviour, IMovable
     {
         transform.rotation = rot;
     }
-
-    public void OnPointerEnter()
-    {
-        Debug.Log(name);
-    }
 }

@@ -748,6 +748,7 @@ MonoBehaviour:
   nameText: {fileID: 474902344683345281}
   metallicValue: {fileID: 109157545226729722}
   smoothnessValue: {fileID: 4538297543420902132}
+  renderDropdown: {fileID: 8603922064917226126}
   closeButton: {fileID: 7385116450724380427}
 --- !u!1 &700749180284979576
 GameObject:
