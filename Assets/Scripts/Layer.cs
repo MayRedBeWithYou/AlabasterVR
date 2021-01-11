@@ -28,6 +28,7 @@ public class Layer : MonoBehaviour, IMovable, IResizable
                 foreach (Chunk c in chunks)
                 {
                     c.gpuMesh.renderType = value;
+                    c.gpuMesh.UpdateVertexBuffer(c.voxels);
                 }
         }
     }
@@ -82,7 +83,9 @@ public class Layer : MonoBehaviour, IMovable, IResizable
                     col.center = Vector3.one * Spacing / 2f;
                     col.size = Vector3.one * Spacing;
                     chunk.Init();
+                    chunk.gpuMesh.renderType = renderType;
                     chunks[x, y, z] = chunk;
+
                 }
             }
         }

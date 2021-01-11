@@ -59,21 +59,21 @@ public class MockInputManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftBracket))
         {
-            ToolController.Instance.SelectedTool = ToolController.Instance.Tools[0];
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Move");
         }
 
         if (Input.GetKeyDown(KeyCode.RightBracket))
         {
-            ToolController.Instance.SelectedTool = ToolController.Instance.Tools[1];
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Smooth"); ;
         }
 
         if (Input.GetKeyDown(KeyCode.Backslash))
         {
-            ToolController.Instance.SelectedTool = ToolController.Instance.Tools[5];
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Move");
         }
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
-            ToolController.Instance.SelectedTool = ToolController.Instance.Tools[3];
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Paint");
         }
 
     }

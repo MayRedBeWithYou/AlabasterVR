@@ -33,7 +33,18 @@ public class GPUMesh : IDisposable
 
     public void UpdateVertexBuffer(GPUVoxelData voxels)
     {
-        int kernel = marchingCubesShader.FindKernel("March");
+        int kernel;
+        switch (renderType)
+        {
+            case RenderType.Flat:
+                kernel = marchingCubesShader.FindKernel("MarchingCubesFlat");
+                break;
+            case RenderType.Smooth:
+                kernel = marchingCubesShader.FindKernel("MarchingCubesSmooth");
+                break;
+            default:
+                throw new ArgumentException("Unknown render type");
+        }
         vertexBuffer.SetCounterValue(0);
         marchingCubesShader.SetBuffer(kernel, "points", voxels.VoxelBuffer);
         marchingCubesShader.SetBuffer(kernel, "colors", voxels.ColorBuffer);
