@@ -30,17 +30,14 @@ public static class FileManager
         script.OnAccepted += (text) =>
           {
               if (System.String.IsNullOrWhiteSpace(text)) return;
-              MeshToSdfGpu.TranslateTrianglesToSdf(TranslateObjToModel(text), false);
-              /*
               try
               {
-                  triangles = TranslateObjToModel(text);
-                  MeshToSdfGpu.TranslateTrianglesToSdf(triangles);
+                  MeshToSdfGpu.TranslateTrianglesToSdf(TranslateObjToModel(text), true);
               }
               catch
               {
                   UIController.Instance.ShowMessageBox("Model couldn't be loaded - incorrect file format");
-              }*/
+              }
               script.Close();
           };
         return script;

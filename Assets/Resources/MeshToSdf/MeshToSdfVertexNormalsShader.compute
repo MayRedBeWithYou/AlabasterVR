@@ -12,13 +12,45 @@ struct Triangle {
 };
 
 RWStructuredBuffer<float> sdf;
-StructuredBuffer<Triangle> inputTriangles;
-float3 chunkOffset;
+StructuredBuffer<float> inputTriangles;
+float4x4 modelMatrix;
 int numPointsPerAxis;
 int trianglesCount;
 float chunkSize;
-float size;
+float sizeSquared;
 float maxValue;
+
+float3 GetVertexC(int index)
+{
+    int offset=18*index;
+    return float3(inputTriangles[offset],inputTriangles[offset+1],inputTriangles[offset+2]);
+}
+float3 GetVertexA(int index)
+{
+    int offset=18*index;
+    return float3(inputTriangles[offset+3],inputTriangles[offset+4],inputTriangles[offset+5]);
+}
+float3 GetVertexB(int index)
+{
+    int offset=18*index;
+    return float3(inputTriangles[offset+6],inputTriangles[offset+7],inputTriangles[offset+8]);
+}
+float3 GetNormC(int index)
+{
+    int offset=18*index;
+    return float3(inputTriangles[offset+9],inputTriangles[offset+10],inputTriangles[offset+11]);
+}
+float3 GetNormA(int index)
+{
+   int offset=18*index;
+    return float3(inputTriangles[offset+12],inputTriangles[offset+13],inputTriangles[offset+14]);
+}
+float3 GetNormB(int index)
+{
+    int offset=18*index;
+    return float3(inputTriangles[offset+15],inputTriangles[offset+16],inputTriangles[offset+17]);
+}
+
 int coords(int3 id)
 {
     return id.z * numPointsPerAxis * numPointsPerAxis + id.y * numPointsPerAxis + id.x;
@@ -28,16 +60,26 @@ float3 realPosExternal(int3 id)
 {
     float res = numPointsPerAxis - 1;
     float3 ids = float3(id) / res;
-    return (ids * chunkSize)+chunkOffset;
+    float4 pos=float4(ids * chunkSize,1);
+    return mul(modelMatrix,pos).xyz;
 }
+
+float3 NormalSquared(int index)
+{
+    float3 vertexA=GetVertexA(index);
+    return cross(GetVertexB(index) - vertexA, GetVertexC(index) - vertexA);
+}
+
 float3 Barycentric(float3 P, int index)
 {
     //https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+    
+    float3 result=float3(0,0,0);
 
-    float3 result=P;
-    float3 v0 =  inputTriangles[index].vertexB - inputTriangles[index].vertexA;
-    float3 v1 =  inputTriangles[index].vertexC - inputTriangles[index].vertexA;
-    float3 v2 =  P - inputTriangles[index].vertexA;
+    float3 vertexA=GetVertexA(index);
+    float3 v0 = GetVertexB(index) - vertexA;
+    float3 v1 = GetVertexC(index) - vertexA;
+    float3 v2 = P - vertexA;
     
     float d00 = dot(v0, v0);
     float d01 = dot(v0, v1);
@@ -50,69 +92,72 @@ float3 Barycentric(float3 P, int index)
     result.x = 1 - result.y - result.z;
     return result;
 }
+float3 ProjectedPoint(float3 P, int index)
+{
+    float3 normal = NormalSquared(index);
+    return P - normal * (dot(normal, P - GetVertexA(index)) / dot(normal, normal));
+}
 
 float3 ClosestPointOnSegment(float3 projectedPoint,float3 A, float3 B)
 {
     float3 v=B-A;
     float3 w=projectedPoint-A;
-    float t=clamp(dot(v,w)*rsqrt(dot(v,v)) ,0,1);
+    float t=clamp(dot(v,w)/dot(v,v) ,0,1);
     return A+v*t;
 }
 
 float3 ClosestPointOnTriangle(float3 projectedPoint, int index, float3 barMultipliers)
-{
-    float3 result=projectedPoint;
-    if(barMultipliers.x<0) 
     {
-        result=ClosestPointOnSegment(projectedPoint,inputTriangles[index].vertexB,inputTriangles[index].vertexC);
+        float3 result =float3(projectedPoint.x,projectedPoint.y,projectedPoint.z);
+        if (barMultipliers.x < 0)
+        {
+            result = ClosestPointOnSegment(projectedPoint, GetVertexB(index), GetVertexC(index));
+        }
+        if (barMultipliers.y < 0)
+        {
+            result = ClosestPointOnSegment(projectedPoint, GetVertexA(index), GetVertexC(index));
+        }
+        if (barMultipliers.z < 0)
+        {
+            result = ClosestPointOnSegment(projectedPoint, GetVertexA(index),  GetVertexB(index));
+        }
+        return result;
     }
-    if(barMultipliers.y<0) 
-    {
-        result= ClosestPointOnSegment(projectedPoint,inputTriangles[index].vertexA,inputTriangles[index].vertexC);
-    }
-    if(barMultipliers.z<0) 
-    {
-        result= ClosestPointOnSegment(projectedPoint,inputTriangles[index].vertexA,inputTriangles[index].vertexB);
-    }
-    return result;
-}
-
-float3 Normal(int index)
-{
-    float3 v=cross(inputTriangles[index].vertexB-inputTriangles[index].vertexA, inputTriangles[index].vertexC-inputTriangles[index].vertexA);
-    return v*rsqrt(dot(v,v));
-}
 
 [numthreads(numThreads, numThreads, numThreads)]
 void CalculateDistance(int3 id : SV_DispatchThreadID)
 {
-    float3 currentPosition=realPosExternal(id);
-    float val=size*size;
-    float3 closestPointNormal=currentPosition;
-    float3 closestPoint=currentPosition;
+    float3 currentPosition = realPosExternal(id);
+    float val = sizeSquared;
+    float3 closestPoint = float3(0, 0, 0);
 
-    float3 t_projectedPoint=currentPosition;
-    float3 t_barsN=currentPosition;
-    float3 t_closestPoint=currentPosition;
-    float t_val=val;
+    float3 t_projectedPoint=float3(0, 0, 0);
+    float3 t_vector3=float3(0, 0, 0);
+    float3 t_closestPoint=float3(0, 0, 0);
+    int closestIndex = -1;
+    float t_val = val;
     
-    int length=trianglesCount;
-    for (int j = 0; j < length && val!=0; j++)
+    for (int j = 0; j < trianglesCount && val != 0; j++)
     {
-        t_barsN=Normal(j);
-        t_projectedPoint=currentPosition-t_barsN*(dot(t_barsN,currentPosition-inputTriangles[j].vertexA));
-        t_barsN= Barycentric(t_projectedPoint, j);
-        t_closestPoint=ClosestPointOnTriangle(t_projectedPoint,j,t_barsN);
-        t_val=dot(currentPosition,t_closestPoint);
-        if(t_val<val)
+        
+        t_projectedPoint = ProjectedPoint(currentPosition, j);        
+        t_vector3 = Barycentric(t_projectedPoint, j);
+        t_closestPoint = ClosestPointOnTriangle(t_projectedPoint, j, t_vector3);
+        t_vector3=currentPosition - t_closestPoint;
+        t_val = dot(t_vector3,t_vector3);
+        if (t_val < val)
         {
-            val=t_val;
-            closestPoint=t_closestPoint;
-            closestPointNormal=t_barsN.x*inputTriangles[j].normA+t_barsN.y*inputTriangles[j].normB+t_barsN.z*inputTriangles[j].normC;
+            val = t_val;
+            closestPoint = float3(t_closestPoint.x, t_closestPoint.y, t_closestPoint.z);
+            closestIndex = j;
         }
     }
-    val=min(val,maxValue);
-    if(dot(currentPosition-closestPoint,closestPointNormal)<0)val=-val;
-
+    
+    val = min(val, maxValue);
+    t_vector3=Barycentric(closestPoint,closestIndex);
+    if (dot(currentPosition - closestPoint, t_vector3.x*GetNormA(closestIndex)+t_vector3.y*GetNormB(closestIndex)+t_vector3.z*GetNormC(closestIndex)) < 0)
+    {
+        val = -val;
+    }
     sdf[coords(id)]=val;
 }
