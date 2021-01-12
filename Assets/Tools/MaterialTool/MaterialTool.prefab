@@ -43,6 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6cad72d1ea2f274c809d651c4bbcc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cursorPrefab: {fileID: 623986724286308406, guid: c9fec2d5a21dd6542a142e354ae76fc7,
+    type: 3}
   toolName: Material
   description: Tool for adding and removing material
   sprite: {fileID: 21300000, guid: b2d0a19bcee3ee54cb4270f50a6ea3bd, type: 3}
@@ -52,12 +54,9 @@ MonoBehaviour:
   positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
   upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
   downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
-  addMaterial: {fileID: 2100000, guid: 9e9b8de4449c2084b87d70a7942f741a, type: 2}
-  removeMaterial: {fileID: 2100000, guid: 2f527c5923696354980882ead218fac6, type: 2}
-  cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
-    type: 3}
+  addMaterialColor: {r: 0, g: 0, b: 0, a: 0}
+  removeMaterialColor: {r: 0, g: 0, b: 0, a: 0}
   shader: {fileID: 7200000, guid: 89cb501b611c6e54d83620f7127ef397, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
-  cursor: {fileID: 0}
   isAdding: 1
   isWorking: 0

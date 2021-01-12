@@ -29,8 +29,6 @@ public class MoveTool : Tool, IDisposable
     int applyMoveDataKernel;
     int prepareMoveDataKernel;
 
-    public GameObject cursorPrefab;
-
     private ComputeBuffer workBuffer;
     private ComputeBuffer countBuffer;
     private SnapshotController snapshot;
@@ -40,8 +38,6 @@ public class MoveTool : Tool, IDisposable
     private int res;
     private int volume;
 
-    [HideInInspector]
-    public CursorSDF cursor;
 
     public bool isWorking = false;
     public Dictionary<Chunk, float[]> beforeEdit;
@@ -49,10 +45,6 @@ public class MoveTool : Tool, IDisposable
 
     public override void Enable()
     {
-        if (cursor != null)
-        {
-            cursor.ToggleRenderer(true);
-        }
         positionButton.OnButtonDown += PositionButton_OnButtonDown;
         positionButton.OnButtonUp += PositionButton_OnButtonUp;
         base.Enable();
@@ -60,13 +52,12 @@ public class MoveTool : Tool, IDisposable
 
     public override void Disable()
     {
-        cursor.ToggleRenderer(false);
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
         positionButton.OnButtonUp -= PositionButton_OnButtonUp;
         base.Disable();
     }
 
-    public void Awake()
+    protected override void Awake()
     {
         snapshot = GameObject.Find("Snapshot").GetComponent<SnapshotController>();
 
@@ -74,12 +65,12 @@ public class MoveTool : Tool, IDisposable
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
         workBuffer = new ComputeBuffer(volume, sizeof(float) * 12 + sizeof(uint) * 3, ComputeBufferType.Append);
-        cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
-        cursor.gameObject.name = "MoveCursor";
+        base.Awake();
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         InitializeShadersConstUniforms();
     }
 
@@ -106,11 +97,11 @@ public class MoveTool : Tool, IDisposable
     {
         if (upButton.IsPressed)
         {
-            cursor.IncreaseRadius();
+            cursor.IncreaseSize();
         }
         if (downButton.IsPressed)
         {
-            cursor.DecreaseRadius();
+            cursor.DecreaseSize();
         }
         cursor.UpdateActiveChunks();
 
@@ -201,12 +192,21 @@ public class MoveTool : Tool, IDisposable
         snapshot.TakeSnapshot();
 
         workBuffer.SetCounterValue(0);
-        MoveShader.SetFloat("toolRadius", cursor.radius * (1f / snapshot.transform.localScale.x));
+        MoveShader.SetFloat("toolRadius", cursor.Size * (1f / snapshot.transform.localScale.x));
         MoveShader.SetVector("toolCenter", snapshot.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position) + Vector3.one * snapshot.Size * 0.5f);
         MoveShader.Dispatch(prepareMoveDataKernel, snapshot.Resolution / 8, snapshot.Resolution / 8, snapshot.Resolution / 8);
         prevPos = cursor.transform.position;
         ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
         workBufferPopulated = true;
+    }
+    protected override void SetMaxSize()
+    {
+        MaxSize = LayerManager.Instance.Spacing * 0.4f;
+    }
+
+    protected override void SetMinSize()
+    {
+        MinSize = LayerManager.Instance.VoxelSpacing;
     }
 
     public void Dispose()

@@ -18,11 +18,8 @@ public class MaterialTool : Tool
     public ButtonHandler downButton;
 
     [Header("Cursor")]
-    public Material addMaterial;
-    public Material removeMaterial;
-
-    [Space(10f)]
-    public GameObject cursorPrefab;
+    public Color addMaterialColor;
+    public Color removeMaterialColor;
 
     public ComputeShader shader;
     private int AddMaterialKernel;
@@ -32,8 +29,8 @@ public class MaterialTool : Tool
 
     public Color color;
 
-    [HideInInspector]
-    public CursorSDF cursor;
+    //[HideInInspector]
+    //public SphericalCursor cursor;
 
     public bool isAdding = true;
 
@@ -47,8 +44,6 @@ public class MaterialTool : Tool
     {
         if (!gameObject.activeSelf)
         {
-            if (cursor != null)
-                cursor.ToggleRenderer(true);
             settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
             toggleButton.OnButtonDown += ToggleButtonHandler;
 
@@ -71,7 +66,6 @@ public class MaterialTool : Tool
 
     public override void Disable()
     {
-        cursor.ToggleRenderer(false);
         settingsButton.OnButtonDown -= SettingsButton_OnButtonDown;
 
         toggleButton.OnButtonDown -= ToggleButtonHandler;
@@ -82,13 +76,14 @@ public class MaterialTool : Tool
         base.Disable();
     }
 
-    public void Awake()
+    protected override void Awake()
     {
-        cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
-        cursor.gameObject.name = "MaterialCursor";
+        base.Awake();
+        SyncCursorColor();
     }
-    public void Start()
+    protected override void Start()
     {
+        base.Start();
         AddMaterialKernel = shader.FindKernel("AddMaterial");
         RemoveMaterialKernel = shader.FindKernel("RemoveMaterial");
         InitializeShadersConstUniforms();
@@ -125,11 +120,11 @@ public class MaterialTool : Tool
         }
         if (upButton.IsPressed)
         {
-            cursor.IncreaseRadius();
+            cursor.IncreaseSize();
         }
         if (downButton.IsPressed)
         {
-            cursor.DecreaseRadius();
+            cursor.DecreaseSize();
         }
         cursor.UpdateActiveChunks();
         if (isWorking)
@@ -176,12 +171,15 @@ public class MaterialTool : Tool
             }
         }
     }
+    private void SyncCursorColor()
+    {
+        cursor.Color = isAdding ? new Color(0, 1, 0, 1) : new Color(1, 0, 0, 1);
+    }
 
     private void ToggleButtonHandler(XRController controller)
     {
         isAdding = !isAdding;
-        cursor.SetMaterial(isAdding ? addMaterial : removeMaterial);
-
+        SyncCursorColor();
     }
     private void InitializeShadersConstUniforms()
     {
@@ -189,14 +187,14 @@ public class MaterialTool : Tool
         shader.SetFloat("chunkSize", activeLayer.Spacing);
         shader.SetInt("resolution", activeLayer.ChunkResolution);
         shader.SetFloat("voxelSpacing", LayerManager.Instance.VoxelSpacing);
-        shader.SetFloat("radius", cursor.radius * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetFloat("radius", cursor.Size * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
     }
 
     private void PerformAction()
     {
         var activeLayer = LayerManager.Instance.ActiveLayer;
         int kernel = isAdding ? AddMaterialKernel : RemoveMaterialKernel;
-        shader.SetFloat("radius", cursor.radius * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetFloat("radius", cursor.Size * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
         shader.SetVector("color", new Vector3(color.r, color.g, color.b));
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
@@ -206,5 +204,15 @@ public class MaterialTool : Tool
             shader.Dispatch(kernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
         }
+    }
+
+    protected override void SetMaxSize()
+    {
+        MaxSize = LayerManager.Instance.Spacing;
+    }
+
+    protected override void SetMinSize()
+    {
+        MinSize = LayerManager.Instance.VoxelSpacing;
     }
 }
