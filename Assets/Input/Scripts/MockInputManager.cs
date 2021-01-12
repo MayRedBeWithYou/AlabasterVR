@@ -59,7 +59,7 @@ public class MockInputManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.LeftBracket))
         {
-            ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Move");
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Material");
         }
 
         if (Input.GetKeyDown(KeyCode.RightBracket))

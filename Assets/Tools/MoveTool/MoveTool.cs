@@ -102,7 +102,7 @@ public class MoveTool : Tool, IDisposable
         MoveShader.SetFloat("voxelSpacing", snapshot.Spacing);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (upButton.IsPressed)
         {
