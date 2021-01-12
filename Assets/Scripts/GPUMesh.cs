@@ -11,6 +11,10 @@ public class GPUMesh : IDisposable
     private ComputeBuffer vertexBuffer;
     private ComputeBuffer drawArgs;
 
+    public float metallic;
+    public float smoothness;
+    public RenderType renderType;
+
     [RuntimeInitializeOnLoadMethod]
     private static void Initialize()
     {
@@ -27,7 +31,18 @@ public class GPUMesh : IDisposable
 
     public void UpdateVertexBuffer(GPUVoxelData voxels)
     {
-        int kernel = marchingCubesShader.FindKernel("March");
+        int kernel;
+        switch (renderType)
+        {
+            case RenderType.Flat:
+                kernel = marchingCubesShader.FindKernel("MarchingCubesFlat");
+                break;
+            case RenderType.Smooth:
+                kernel = marchingCubesShader.FindKernel("MarchingCubesSmooth");
+                break;
+            default:
+                throw new ArgumentException("Unknown render type");
+        }
         vertexBuffer.SetCounterValue(0);
         marchingCubesShader.SetBuffer(kernel, "points", voxels.VoxelBuffer);
         marchingCubesShader.SetBuffer(kernel, "colors", voxels.ColorBuffer);
@@ -45,6 +60,8 @@ public class GPUMesh : IDisposable
         materialBlock.SetBuffer("data", vertexBuffer);
         materialBlock.SetMatrix("model", modelMatrix);
         materialBlock.SetMatrix("invModel", inverseModelMatrix);
+        materialBlock.SetFloat("_Glossiness", smoothness);
+        materialBlock.SetFloat("_Metallic", metallic);
 
         Graphics.DrawProceduralIndirect(
             proceduralMaterial,
@@ -68,17 +85,17 @@ public class GPUMesh : IDisposable
         public Vector3 vertexA;
         public Vector3 vertexB;
         public Vector3 normC;
-        public Vector3 normB;
         public Vector3 normA;
+        public Vector3 normB;
+        public Vector3 colorC;
+        public Vector3 colorA;
+        public Vector3 colorB;
     };
     public GPUTriangle[] GetTriangles()
     {
-        ComputeBuffer buffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.IndirectArguments);
-        ComputeBuffer.CopyCount(vertexBuffer, buffer, 0);
-        int[] arr = new int[1];
-        buffer.GetData(arr);
-        buffer.Release();
-        GPUTriangle[] result = new GPUTriangle[arr[0]];
+        int[] arr = new int[4];
+        drawArgs.GetData(arr);
+        GPUTriangle[] result = new GPUTriangle[arr[1]];
         vertexBuffer.GetData(result);
         return result;
     }

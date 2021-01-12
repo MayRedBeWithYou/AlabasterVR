@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum RenderType
+{
+    Flat,
+    Smooth
+}
+
 public class LayerManager : MonoBehaviour
 {
     private static LayerManager _instance;
@@ -38,6 +44,16 @@ public class LayerManager : MonoBehaviour
 
     public float Spacing => Size / Resolution;
     public float VoxelSpacing;
+
+    [Range(0f,1f)]
+    public float Metallic;
+
+    [Range(0f, 1f)]
+    public float Smoothness;
+
+    public RenderType renderType;
+
+
 
     [Header("Gizmos")]
     [SerializeField]
@@ -107,6 +123,9 @@ public class LayerManager : MonoBehaviour
         layer.Resolution = Resolution;
         layer.ChunkResolution = ChunkResolution;
         layer.Size = Size;
+        layer.Smoothness = Smoothness;
+        layer.Metallic = Metallic;
+        layer.RenderType = renderType;
 
         BoxCollider box = layerObject.GetComponent<BoxCollider>();
         box.size = Vector3.one * Size;

@@ -1,14 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class SceneLight : MonoBehaviour, IMovable
 {
     public Light light { get; private set; }
 
-    public string name;
-
     private MeshRenderer meshRenderer;
+    private float range;
+    private float angle;
+
+    public float Range
+    {
+        get => range;
+        set
+        {
+            range = value;
+            light.range = value;
+        }
+    }
+
+    public float Angle
+    {
+        get => angle;
+        set
+        {
+            angle = value;
+            light.spotAngle = value;
+        }
+    }
 
     public bool Enabled => light.enabled;
 
@@ -16,11 +37,13 @@ public class SceneLight : MonoBehaviour, IMovable
     {
         light = GetComponent<Light>();
         meshRenderer = GetComponentInChildren<MeshRenderer>();
+        range = light.range;
+        angle = light.spotAngle;
     }
 
     public void ToggleLight(bool value)
     {
-        if(value)
+        if (value)
         {
             light.enabled = true;
             meshRenderer.materials[1].color = light.color;
@@ -42,7 +65,7 @@ public class SceneLight : MonoBehaviour, IMovable
     }
 
     public void SetPosition(Vector3 pos)
-    {        
+    {
     }
 
     public void SetRotation(Quaternion rot)

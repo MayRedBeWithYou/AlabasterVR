@@ -50,8 +50,7 @@ MonoBehaviour:
   downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
   positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
   trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
-  PopulateShader: {fileID: 7200000, guid: f908cb504752ba64b9d7bfc13029a363, type: 3}
-  ApplyMoveShader: {fileID: 7200000, guid: e7421e254cf438742a392640cdb775ac, type: 3}
+  MoveShader: {fileID: 7200000, guid: e7421e254cf438742a392640cdb775ac, type: 3}
   cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
     type: 3}
   cursor: {fileID: 0}

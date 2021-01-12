@@ -6,26 +6,26 @@ using System;
 
 public class SnapshotController : MonoBehaviour, IDisposable
 {
-    public ComputeBuffer Snapshot { get => sdf; }
-    public ComputeBuffer Colors { get => colors; }
-    public GameObject ToFollow;
-    public ComputeShader SnapshotShader;
-    public int resolution;
-    public int volume;
-    public float size;
-    public float spacing;
-    ComputeBuffer sdf;
-    ComputeBuffer colors;
-    ComputeBuffer overlapCounter;
-    public Material pointMaterial;
-    Vector3Int gridPos;
+    public ComputeBuffer SnapshotSdf { get; private set; }
+    public ComputeBuffer SnapshotColors { get; private set; }
+    ComputeBuffer OverlapCounter { get; set; }
 
-    public void SetPosition(Vector3 pos)
-    {
-        transform.rotation = LayerManager.Instance.ActiveLayer.transform.rotation; 
-        gridPos = LayerManager.Instance.SnapToGridPosition(pos);
-        transform.position = (Vector3)gridPos * spacing;
-    }
+    
+    public ComputeShader SnapshotShader;
+    int takeSnapshotKernel;
+    int applySnapshotKernel;
+    int normalizeKernel;
+    int clearKernel;
+
+    public float Spacing { get; private set; }
+    public int Resolution { get; private set; }
+    public int Volume { get; private set; }
+    public float Size { get; private set; }
+
+    [Header("Debug options")]
+    public bool debugMode = false;
+    public GameObject ToFollow;
+    public Material pointMaterial;
 
     public void SetPositionReal(Vector3 pos)
     {
@@ -34,119 +34,106 @@ public class SnapshotController : MonoBehaviour, IDisposable
         transform.localScale = LayerManager.Instance.ActiveLayer.transform.localScale;
     }
 
-    public void SetCenter(Vector3 pos)
-    {
-        gridPos = LayerManager.Instance.SnapToGridPosition(pos);
-        transform.position = (Vector3)gridPos * spacing - Vector3.one * size * 0.5f - Vector3.one * spacing * 0.5f;
-    }
-
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.DrawWireCube(transform.position + Vector3.one * size * 0.5f, Vector3.one * size);
-    //}
-
     void Start()
     {
         var manager = LayerManager.Instance;
-        resolution = manager.ChunkResolution;
-        size = manager.Size / manager.Resolution;
-        spacing = size / (resolution - 1);
-        volume = resolution * resolution * resolution;
-        overlapCounter = new ComputeBuffer(volume, sizeof(uint));
-        sdf = new ComputeBuffer(volume, sizeof(float));
-        colors = new ComputeBuffer(volume, sizeof(float) * 3);
-        transform.GetChild(0).transform.localScale = Vector3.one * size;
-        //transform.GetChild(0).transform.localPosition = Vector3.one * size * 0.5f;
+        Resolution = manager.ChunkResolution;
+        Size = manager.Size / manager.Resolution;
+        Spacing = Size / (Resolution - 1);
+        Volume = Resolution * Resolution * Resolution;
+        OverlapCounter = new ComputeBuffer(Volume, sizeof(uint));
+        SnapshotSdf = new ComputeBuffer(Volume, sizeof(float));
+        SnapshotColors = new ComputeBuffer(Volume, sizeof(float) * 3);
+        transform.GetChild(0).transform.localScale = Vector3.one * Size;
+        InitializeShadersConstUniforms();
     }
 
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Alpha8))
+        if(debugMode)
         {
-            SetPositionReal(ToFollow.transform.position);// - Vector3.one * size * 0.5f);
-            //Debug.Log("Snapshot repositioned");
+            if(Input.GetKeyDown(KeyCode.Alpha8))
+            {
+                SetPositionReal(ToFollow.transform.position);
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha0))
+            {
+                Debug.Log("Snapshot taken");
+                TakeSnapshot();
+            }
+            if (Input.GetKeyDown(KeyCode.Alpha9))
+            {
+                Debug.Log("Snapshot applied");
+                ApplySnapshot();
+            }
+            DisplayVoxels();
         }
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            Debug.Log("Snapshot taken");
-            TakeSnapshot();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            Debug.Log("Snapshot applied");
-            ApplySnapshot();
-        }
-        //DisplayVoxels();
+    }
+
+    private void InitializeShadersConstUniforms()
+    {
+        var activeLayer = LayerManager.Instance.ActiveLayer;
+        takeSnapshotKernel = SnapshotShader.FindKernel("TakeSnapshot");
+        normalizeKernel = SnapshotShader.FindKernel("Normalize");
+        clearKernel = SnapshotShader.FindKernel("ClearData");
+        applySnapshotKernel = SnapshotShader.FindKernel("ApplySnapshot");
+
+        SnapshotShader.SetBuffer(takeSnapshotKernel, "snapshot", SnapshotSdf);
+        SnapshotShader.SetBuffer(takeSnapshotKernel, "colors", SnapshotColors);
+        SnapshotShader.SetBuffer(takeSnapshotKernel, "overlaps", OverlapCounter);
+        SnapshotShader.SetBuffer(normalizeKernel, "snapshot", SnapshotSdf);
+        SnapshotShader.SetBuffer(normalizeKernel, "colors", SnapshotColors);
+        SnapshotShader.SetBuffer(normalizeKernel, "overlaps", OverlapCounter);
+        SnapshotShader.SetBuffer(clearKernel, "snapshot", SnapshotSdf);
+        SnapshotShader.SetBuffer(clearKernel, "colors", SnapshotColors);
+        SnapshotShader.SetBuffer(clearKernel, "overlaps", OverlapCounter); 
+        SnapshotShader.SetBuffer(applySnapshotKernel, "snapshot", SnapshotSdf);
+        SnapshotShader.SetBuffer(applySnapshotKernel, "colors", SnapshotColors);
+        SnapshotShader.SetFloat("voxelSpacing", Spacing);
+        SnapshotShader.SetInt("resolution", Resolution);
     }
 
     public void TakeSnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
             transform.position,
-            Vector3.one * size * 0.5f,
+            Vector3.one * Size * 0.5f,
             LayerManager.Instance.ActiveLayer.transform.rotation,
             1 << 9);
-        var takeSnapshot = SnapshotShader.FindKernel("TakeSnapshot");
-        var normalize = SnapshotShader.FindKernel("Normalize");
-        var clearData = SnapshotShader.FindKernel("ClearData");
-        SnapshotShader.SetBuffer(takeSnapshot, "snapshot", sdf);
-        SnapshotShader.SetBuffer(takeSnapshot, "colors", colors);
-        SnapshotShader.SetBuffer(takeSnapshot, "overlaps", overlapCounter);
-
-        SnapshotShader.SetBuffer(normalize, "snapshot", sdf);
-        SnapshotShader.SetBuffer(normalize, "colors", colors);
-        SnapshotShader.SetBuffer(normalize, "overlaps", overlapCounter);
-
-        SnapshotShader.SetBuffer(clearData, "snapshot", sdf);
-        SnapshotShader.SetBuffer(clearData, "colors", colors);
-        SnapshotShader.SetBuffer(clearData, "overlaps", overlapCounter);
-
-        SnapshotShader.Dispatch(clearData, volume / 512, 1, 1);
-
+        
+        SnapshotShader.Dispatch(clearKernel, Volume / 512, 1, 1);
         foreach (Collider collider in overlappedColliders)
         {
             Chunk chunk = collider.GetComponent<Chunk>();
-            //Vector3 foo = LayerManager.Instance.ActiveLayer.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
-            Vector3 foo = transform.position;
-            Vector3 snapLocalPos = chunk.transform.InverseTransformPoint(foo);
-            snapLocalPos -= size * Vector3.one * 0.5f;
-            //Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(foo);
-            SnapshotShader.SetBuffer(takeSnapshot, "sdf", chunk.voxels.VoxelBuffer);
-            SnapshotShader.SetBuffer(takeSnapshot, "chunkColors", chunk.voxels.ColorBuffer);
-            SnapshotShader.SetVector("gridDisplacement", snapLocalPos / spacing);
-            //Debug.Log($"{snapLocalPos.x} {spacing} {(snapLocalPos/spacing).x}");
-            SnapshotShader.SetInt("resolution", resolution);
-            SnapshotShader.Dispatch(takeSnapshot, resolution / 8, resolution / 8, resolution / 8);
+            Vector3 snapLocalPos = chunk.transform.InverseTransformPoint(transform.position);
+            snapLocalPos -= Size * Vector3.one * 0.5f;
+            SnapshotShader.SetBuffer(takeSnapshotKernel, "sdf", chunk.voxels.VoxelBuffer);
+            SnapshotShader.SetBuffer(takeSnapshotKernel, "chunkColors", chunk.voxels.ColorBuffer);
+            SnapshotShader.SetVector("gridDisplacement", snapLocalPos / Spacing);
+            SnapshotShader.Dispatch(takeSnapshotKernel, Resolution / 8, Resolution / 8, Resolution / 8);
         }
-        SnapshotShader.Dispatch(normalize, volume/512, 1, 1);
+        SnapshotShader.Dispatch(normalizeKernel, Volume/512, 1, 1);
     }
 
     public void ApplySnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
             transform.position,
-            Vector3.one * size * 0.5f,
+            Vector3.one * Size * 0.5f,
             LayerManager.Instance.ActiveLayer.transform.rotation,
             1 << 9);
-        var kernel = SnapshotShader.FindKernel("ApplySnapshot");
-        SnapshotShader.SetBuffer(kernel, "snapshot", sdf);
-        SnapshotShader.SetBuffer(kernel, "colors", colors);
-
+        
         foreach (Collider collider in overlappedColliders)
         {
             Chunk chunk = collider.GetComponent<Chunk>();
 
-            //Vector3 foo = LayerManager.Instance.ActiveLayer.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
-            Vector3 foo = transform.position;
-            Vector3 snapLocalPos = chunk.transform.InverseTransformPoint(foo);
-            snapLocalPos -= size * Vector3.one * 0.5f;
+            Vector3 snapLocalPos = chunk.transform.InverseTransformPoint(transform.position);
+            snapLocalPos -= Size * Vector3.one * 0.5f;
 
-            //Vector3 snapLocalPos = chunk.transform.worldToLocalMatrix.MultiplyPoint(foo);
-            SnapshotShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
-            SnapshotShader.SetBuffer(kernel, "chunkColors", chunk.voxels.ColorBuffer);
-            SnapshotShader.SetVector("gridDisplacement", snapLocalPos / spacing);
-            SnapshotShader.SetInt("resolution", resolution);
-            SnapshotShader.Dispatch(kernel, resolution / 8, resolution / 8, resolution / 8);
+            SnapshotShader.SetBuffer(applySnapshotKernel, "sdf", chunk.voxels.VoxelBuffer);
+            SnapshotShader.SetBuffer(applySnapshotKernel, "chunkColors", chunk.voxels.ColorBuffer);
+            SnapshotShader.SetVector("gridDisplacement", snapLocalPos / Spacing);
+            SnapshotShader.Dispatch(applySnapshotKernel, Resolution / 8, Resolution / 8, Resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
         }
     }
@@ -154,16 +141,16 @@ public class SnapshotController : MonoBehaviour, IDisposable
     private void DisplayVoxels()
     {
         MaterialPropertyBlock materialBlock = new MaterialPropertyBlock();
-        materialBlock.SetBuffer("data", sdf);
-        materialBlock.SetVector("offset", transform.position);
-        materialBlock.SetFloat("spacing", spacing);
-        materialBlock.SetInt("res", resolution);
+        materialBlock.SetBuffer("data", SnapshotSdf);
+        materialBlock.SetVector("offset", transform.position - Vector3.one * Size * 0.5f);
+        materialBlock.SetFloat("spacing", Spacing);
+        materialBlock.SetInt("res", Resolution);
         Graphics.DrawProcedural(
             pointMaterial,
             new Bounds(Vector3.zero, new Vector3(100, 100, 100)), //what exactly should go here?
             MeshTopology.Points,
             1,
-            volume,
+            Volume,
             null,
             materialBlock
             );
@@ -171,9 +158,9 @@ public class SnapshotController : MonoBehaviour, IDisposable
 
     public void Dispose()
     {
-        if (sdf != null) sdf.Release();
-        if (colors != null) colors.Release();
-        if (overlapCounter != null) overlapCounter.Release();
+        if (SnapshotSdf != null) SnapshotSdf.Release();
+        if (SnapshotColors != null) SnapshotColors.Release();
+        if (OverlapCounter != null) OverlapCounter.Release();
     }
 
     ~SnapshotController()

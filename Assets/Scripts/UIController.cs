@@ -33,6 +33,8 @@ public class UIController : MonoBehaviour
     public GameObject KeyboardPrefab;
     public GameObject PictureCanvasPrefab;
     public GameObject LeftOverlay;
+    public GameObject LayerSettingsPrefab;
+    public GameObject LightSettingsPrefab;
 
     private Keyboard _activeKeyboard = null;
     private MainMenu _activeMainMenu = null;
@@ -93,13 +95,29 @@ public class UIController : MonoBehaviour
     {
         if (_activeLeftHandMenu)
         {
+            CloseLeftMenu();
+        }
+        else _activeLeftHandMenu = CreateUI(TabbedPanelMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+
+    }
+
+    public TabbedPanel ShowTabbedPanelMenu()
+    {
+        if (_activeLeftHandMenu)
+        {
+            CloseLeftMenu();
+        }
+        _activeLeftHandMenu = CreateUI(TabbedPanelMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+        return _activeLeftHandMenu.GetComponent<TabbedPanel>();
+    }
+
+    public void CloseLeftMenu()
+    {
+        if (_activeLeftHandMenu)
+        {
             _activeLeftHandMenu.SetActive(false);
             Destroy(_activeLeftHandMenu);
             _activeLeftHandMenu = null;
-        }
-        else
-        {
-            _activeLeftHandMenu = CreateUI(TabbedPanelMenuPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         }
     }
 
@@ -134,6 +152,32 @@ public class UIController : MonoBehaviour
         _activeKeyboard.OnClosing += () => _activeKeyboard = null;
         _activeKeyboard.SetText(text);
         return _activeKeyboard;
+    }
+
+    public LayerSettings ShowLayerSettings()
+    {
+        if (_activeLeftHandMenu != null)
+        {
+            _activeLeftHandMenu.SetActive(false);
+            Destroy(_activeLeftHandMenu);
+            _activeLeftHandMenu = null;
+        }
+
+        _activeLeftHandMenu = CreateUI(LayerSettingsPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+        return _activeLeftHandMenu.GetComponent<LayerSettings>();
+    }
+
+    public LightSettings ShowLightSettings()
+    {
+        if (_activeLeftHandMenu != null)
+        {
+            _activeLeftHandMenu.SetActive(false);
+            Destroy(_activeLeftHandMenu);
+            _activeLeftHandMenu = null;
+        }
+
+        _activeLeftHandMenu = CreateUI(LightSettingsPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+        return _activeLeftHandMenu.GetComponent<LightSettings>();
     }
 
     public ColorPicker ShowColorPicker(Color color)

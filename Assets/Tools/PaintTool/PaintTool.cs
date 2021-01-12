@@ -36,14 +36,17 @@ public class PaintTool : Tool
 
     public override void Enable()
     {
-        if (cursor != null)
-            cursor.ToggleRenderer(true);
+        if (!gameObject.activeSelf)
+        {
+            if (cursor != null)
+                cursor.ToggleRenderer(true);
 
-        colorButton.OnButtonDown += ColorButton_OnColorDown;
+            colorButton.OnButtonDown += ColorButton_OnColorDown;
 
-        positionButton.OnButtonDown += PositionButton_OnButtonDown;
-        positionButton.OnButtonUp += PositionButton_OnButtonUp;
-        base.Enable();
+            positionButton.OnButtonDown += PositionButton_OnButtonDown;
+            positionButton.OnButtonUp += PositionButton_OnButtonUp;
+            base.Enable();
+        }
     }
 
     public override void Disable()
@@ -53,6 +56,8 @@ public class PaintTool : Tool
 
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
         positionButton.OnButtonUp -= PositionButton_OnButtonUp;
+
+        if (activeColorPicker != null && ToolController.Instance.SelectedTool != this) activeColorPicker.Close();
         base.Disable();
     }
 
@@ -74,6 +79,7 @@ public class PaintTool : Tool
         }
         if (isWorking)
         {
+            cursor.UpdateActiveChunks();
             if (trigger.Value <= 0.2)
             {
                 isWorking = false;

@@ -46,13 +46,16 @@ public class SmoothTool : Tool
 
     public override void Enable()
     {
-        if(cursor != null)
+        if (!gameObject.activeSelf)
         {
-            cursor.ToggleRenderer(true);
+            if (cursor != null)
+            {
+                cursor.ToggleRenderer(true);
+            }
+            positionButton.OnButtonDown += PositionButton_OnButtonDown;
+            positionButton.OnButtonUp += PositionButton_OnButtonUp;
+            base.Enable();
         }
-        positionButton.OnButtonDown += PositionButton_OnButtonDown;
-        positionButton.OnButtonUp += PositionButton_OnButtonUp;
-        base.Enable();
     }
 
     public override void Disable()
@@ -152,21 +155,21 @@ public class SmoothTool : Tool
 
         workBuffer.SetCounterValue(0);
         var kernel = SmoothShader.FindKernel("PopulateWorkBuffer");
-        SmoothShader.SetFloat("toolRadius", cursor.radius* 0.8f * (1f/snapshot.transform.localScale.x));
-        SmoothShader.SetFloat("chunkSize", snapshot.size);
-        SmoothShader.SetVector("toolCenter", snapshot.transform.InverseTransformPoint(cursor.transform.position) + Vector3.one * snapshot.size * 0.5f);
+        SmoothShader.SetFloat("toolRadius", cursor.radius * 0.8f * (1f / snapshot.transform.localScale.x));
+        SmoothShader.SetFloat("chunkSize", snapshot.Size);
+        SmoothShader.SetVector("toolCenter", snapshot.transform.InverseTransformPoint(cursor.transform.position) + Vector3.one * snapshot.Size * 0.5f);
 
-        SmoothShader.SetInt("resolution", snapshot.resolution);
-        SmoothShader.SetBuffer(populateWorkBufferKernel, "sdf", snapshot.Snapshot);
-        SmoothShader.SetBuffer(populateWorkBufferKernel, "colors", snapshot.Colors);
+        SmoothShader.SetInt("resolution", snapshot.Resolution);
+        SmoothShader.SetBuffer(populateWorkBufferKernel, "sdf", snapshot.SnapshotSdf);
+        SmoothShader.SetBuffer(populateWorkBufferKernel, "colors", snapshot.SnapshotColors);
         SmoothShader.SetBuffer(populateWorkBufferKernel, "appendWorkBuffer", workBuffer);
-        SmoothShader.Dispatch(populateWorkBufferKernel, snapshot.resolution / 8, snapshot.resolution / 8, snapshot.resolution / 8);
+        SmoothShader.Dispatch(populateWorkBufferKernel, snapshot.Resolution / 8, snapshot.Resolution / 8, snapshot.Resolution / 8);
         ComputeBuffer.CopyCount(workBuffer, countBuffer, 0);
 
-        SmoothShader.SetInt("resolution", snapshot.resolution);
+        SmoothShader.SetInt("resolution", snapshot.Resolution);
         SmoothShader.SetBuffer(applyWorkBufferKernel, "entries", countBuffer);
-        SmoothShader.SetBuffer(applyWorkBufferKernel, "sdf", snapshot.Snapshot);
-        SmoothShader.SetBuffer(applyWorkBufferKernel, "colors", snapshot.Colors);
+        SmoothShader.SetBuffer(applyWorkBufferKernel, "sdf", snapshot.SnapshotSdf);
+        SmoothShader.SetBuffer(applyWorkBufferKernel, "colors", snapshot.SnapshotColors);
         SmoothShader.SetBuffer(applyWorkBufferKernel, "structuredWorkBuffer", workBuffer);
         SmoothShader.Dispatch(applyWorkBufferKernel, volume / 512, 1, 1);
 

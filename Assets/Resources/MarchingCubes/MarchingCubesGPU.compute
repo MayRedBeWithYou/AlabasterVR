@@ -1,4 +1,6 @@
-﻿#pragma kernel March
+﻿#pragma kernel MarchingCubesFlat
+#pragma kernel MarchingCubesSmooth
+
 #include "Tables.compute"
 
 static const int numThreads = 8;
@@ -8,8 +10,8 @@ struct Triangle {
     float3 vertexA;
     float3 vertexB;
     float3 normC;
-    float3 normB;
     float3 normA;
+    float3 normB;
     float3 colorC;
     float3 colorA;
     float3 colorB;
@@ -72,11 +74,25 @@ float4 sdfValAndColor(int x, int y, int z, uint3 id)
     return retVal;
 }
 
+float3 getSdfGradient(uint3 id)
+{
+    float dx = points[indexFromCoord(uint3(id.x - 1, id.y, id.z))] - points[indexFromCoord(uint3(id.x + 1, id.y, id.z))];
+    float dy = points[indexFromCoord(uint3(id.x, id.y - 1, id.z))] - points[indexFromCoord(uint3(id.x, id.y + 1, id.z))];
+    float dz = points[indexFromCoord(uint3(id.x, id.y, id.z - 1))] - points[indexFromCoord(uint3(id.x, id.y, id.z + 1))];
+    float3 gradient = { dx,dy,dz };
+    gradient /= (chunkSize / (numPointsPerAxis - 1)) * 2;
+    return -gradient;
+}
+
 [numthreads(numThreads, numThreads, numThreads)]
-void March(int3 id : SV_DispatchThreadID)
+void MarchingCubesFlat(int3 id : SV_DispatchThreadID)
 {
     // Stop one point before the end because voxel includes neighbouring points
-    if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1) {
+    //if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1) {
+    //    return;
+    //}
+    int diff = 2;
+    if (id.x >= numPointsPerAxis - diff || id.y >= numPointsPerAxis - diff || id.z >= numPointsPerAxis - diff || id.x < 1 || id.y < 1 || id.z < 1) {
         return;
     }
 
@@ -139,7 +155,6 @@ void March(int3 id : SV_DispatchThreadID)
         tri.normA = normal;
         tri.normB = normal;
         tri.normC = normal;
-
         tri.colorA = lerp(colors[indexFromCoord(targetIds[a0])], colors[indexFromCoord(targetIds[b0])], getRatio(cubeCorners[a0], cubeCorners[b0]));
         tri.colorB = lerp(colors[indexFromCoord(targetIds[a1])], colors[indexFromCoord(targetIds[b1])], getRatio(cubeCorners[a1], cubeCorners[b1]));
         tri.colorC = lerp(colors[indexFromCoord(targetIds[a2])], colors[indexFromCoord(targetIds[b2])], getRatio(cubeCorners[a2], cubeCorners[b2]));
@@ -147,3 +162,83 @@ void March(int3 id : SV_DispatchThreadID)
         triangles.Append(tri);
     }
 }
+
+[numthreads(numThreads, numThreads, numThreads)]
+void MarchingCubesSmooth(int3 id : SV_DispatchThreadID)
+{
+    // Stop one point before the end because voxel includes neighbouring points
+    //if (id.x >= numPointsPerAxis - 1 || id.y >= numPointsPerAxis - 1 || id.z >= numPointsPerAxis - 1) {
+    //    return;
+    //}
+    int diff = 2;
+    if (id.x >= numPointsPerAxis - diff || id.y >= numPointsPerAxis - diff || id.z >= numPointsPerAxis - diff  || id.x < 1 || id.y < 1 || id.z < 1) {
+        return;
+    }
+
+    // 8 corners of the current cube
+    uint3 targetIds[8] = {
+        id + uint3(0,0,0),
+        id + uint3(1,0,0),
+        id + uint3(1,0,1),
+        id + uint3(0,0,1),
+        id + uint3(0,1,0),
+        id + uint3(1,1,0),
+        id + uint3(1,1,1),
+        id + uint3(0,1,1)
+    };
+
+    float cubeCorners[8] = {
+        points[indexFromCoord(targetIds[0])],
+        points[indexFromCoord(targetIds[1])],
+        points[indexFromCoord(targetIds[2])],
+        points[indexFromCoord(targetIds[3])],
+        points[indexFromCoord(targetIds[4])],
+        points[indexFromCoord(targetIds[5])],
+        points[indexFromCoord(targetIds[6])],
+        points[indexFromCoord(targetIds[7])]
+    };
+
+
+    // Calculate unique index for each cube configuration.
+    // There are 256 possible values
+    // A value of 0 means cube is entirely inside surface; 255 entirely outside.
+    // The value is used to look up the edge table, which indicates which edges of the cube are cut by the isosurface.
+    int cubeIndex = 0;
+    if (cubeCorners[0] < isoLevel) cubeIndex |= 1;
+    if (cubeCorners[1] < isoLevel) cubeIndex |= 2;
+    if (cubeCorners[2] < isoLevel) cubeIndex |= 4;
+    if (cubeCorners[3] < isoLevel) cubeIndex |= 8;
+    if (cubeCorners[4] < isoLevel) cubeIndex |= 16;
+    if (cubeCorners[5] < isoLevel) cubeIndex |= 32;
+    if (cubeCorners[6] < isoLevel) cubeIndex |= 64;
+    if (cubeCorners[7] < isoLevel) cubeIndex |= 128;
+
+    // Create triangles for current cube configuration
+    for (int i = 0; triangulation[cubeIndex][i] != -1; i += 3) {
+        // Get indices of corner points A and B for each of the three edges
+        // of the cube that need to be joined to form the triangle.
+        int a0 = cornerIndexAFromEdge[triangulation[cubeIndex][i]];
+        int b0 = cornerIndexBFromEdge[triangulation[cubeIndex][i]];
+
+        int a1 = cornerIndexAFromEdge[triangulation[cubeIndex][i + 1]];
+        int b1 = cornerIndexBFromEdge[triangulation[cubeIndex][i + 1]];
+
+        int a2 = cornerIndexAFromEdge[triangulation[cubeIndex][i + 2]];
+        int b2 = cornerIndexBFromEdge[triangulation[cubeIndex][i + 2]];
+
+        Triangle tri;
+        tri.vertexA = lerp(realPos(targetIds[a0]), realPos(targetIds[b0]), getRatio(cubeCorners[a0], cubeCorners[b0]));
+        tri.vertexB = lerp(realPos(targetIds[a1]), realPos(targetIds[b1]), getRatio(cubeCorners[a1], cubeCorners[b1]));
+        tri.vertexC = lerp(realPos(targetIds[a2]), realPos(targetIds[b2]), getRatio(cubeCorners[a2], cubeCorners[b2]));
+        tri.normA = lerp(getSdfGradient(targetIds[a0]), getSdfGradient(targetIds[b0]), getRatio(cubeCorners[a0], cubeCorners[b0]));
+        tri.normB = lerp(getSdfGradient(targetIds[a1]), getSdfGradient(targetIds[b1]), getRatio(cubeCorners[a1], cubeCorners[b1]));
+        tri.normC = lerp(getSdfGradient(targetIds[a2]), getSdfGradient(targetIds[b2]), getRatio(cubeCorners[a2], cubeCorners[b2]));
+        tri.colorA = lerp(colors[indexFromCoord(targetIds[a0])], colors[indexFromCoord(targetIds[b0])], getRatio(cubeCorners[a0], cubeCorners[b0]));
+        tri.colorB = lerp(colors[indexFromCoord(targetIds[a1])], colors[indexFromCoord(targetIds[b1])], getRatio(cubeCorners[a1], cubeCorners[b1]));
+        tri.colorC = lerp(colors[indexFromCoord(targetIds[a2])], colors[indexFromCoord(targetIds[b2])], getRatio(cubeCorners[a2], cubeCorners[b2]));
+
+        triangles.Append(tri);
+    }
+}
+
+
