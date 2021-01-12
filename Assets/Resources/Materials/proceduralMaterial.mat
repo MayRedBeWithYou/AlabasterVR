@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: newApproach
+  m_Name: proceduralMaterial
   m_Shader: {fileID: 4800000, guid: 319046af4767d4347bdf2f8a1a8dc6fc, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
