@@ -23,25 +23,10 @@ float3 realPos(uint3 id)
     return id * voxelSpacing;
 }
 
-float sdCappedCylinder(float3 p, float h, float r)
-{
-    float2 d = length((float2(length(p.xz), p.y)) - float2(h, r));
-    return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
-}
-float sdCylinder(float3 p, float3 c)
-{
-    return length(p.xz - c.xy) - c.z;
-}
-
-float sdCappedCylinder2(float3 p, float2 h)
+float cylinderDistance(float3 p, float2 h)
 {
     float2 d = abs(float2(length(p.xz), p.y)) - h;
     return min(max(d.x, d.y), 0.0) + length(max(d, 0.0));
-}
-
-float sdSphere(float3 p, float s)
-{
-    return length(p) - s;
 }
 
 [numthreads(8, 8, 8)]
@@ -50,13 +35,7 @@ void AddMaterial(uint3 id : SV_DispatchThreadID)
     uint arrCoords = coords(id);
     float sdfVal = sdf[arrCoords];
     float3 transformedPoint = mul(voxelToCursorCoords, float4(realPos(id), 1)).xyz;
-    //float val = sdSphere(transformedPoint, radius);
-    //val = -voxelSpacing;
-    //float val = sdCappedCylinder(transformedPoint, 0.5, 0.5);
-    float val = sdCappedCylinder2(transformedPoint, float2(radius, voxelSpacing * 3));
-
-    //float val = sdCylinder(transformedPoint, float3(0.5,0.5,0.5));
-
+    float val = cylinderDistance(transformedPoint, float2(radius, voxelSpacing * 3));
     val = clamp(val, -voxelSpacing, voxelSpacing);
     sdf[arrCoords] = min(val, sdfVal);
     if (val < voxelSpacing)
@@ -70,8 +49,8 @@ void RemoveMaterial(uint3 id : SV_DispatchThreadID)
 {
     uint arrCoords = coords(id);
     float sdfVal = sdf[arrCoords];
-    float3 transformedPoint = mul(voxelToCursorCoords,float4(realPos(id),1)).xyz;
-    float val = sdCappedCylinder(transformedPoint, voxelSpacing, radius);
+    float3 transformedPoint = mul(voxelToCursorCoords, float4(realPos(id), 1)).xyz;
+    float val = cylinderDistance(transformedPoint, float2(radius, voxelSpacing * 3));
     val = clamp(val, -voxelSpacing, voxelSpacing);
     sdf[arrCoords] = max(-val, sdfVal);
 }

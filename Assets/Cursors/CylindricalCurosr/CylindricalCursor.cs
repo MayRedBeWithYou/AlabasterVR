@@ -5,19 +5,20 @@ using UnityEngine;
 public class CylindricalCursor : BaseCursor
 {
     private float _radius;
+    private float _height;
     public override float Size
     {
         get => _radius;
         protected set
         {
             _radius = value;
-            transform.localScale = new Vector3((_radius * 2), transform.localScale.y, (_radius * 2));
+            childMesh.localScale = new Vector3((_radius * 2), childMesh.localScale.y, (_radius * 2));
         }
     }
 
     public override void UpdateActiveChunks()
     {
-        var collidedChunks = Physics.OverlapSphere(transform.position, Size + 0.1f, 1 << 9);
+        var collidedChunks = Physics.OverlapBox(transform.position, new Vector3(_radius, _height, _radius), transform.rotation, 1 << 9);
         LayerManager.Instance.activeChunks.Clear();
         foreach (Collider col in collidedChunks)
         {
@@ -28,6 +29,7 @@ public class CylindricalCursor : BaseCursor
     protected override void Awake()
     {
         base.Awake();
-       // transform.localScale = new Vector3(1,LayerManager.Instance.VoxelSpacing,1);
+        _height = LayerManager.Instance.VoxelSpacing;
+        childMesh.localScale = new Vector3(Size * 2, _height, Size * 2);
     }
 }

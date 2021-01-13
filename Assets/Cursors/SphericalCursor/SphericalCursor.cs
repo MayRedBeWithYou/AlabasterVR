@@ -11,8 +11,7 @@ public class SphericalCursor : BaseCursor
         protected set
         {
             _radius = value;
-            transform.localScale = Vector3.one * (_radius * 2);
-
+            childMesh.localScale = Vector3.one * (_radius * 2);
         }
     }
 
