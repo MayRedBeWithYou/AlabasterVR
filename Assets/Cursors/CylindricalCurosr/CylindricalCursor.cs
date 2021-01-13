@@ -18,7 +18,7 @@ public class CylindricalCursor : BaseCursor
 
     public override void UpdateActiveChunks()
     {
-        var collidedChunks = Physics.OverlapBox(transform.position, new Vector3(_radius, _height, _radius), transform.rotation, 1 << 9);
+        var collidedChunks = Physics.OverlapBox(transform.position, new Vector3(_radius*1.1f, _height * 1.1f, _radius * 1.1f), transform.rotation, 1 << 9);
         LayerManager.Instance.activeChunks.Clear();
         foreach (Collider col in collidedChunks)
         {
@@ -29,7 +29,7 @@ public class CylindricalCursor : BaseCursor
     protected override void Awake()
     {
         base.Awake();
-        _height = LayerManager.Instance.VoxelSpacing;
+        _height = LayerManager.Instance.VoxelSpacing * 4;
         childMesh.localScale = new Vector3(Size * 2, _height, Size * 2);
     }
 }

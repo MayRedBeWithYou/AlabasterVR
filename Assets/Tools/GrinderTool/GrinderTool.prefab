@@ -58,6 +58,6 @@ MonoBehaviour:
   addMaterialColor: {r: 1, g: 0, b: 0, a: 0}
   removeMaterialColor: {r: 0, g: 1, b: 0, a: 0}
   shader: {fileID: 7200000, guid: 24cdedf686f66ee48a32fce39f68b2f3, type: 3}
-  color: {r: 0, g: 0, b: 0, a: 0}
+  color: {r: 1, g: 1, b: 1, a: 0}
   isAdding: 1
   isWorking: 0

@@ -103,21 +103,8 @@ public class MaterialTool : Tool
             activeColorPicker.onValueChanged.AddListener((c) => color = c);
         }
     }
-    IEnumerator RotateLayer(Layer layer, Vector3 point, Vector3 axis)
-    {
-        while(true)
-        {
-            layer.transform.RotateAround(point, axis, 1.0f);
-            yield return new WaitForSeconds(0.016f);
-        }
-    }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.U))
-        {
-            var coroutine = RotateLayer(LayerManager.Instance.ActiveLayer, transform.position, cursor.transform.position - transform.position);
-            StartCoroutine(coroutine);
-        }
         if (upButton.IsPressed)
         {
             cursor.IncreaseSize();
