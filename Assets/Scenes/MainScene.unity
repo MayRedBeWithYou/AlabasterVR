@@ -1412,6 +1412,7 @@ MonoBehaviour:
   - {fileID: 7079215710341580042, guid: f0f26cae52586ac4388545fa91574f01, type: 3}
   - {fileID: 468875257525354225, guid: 99e1315e48c3a83468bf3ea25a02a1ee, type: 3}
   - {fileID: 7160288784685767975, guid: b975b2a3560322f498e5007d571e636d, type: 3}
+  - {fileID: 6954181553447026400, guid: 5bdbec0919cd3cd4f8989c948fc28d79, type: 3}
   Tools: []
 --- !u!4 &1298109537
 Transform:

@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6311941774585312164
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6993984360892717308}
+  - component: {fileID: 6954181553447026400}
+  m_Layer: 0
+  m_Name: GrinderTool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6993984360892717308
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6311941774585312164}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6954181553447026400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6311941774585312164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bbd9837215720848a8790fabcb8ad15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cursorPrefab: {fileID: 126633759883351933, guid: 7598524e3a8122348b8f375bc20007e2,
+    type: 3}
+  defaultCursorColor: {r: 1, g: 0, b: 0, a: 0}
+  toolName: Grinder
+  description: BlaBlabla
+  sprite: {fileID: 0}
+  trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
+  settingsButton: {fileID: 11400000, guid: 6e43c03404523d04d90af0b5798b4417, type: 2}
+  toggleButton: {fileID: 11400000, guid: 72e585be256124e4f9091c2ee9aa9aab, type: 2}
+  positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
+  upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
+  downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
+  addMaterialColor: {r: 1, g: 0, b: 0, a: 0}
+  removeMaterialColor: {r: 0, g: 1, b: 0, a: 0}
+  shader: {fileID: 7200000, guid: 24cdedf686f66ee48a32fce39f68b2f3, type: 3}
+  color: {r: 0, g: 0, b: 0, a: 0}
+  isAdding: 1
+  isWorking: 0

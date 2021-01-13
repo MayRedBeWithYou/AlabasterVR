@@ -60,6 +60,8 @@ public abstract class BaseCursor : MonoBehaviour
     public abstract void UpdateActiveChunks();
     protected virtual void Awake()
     {
+        
         _material = GetComponent<MeshRenderer>().material;
+        if (_material == null) _material = GetComponentInChildren<MeshRenderer>().material;
     }
 }
