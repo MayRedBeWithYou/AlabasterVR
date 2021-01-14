@@ -13,7 +13,8 @@ public class PotteryUI : MonoBehaviour
     
     public Button playButton;
 
-    public Button resetButton;
+    public Button reverseButton;
+    public Button forwardButton;
 
     public Button hideButton;
 

@@ -115,7 +115,8 @@ public class PottersWheel : MonoBehaviour, IMovable
             else TurnOn();
             ui.RefreshUI();
         });
-        ui.resetButton.onClick.AddListener(() => transform.position = new Vector3(1.5f, 0f, 1.5f));
+
+
         ui.hideButton.onClick.AddListener(() =>
         {
             ToggleVisibility(!IsHidden);
