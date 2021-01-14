@@ -9,7 +9,33 @@ public static class FileManager
 {
     public static int precisionMultiplier = 100;
     public static bool noVertexNormals;
+
     public static FileExplorer SaveModel(FileExplorer script)
+    {
+        script.mode = FileExplorerMode.Save;
+        script.UpdateDirectory();
+        script.OnAccepted += (text) =>
+          {
+              if (System.String.IsNullOrWhiteSpace(text)) return;
+              JsonSerializer.Serialize(text);
+              script.Close();
+          };
+        return script;
+    }
+    public static FileExplorer LoadModel(FileExplorer script)
+    {
+        script.mode = FileExplorerMode.Open;
+        script.SetExtensionsArray(new string[] { ".abs" });
+        script.UpdateDirectory();
+        script.OnAccepted += (text) =>
+          {
+              if (System.String.IsNullOrWhiteSpace(text)) return;
+              JsonSerializer.Deserialize(text);
+              script.Close();
+          };
+        return script;
+    }
+    public static FileExplorer ExportModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Save;
         script.UpdateDirectory();
@@ -21,8 +47,7 @@ public static class FileManager
           };
         return script;
     }
-
-    public static FileExplorer LoadModel(FileExplorer script)
+    public static FileExplorer ImportModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Open;
         script.SetExtensionsArray(new string[] { ".obj" });
@@ -110,12 +135,12 @@ public static class FileManager
         }
         min = centeringVector;
         max = diff * scale + centeringVector;
-        Bounds boundsMine=new Bounds((min + max) * 0.5f, max - min);
-       
-        MeshToSdfGpu.bounds = new Bounds((min + max) * 0.5f, (max - min)+Vector3.one*LayerManager.Instance.Spacing / (LayerManager.Instance.ChunkResolution - 1)*2);
+        Bounds boundsMine = new Bounds((min + max) * 0.5f, max - min);
+
+        MeshToSdfGpu.bounds = new Bounds((min + max) * 0.5f, (max - min) + Vector3.one * LayerManager.Instance.Spacing / (LayerManager.Instance.ChunkResolution - 1) * 2);
         //Mesh mesh = new Mesh();
         //mesh.vertices = vertices.ToArray();
-        
+
         Vector3[] normalsArray;
         if (noVertexNormals)
         {
@@ -248,8 +273,8 @@ public static class FileManager
         sw.WriteLine("#faces count: " + triangles.Count + Environment.NewLine);
         sw.Close();
 
-        if (!nameChanged) UIController.Instance.ShowMessageBox("Model saved as " + Path.GetFileName(tempName));
-        else UIController.Instance.ShowMessageBox($"File {Path.GetFileName(path)}.obj already existed.\nModel saved as {Path.GetFileName(tempName)}.");
+        if (!nameChanged) UIController.Instance.ShowMessageBox("Model exported to " + Path.GetFileName(tempName));
+        else UIController.Instance.ShowMessageBox($"File {Path.GetFileName(path)}.obj already existed.\nModel exported to {Path.GetFileName(tempName)}.");
     }
 
     private static Vector3 ParseToVector3(string text)
@@ -312,21 +337,10 @@ public static class FileManager
         {
             ObjVertex tmp = (ObjVertex)obj;
             return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
-            /*int x = (int)(precisionMultiplier * coord.x);
-            int y = (int)(precisionMultiplier * coord.y);
-            int z = (int)(precisionMultiplier * coord.z);
-            int x2 = (int)(precisionMultiplier * tmp.coord.x);
-            int y2 = (int)(precisionMultiplier * tmp.coord.y);
-            int z2 = (int)(precisionMultiplier * tmp.coord.z);
-            return x.Equals(x2) && y.Equals(y2) && z.Equals(z2);*/
         }
         public override int GetHashCode()
         {
             return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
-            /*int x = (int)(precisionMultiplier * coord.x);
-            int y = (int)(precisionMultiplier * coord.y);
-            int z = (int)(precisionMultiplier * coord.z);
-            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();*/
         }
         public override string ToString()
         {
@@ -361,21 +375,10 @@ public static class FileManager
         {
             float3 tmp = (float3)obj;
             return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
-            /*int x = (int)(precisionMultiplier * coord.x);
-            int y = (int)(precisionMultiplier * coord.y);
-            int z = (int)(precisionMultiplier * coord.z);
-            int x2 = (int)(precisionMultiplier * tmp.coord.x);
-            int y2 = (int)(precisionMultiplier * tmp.coord.y);
-            int z2 = (int)(precisionMultiplier * tmp.coord.z);
-            return x.Equals(x2) && y.Equals(y2) && z.Equals(z2);*/
         }
         public override int GetHashCode()
         {
             return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
-            /*int x = (int)(precisionMultiplier * coord.x);
-            int y = (int)(precisionMultiplier * coord.y);
-            int z = (int)(precisionMultiplier * coord.z);
-            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();*/
         }
         public override string ToString()
         {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
 public enum RenderType
 {
     Flat,
@@ -45,7 +45,7 @@ public class LayerManager : MonoBehaviour
     public float Spacing => Size / Resolution;
     public float VoxelSpacing;
 
-    [Range(0f,1f)]
+    [Range(0f, 1f)]
     public float Metallic;
 
     [Range(0f, 1f)]
@@ -141,6 +141,56 @@ public class LayerManager : MonoBehaviour
         return layer;
     }
 
+    public Layer AddPreparedLayer(JsonLayer l)
+    {
+        _layerCount++;
+        _size = l.Size;
+        _chunkResolution = l.ChunkResolution;
+        _resolution = l.Resolution;
+        VoxelSpacing = Size / Resolution / (ChunkResolution - 1);
+        GameObject layerObject = Instantiate(LayerPrefab, LayersHolder.transform);
+        layerObject.name = l.Name;
+        layerObject.transform.position = LayersHolder.transform.position;
+        Layer layer = layerObject.GetComponent<Layer>();
+        layer.Resolution = l.Resolution;
+        layer.ChunkResolution = l.ChunkResolution;
+        layer.Size = l.Size;
+        layer.Smoothness = l.Smoothness;
+        layer.Metallic = l.Metallic;
+        layer.RenderType = (RenderType)l.RenderType;
+        layer.SetPosition(l.Position.ToVector3());
+        layer.SetRotation(l.Rotation.ToQuaternion());
+        layer.SetScale(l.Scale.ToVector3());
+        BoxCollider box = layerObject.GetComponent<BoxCollider>();
+        box.size = Vector3.one * Size;
+        box.center = Vector3.one * Size / 2;
+
+        layer.GenerateChunks(chunkPrefab);
+        for (int i = 0; i < l.Chunks.Length; i++)
+        {
+            float[] vals = Enumerable.Repeat(0.01209677f, layer.ChunkResolution * layer.ChunkResolution * layer.ChunkResolution).ToArray();
+            float[] cols = Enumerable.Repeat(1.0f, layer.ChunkResolution * layer.ChunkResolution * layer.ChunkResolution * 3).ToArray();
+            for (int j = 0; j < l.Chunks[i].Values.Length; j++)
+            {
+                JsonVoxel jsonVoxel = l.Chunks[i].Values[j];
+                vals[jsonVoxel.index] = jsonVoxel.value;
+                cols[3 * jsonVoxel.index] = jsonVoxel.c1;
+                cols[3 * jsonVoxel.index + 1] = jsonVoxel.c2;
+                cols[3 * jsonVoxel.index + 2] = jsonVoxel.c3;
+            }
+            Vector3Int ind=new Vector3Int(l.Chunks[i].CoordsX,l.Chunks[i].CoordsY,l.Chunks[i].CoordsZ);
+            layer.chunks[ind.x,ind.y,ind.z].voxels.InitializeFromArray(vals, cols);
+            layer.chunks[ind.x,ind.y,ind.z].gpuMesh.UpdateVertexBuffer(layer.chunks[ind.x,ind.y,ind.z].voxels);
+        }
+        layers.Add(layer);
+        LayerAdded?.Invoke(layer);
+        Debug.Log($"Created layer: {layer.name}");
+
+        if (ActiveLayer != null)
+            ActiveLayer = layer;
+        return layer;
+    }
+
     public void RemoveLayer(Layer layer)
     {
         if (layers.Count == 1) return;
@@ -156,13 +206,17 @@ public class LayerManager : MonoBehaviour
 
     public void ResetLayers()
     {
+        ClearLayers();
+        _activeLayer = AddNewLayer();
+    }
+    public void ClearLayers()
+    {
         foreach (Layer layer in layers)
         {
             Destroy(layer.gameObject);
         }
         layers.Clear();
         _layerCount = 0;
-        _activeLayer = AddNewLayer();
     }
 
     void OnDrawGizmos()
@@ -217,6 +271,6 @@ public class LayerManager : MonoBehaviour
         layerPos.y = layerPos.y % VoxelSpacing;
         layerPos.z = layerPos.z % VoxelSpacing;
 
-        return ((Vector3)(Vector3Int.FloorToInt(pos / VoxelSpacing)) +Vector3.one * 0.5f) * VoxelSpacing + layerPos ;
+        return ((Vector3)(Vector3Int.FloorToInt(pos / VoxelSpacing)) + Vector3.one * 0.5f) * VoxelSpacing + layerPos;
     }
 }
