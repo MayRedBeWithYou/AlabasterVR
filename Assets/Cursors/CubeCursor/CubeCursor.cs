@@ -2,23 +2,22 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SphericalCursor : BaseCursor
+public class CubeCursor : BaseCursor
 {
-    private float _radius;
+    private float _edge;
     public override float Size
     {
-        get => _radius;
+        get => _edge;
         protected set
         {
-            _radius = value;
-            transform.localScale = Vector3.one * (_radius * 2);
-
+            _edge = value;
+            childMesh.localScale = Vector3.one * (_edge * 2);
         }
     }
 
     public override void UpdateActiveChunks()
     {
-        var collidedChunks = Physics.OverlapSphere(transform.position, Size + 0.1f, 1 << 9);
+        var collidedChunks = Physics.OverlapBox(transform.position, Vector3.one * (Size + 0.1f), transform.rotation, 1 << 9);
         LayerManager.Instance.activeChunks.Clear();
         foreach (Collider col in collidedChunks)
         {

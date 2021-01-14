@@ -36,10 +36,7 @@ uint coords(uint3 id)
 
 float3 realPos(uint3 id)
 {
-    float3 ids = id;
-    float res = resolution - 1;
-    ids = id / res;
-    return ids * chunkSize;
+    return id * voxelSpacing;
 }
 
 float3 getSdfGradient(uint3 id)

@@ -6,6 +6,7 @@ using UnityEngine;
 public abstract class BaseCursor : MonoBehaviour
 {
     private Material _material;
+    protected Transform childMesh;
     [SerializeField]
     private float alpha = 0.1f;
     public Color Color
@@ -41,7 +42,7 @@ public abstract class BaseCursor : MonoBehaviour
     }
     public void SetSizeToDefault()
     {
-        Size = (MaximalSize - MinimalSize) * 0.5f;
+        Size = (MaximalSize - MinimalSize) * 0.3f;
     }
     public float SizeChangeSpeed = 0.001f;
 
@@ -60,6 +61,7 @@ public abstract class BaseCursor : MonoBehaviour
     public abstract void UpdateActiveChunks();
     protected virtual void Awake()
     {
-        _material = GetComponent<MeshRenderer>().material;
+        _material = GetComponentInChildren<MeshRenderer>().material;
+        childMesh = transform.GetChild(0);
     }
 }

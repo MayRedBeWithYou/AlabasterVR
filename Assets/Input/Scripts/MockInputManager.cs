@@ -75,6 +75,10 @@ public class MockInputManager : MonoBehaviour
         {
             ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Paint");
         }
+        if (Input.GetKeyDown(KeyCode.Equals))
+        {
+            ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Grinder");
+        }
 
     }
 }
