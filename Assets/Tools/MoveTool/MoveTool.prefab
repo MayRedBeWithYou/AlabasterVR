@@ -43,6 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d96332b5b98bc4d902843db5b6c55b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cursorPrefab: {fileID: 623986724286308406, guid: c9fec2d5a21dd6542a142e354ae76fc7,
+    type: 3}
+  defaultCursorColor: {r: 0.52880335, g: 0, b: 1, a: 0}
   toolName: Move
   description: 
   sprite: {fileID: 21300000, guid: e54823305b3c5d242b499a6c6606a844, type: 3}
@@ -51,7 +54,4 @@ MonoBehaviour:
   positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
   trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
   MoveShader: {fileID: 7200000, guid: e7421e254cf438742a392640cdb775ac, type: 3}
-  cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
-    type: 3}
-  cursor: {fileID: 0}
   isWorking: 0

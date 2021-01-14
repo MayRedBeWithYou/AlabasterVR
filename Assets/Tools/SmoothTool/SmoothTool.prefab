@@ -43,6 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b13e01ccbd4ed74cb52cc450cdbd5a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cursorPrefab: {fileID: 623986724286308406, guid: c9fec2d5a21dd6542a142e354ae76fc7,
+    type: 3}
+  defaultCursorColor: {r: 0.48872185, g: 0, b: 1, a: 0}
   toolName: Smooth
   description: 
   sprite: {fileID: 21300000, guid: dee1153bcc8004c4c9ec57d7a5d05064, type: 3}
@@ -52,7 +55,4 @@ MonoBehaviour:
   snapshot: {fileID: 0}
   trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
   SmoothShader: {fileID: 7200000, guid: aa97e1f496635954b8f44a97dcce87bf, type: 3}
-  cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
-    type: 3}
-  cursor: {fileID: 0}
   isWorking: 0

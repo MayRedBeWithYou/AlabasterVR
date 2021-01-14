@@ -83,7 +83,7 @@ public class OnHoverEventHandler : MonoBehaviour
 
         if (interactor.GetCurrentRaycastHit(out RaycastHit hit))
         {
-            Current = hit.collider.gameObject.GetComponentInParent<SceneLight>().gameObject;
+            Current = hit.collider.transform.parent.gameObject;
             visual.lineLength = hit.distance;
         }
 

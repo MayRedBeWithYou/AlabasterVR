@@ -36,10 +36,7 @@ uint coords(uint3 id)
 
 float3 realPos(uint3 id)
 {
-    float3 ids = id;
-    float res = resolution - 1;
-    ids = id / res;
-    return ids * chunkSize;
+    return id * voxelSpacing;
 }
 
 float3 getSdfGradient(uint3 id)
@@ -48,7 +45,7 @@ float3 getSdfGradient(uint3 id)
     float dy = sdf[coords(uint3(id.x, id.y - 1, id.z))] - sdf[coords(uint3(id.x, id.y + 1, id.z))];
     float dz = sdf[coords(uint3(id.x, id.y, id.z - 1))] - sdf[coords(uint3(id.x, id.y, id.z + 1))];
     float3 gradient = { dx,dy,dz };
-    gradient /= (voxelSpacing * 3);
+    gradient /= (voxelSpacing * 2);
     return gradient;
 }
 
@@ -58,7 +55,7 @@ float3 getRGradient(uint3 id)
     float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].r - colors[coords(uint3(id.x, id.y + 1, id.z))].r;
     float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].r - colors[coords(uint3(id.x, id.y, id.z + 1))].r;
     float3 gradient = { dx,dy,dz };
-    gradient /= (voxelSpacing * 3);
+    gradient /= (voxelSpacing * 2);
     return gradient;
 }
 
@@ -68,7 +65,7 @@ float3 getGGradient(uint3 id)
     float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].g - colors[coords(uint3(id.x, id.y + 1, id.z))].g;
     float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].g - colors[coords(uint3(id.x, id.y, id.z + 1))].g;
     float3 gradient = { dx,dy,dz };
-    gradient /= (voxelSpacing * 3);
+    gradient /= (voxelSpacing * 2);
     return gradient;
 }
 
@@ -78,7 +75,7 @@ float3 getBGradient(uint3 id)
     float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].b - colors[coords(uint3(id.x, id.y + 1, id.z))].b;
     float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].b - colors[coords(uint3(id.x, id.y, id.z + 1))].b;
     float3 gradient = { dx,dy,dz };
-    gradient /= (voxelSpacing * 3);
+    gradient /= (voxelSpacing * 2);
     return gradient;
 }
 
@@ -116,6 +113,13 @@ void ApplyMoveData(uint3 id : SV_DispatchThreadID)
         sdf[coords(data.from)] = value;
 
         float3 outColor;
+        /*float3x3 colorJacobi;
+        colorJacobi[0] = data.rGradient;
+        colorJacobi[1] = data.gGradient;
+        colorJacobi[2] = data.bGradient;
+        outColor = clamp(float3(0,0,0), float3(1,1,1), colors[coords(data.from)] + mul(colorJacobi, offset));
+        */
+
 
         value = colors[coords(data.from)].r + dot(offset, data.rGradient);
         value = clamp(0, 1, value);

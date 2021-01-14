@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -54,6 +55,7 @@ public class OperationManager : MonoBehaviour
     {
         undoOperations.Push(op);
         redoOperations.Clear();
+        GC.Collect();
         Debug.Log($"Added to stack: {op.GetType().Name}");
         OnStacksChanged?.Invoke();
     }
