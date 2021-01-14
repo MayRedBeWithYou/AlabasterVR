@@ -19,6 +19,22 @@ public class PottersWheel : MonoBehaviour, IMovable
 
     public PotteryUI ui;
 
+    private float _rotationSpeed = 0.0f;
+    [SerializeField]
+    private float _maxRotationSpeed;
+    [SerializeField]
+    private float _speedChangeStep;
+    public float RotationSpeed
+    {
+        get => _rotationSpeed;
+        set
+        {
+            _rotationSpeed = Mathf.Clamp(value, -_maxRotationSpeed, _maxRotationSpeed);
+        }
+    }
+
+
+
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.U))
@@ -45,8 +61,8 @@ public class PottersWheel : MonoBehaviour, IMovable
     {
         while (true)
         {
-            transform.Rotate(new Vector3(0, 3.0f, 0));
-            yield return new WaitForSeconds(0.016f);
+            transform.Rotate(new Vector3(0, _rotationSpeed, 0));
+            yield return new WaitForSeconds(0.0111f);
         }
     }
 
@@ -55,6 +71,7 @@ public class PottersWheel : MonoBehaviour, IMovable
         if (!IsActive)
         {
             IsActive = true;
+            RotationSpeed = _maxRotationSpeed * 0.5f;
             _attatchedLayer = LayerManager.Instance.ActiveLayer;
             LayerManager.Instance.ActiveLayer.transform.SetParent(transform);
             _rotateCoroutine = RotateLayer(_attatchedLayer);
@@ -122,6 +139,18 @@ public class PottersWheel : MonoBehaviour, IMovable
             ToggleVisibility(!IsHidden);
             ui.RefreshUI();
         });
+
+        ui.forwardButton.onClick.AddListener(() =>
+        {
+            RotationSpeed += _speedChangeStep;
+        }
+        );
+
+        ui.forwardButton.onClick.AddListener(() =>
+        {
+            RotationSpeed -= _speedChangeStep;
+        }
+        );
 
     }
 }

@@ -49,6 +49,8 @@ MonoBehaviour:
   wheelCollider: {fileID: 9080617421725765889}
   uiButton: {fileID: 11400000, guid: 97e501efc2665b54793e026476b32321, type: 2}
   ui: {fileID: 0}
+  _maxRotationSpeed: 3
+  _speedChangeStep: 0.2
 --- !u!64 &8225368734426236427
 MeshCollider:
   m_ObjectHideFlags: 0
