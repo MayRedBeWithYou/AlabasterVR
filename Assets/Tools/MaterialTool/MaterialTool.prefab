@@ -56,8 +56,7 @@ MonoBehaviour:
   removeMaterial: {fileID: 2100000, guid: 2f527c5923696354980882ead218fac6, type: 2}
   cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
     type: 3}
-  addShader: {fileID: 7200000, guid: 89cb501b611c6e54d83620f7127ef397, type: 3}
-  removeShader: {fileID: 7200000, guid: 0ac55b154090532408b261408a4a9678, type: 3}
+  shader: {fileID: 7200000, guid: 89cb501b611c6e54d83620f7127ef397, type: 3}
   color: {r: 1, g: 1, b: 1, a: 1}
   cursor: {fileID: 0}
   isAdding: 1

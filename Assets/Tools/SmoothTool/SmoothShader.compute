@@ -1,0 +1,83 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel PopulateWorkBuffer
+#pragma kernel ApplySmooth
+
+struct MoveData
+{
+    uint3 from;
+    float avg;
+    float3 avgColor;
+};
+
+RWStructuredBuffer<float> sdf;
+RWStructuredBuffer<float3> colors;
+AppendStructuredBuffer<MoveData> appendWorkBuffer;
+StructuredBuffer<MoveData> structuredWorkBuffer;
+StructuredBuffer<uint> entries;
+
+uint resolution;
+
+float chunkSize;
+float toolRadius;
+float3 toolCenter;
+
+
+uint coords(uint3 id)
+{
+    return id.z * resolution * resolution + id.y * resolution + id.x;
+}
+
+float3 realPos(uint3 id)
+{
+    float3 ids = id;
+    float res = resolution - 1;
+    ids = id / res;
+    return ids * chunkSize;
+}
+
+[numthreads(8, 8, 8)]
+void PopulateWorkBuffer(uint3 id : SV_DispatchThreadID)
+{
+    float3 displacement = realPos(id) - toolCenter;
+    float val = dot(displacement, displacement) - (toolRadius * toolRadius);
+    if (val < 0) //inside cursor
+    {
+        MoveData data;
+        data.from = id;
+
+        float avg = 0;
+        avg += sdf[coords(uint3(id.x + 1, id.y, id.z))];
+        avg += sdf[coords(uint3(id.x - 1, id.y, id.z))];
+        avg += sdf[coords(uint3(id.x, id.y + 1, id.z))];
+        avg += sdf[coords(uint3(id.x, id.y - 1, id.z))];
+        avg += sdf[coords(uint3(id.x, id.y, id.z - 1))];
+        avg += sdf[coords(uint3(id.x, id.y, id.z + 1))];
+        avg = avg / 6;
+        data.avg = avg;
+
+        float3 avgColor = float3(0, 0, 0);
+        avgColor += colors[coords(uint3(id.x + 1, id.y, id.z))];
+        avgColor += colors[coords(uint3(id.x - 1, id.y, id.z))];
+        avgColor += colors[coords(uint3(id.x, id.y + 1, id.z))];
+        avgColor += colors[coords(uint3(id.x, id.y - 1, id.z))];
+        avgColor += colors[coords(uint3(id.x, id.y, id.z - 1))];
+        avgColor += colors[coords(uint3(id.x, id.y, id.z + 1))];
+        avgColor = avgColor / 6;
+        data.avgColor = avgColor;
+
+        appendWorkBuffer.Append(data);
+    }
+}
+
+[numthreads(512, 1, 1)]
+void ApplySmooth(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x < entries[0])
+    {
+        MoveData data;
+        data = structuredWorkBuffer[id.x];
+        sdf[coords(data.from)] = data.avg;
+        colors[coords(data.from)] = data.avgColor;
+    }
+}
+

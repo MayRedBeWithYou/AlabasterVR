@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e3e782afd4f5574e96cf80d5ca2b594, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  resolution: 16
-  size: 0.125
+  resolution: 32
+  size: 0.25
   coord: {x: 0, y: 0, z: 0}
   DisplayVoxels: 0
   mesh: {fileID: 0}

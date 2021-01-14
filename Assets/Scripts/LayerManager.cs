@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum RenderType
+{
+    Flat,
+    Smooth
+}
+
 public class LayerManager : MonoBehaviour
 {
     private static LayerManager _instance;
@@ -37,6 +43,17 @@ public class LayerManager : MonoBehaviour
     public float RelativeModelSize => _relativeModelSize;
 
     public float Spacing => Size / Resolution;
+    public float VoxelSpacing;
+
+    [Range(0f,1f)]
+    public float Metallic;
+
+    [Range(0f, 1f)]
+    public float Smoothness;
+
+    public RenderType renderType;
+
+
 
     [Header("Gizmos")]
     [SerializeField]
@@ -90,7 +107,7 @@ public class LayerManager : MonoBehaviour
 
         layers = new List<Layer>();
         activeChunks = new List<Chunk>();
-
+        VoxelSpacing = Size / Resolution / (ChunkResolution - 1);//Size / (Resolution * ChunkResolution);
         Chunk chunk = chunkPrefab.GetComponent<Chunk>();
         chunk.size = Spacing;
         chunk.resolution = ChunkResolution;
@@ -106,6 +123,9 @@ public class LayerManager : MonoBehaviour
         layer.Resolution = Resolution;
         layer.ChunkResolution = ChunkResolution;
         layer.Size = Size;
+        layer.Smoothness = Smoothness;
+        layer.Metallic = Metallic;
+        layer.RenderType = renderType;
 
         BoxCollider box = layerObject.GetComponent<BoxCollider>();
         box.size = Vector3.one * Size;
@@ -178,5 +198,25 @@ public class LayerManager : MonoBehaviour
                 //Gizmos.DrawWireCube(transform.position, Vector3.one * Size / 2f);
             }
         }
+    }
+
+    public Vector3Int SnapToGridPosition(Vector3 pos)
+    {
+        var layerPos = ActiveLayer.transform.position;
+        //layerPos.x = layerPos.x % VoxelSpacing;
+        //layerPos.y = layerPos.y % VoxelSpacing;
+        //layerPos.z = layerPos.z % VoxelSpacing;
+
+        return Vector3Int.RoundToInt((pos + layerPos) / VoxelSpacing);
+    }
+
+    public Vector3 SnapToGridPositionReal(Vector3 pos)
+    {
+        var layerPos = ActiveLayer.transform.position;
+        layerPos.x = layerPos.x % VoxelSpacing;
+        layerPos.y = layerPos.y % VoxelSpacing;
+        layerPos.z = layerPos.z % VoxelSpacing;
+
+        return ((Vector3)(Vector3Int.FloorToInt(pos / VoxelSpacing)) +Vector3.one * 0.5f) * VoxelSpacing + layerPos ;
     }
 }

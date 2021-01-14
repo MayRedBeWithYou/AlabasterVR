@@ -24,14 +24,13 @@ public class MaterialTool : Tool
     [Space(10f)]
     public GameObject cursorPrefab;
 
-    public ComputeShader addShader;
-    public ComputeShader removeShader;
+    public ComputeShader shader;
+    private int AddMaterialKernel;
+    private int RemoveMaterialKernel;
 
     private ColorPicker activeColorPicker;
 
     public Color color;
-
-    int sphereShaderKernel;
 
     [HideInInspector]
     public CursorSDF cursor;
@@ -42,11 +41,21 @@ public class MaterialTool : Tool
 
     public Dictionary<Chunk, float[]> beforeEdit;
 
+    public Dictionary<Chunk, float[]> beforeColor;
+
     public override void Enable()
     {
-        if (cursor != null)
-            cursor.ToggleRenderer(true);
-        base.Enable();
+        if (!gameObject.activeSelf)
+        {
+            if (cursor != null)
+                cursor.ToggleRenderer(true);
+            settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
+            toggleButton.OnButtonDown += ToggleButtonHandler;
+
+            positionButton.OnButtonDown += PositionButton_OnButtonDown;
+            positionButton.OnButtonUp += PositionButton_OnButtonUp;
+            base.Enable();
+        }
     }
 
     private void PositionButton_OnButtonDown(XRController controller)
@@ -63,18 +72,26 @@ public class MaterialTool : Tool
     public override void Disable()
     {
         cursor.ToggleRenderer(false);
+        settingsButton.OnButtonDown -= SettingsButton_OnButtonDown;
+
+        toggleButton.OnButtonDown -= ToggleButtonHandler;
+        positionButton.OnButtonDown -= PositionButton_OnButtonDown;
+        positionButton.OnButtonUp -= PositionButton_OnButtonUp;
+
+        if (activeColorPicker != null && ToolController.Instance.SelectedTool != this) activeColorPicker.Close();
         base.Disable();
     }
 
     public void Awake()
     {
         cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
-        toggleButton.OnButtonDown += ToggleButtonHandler;
-
-        settingsButton.OnButtonDown += SettingsButton_OnButtonDown;
-
-        positionButton.OnButtonDown += PositionButton_OnButtonDown;
-        positionButton.OnButtonUp += PositionButton_OnButtonUp;
+        cursor.gameObject.name = "MaterialCursor";
+    }
+    public void Start()
+    {
+        AddMaterialKernel = shader.FindKernel("AddMaterial");
+        RemoveMaterialKernel = shader.FindKernel("RemoveMaterial");
+        InitializeShadersConstUniforms();
     }
 
     private void SettingsButton_OnButtonDown(XRController controller)
@@ -94,34 +111,7 @@ public class MaterialTool : Tool
 
     private void Update()
     {
-        cursor.UpdateActiveChunks();
-        if (isWorking)
-        {
-            if (trigger.Value <= 0.2)
-            {
-                isWorking = false;
-                Dictionary<Chunk, float[]> afterEdit = new Dictionary<Chunk, float[]>();
-                foreach(Chunk chunk in beforeEdit.Keys)
-                {
-                    float[] voxels = new float[chunk.voxels.VoxelBuffer.count]; ;
-                    chunk.voxels.VoxelBuffer.GetData(voxels);
-                    afterEdit.Add(chunk, voxels);
-                }
 
-                MaterialOperation op = new MaterialOperation(beforeEdit, afterEdit);
-                OperationManager.Instance.PushOperation(op);
-            }
-            foreach (Chunk chunk in LayerManager.Instance.activeChunks)
-            {
-                if (!beforeEdit.ContainsKey(chunk))
-                {
-                    float[] voxels = new float[chunk.voxels.VoxelBuffer.count]; ;
-                    chunk.voxels.VoxelBuffer.GetData(voxels);
-                    beforeEdit.Add(chunk, voxels);
-                }
-            }
-            PerformAction();
-        }
         if (upButton.IsPressed)
         {
             cursor.IncreaseRadius();
@@ -130,12 +120,48 @@ public class MaterialTool : Tool
         {
             cursor.DecreaseRadius();
         }
+        cursor.UpdateActiveChunks();
+        if (isWorking)
+        {
+            if (trigger.Value <= 0.2)
+            {
+                isWorking = false;
+                Dictionary<Chunk, float[]> afterEdit = new Dictionary<Chunk, float[]>();
+                Dictionary<Chunk, float[]> afterColor = new Dictionary<Chunk, float[]>();
+                foreach (Chunk chunk in beforeEdit.Keys)
+                {
+                    float[] voxels = new float[chunk.voxels.Volume];
+                    float[] colors = new float[chunk.voxels.Volume * 3];
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    chunk.voxels.ColorBuffer.GetData(colors);
+                    afterEdit.Add(chunk, voxels);
+                    afterColor.Add(chunk, colors);
+                }
+
+                MaterialOperation op = new MaterialOperation(beforeEdit, beforeColor, afterEdit, afterColor);
+                OperationManager.Instance.PushOperation(op);
+            }
+            foreach (Chunk chunk in LayerManager.Instance.activeChunks)
+            {
+                if (!beforeEdit.ContainsKey(chunk))
+                {
+                    float[] voxels = new float[chunk.voxels.Volume];
+                    float[] colors = new float[chunk.voxels.Volume * 3];
+                    chunk.voxels.VoxelBuffer.GetData(voxels);
+                    chunk.voxels.ColorBuffer.GetData(colors);
+                    beforeEdit.Add(chunk, voxels);
+                    beforeColor.Add(chunk, colors);
+                }
+            }
+            PerformAction();
+        }
         if (trigger.Value > 0.2)
         {
             if (!isWorking)
             {
                 isWorking = true;
                 beforeEdit = new Dictionary<Chunk, float[]>();
+                beforeColor = new Dictionary<Chunk, float[]>();
             }
         }
     }
@@ -146,19 +172,27 @@ public class MaterialTool : Tool
         cursor.SetMaterial(isAdding ? addMaterial : removeMaterial);
 
     }
+    private void InitializeShadersConstUniforms()
+    {
+        var activeLayer = LayerManager.Instance.ActiveLayer;
+        shader.SetFloat("chunkSize", activeLayer.Spacing);
+        shader.SetInt("resolution", activeLayer.ChunkResolution);
+        shader.SetFloat("voxelSpacing", LayerManager.Instance.VoxelSpacing);
+        shader.SetFloat("radius", cursor.radius * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+    }
 
     private void PerformAction()
     {
-        ComputeShader shader = isAdding ? addShader : removeShader;
+        var activeLayer = LayerManager.Instance.ActiveLayer;
+        int kernel = isAdding ? AddMaterialKernel : RemoveMaterialKernel;
+        shader.SetFloat("radius", cursor.radius * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetVector("color", new Vector3(color.r, color.g, color.b));
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
-            sphereShaderKernel = shader.FindKernel("CSMain");
-            shader.SetFloat("radius", cursor.radius);
-            shader.SetFloat("chunkSize", chunk.size);
             shader.SetVector("position", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
-            shader.SetInt("resolution", chunk.resolution);
-            shader.SetBuffer(sphereShaderKernel, "sdf", chunk.voxels.VoxelBuffer);
-            shader.Dispatch(sphereShaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
+            shader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
+            shader.SetBuffer(kernel, "colors", chunk.voxels.ColorBuffer);
+            shader.Dispatch(kernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
         }
     }

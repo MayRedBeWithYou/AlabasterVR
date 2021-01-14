@@ -9,13 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0631f45cb3a6eb43a781e4a13e119f2, type: 3}
-  m_Name: MockRightPrimaryAxis2D
+  m_Script: {fileID: 11500000, guid: 1d5f31ca2ec9b74439ef873e3e6e4f2f, type: 3}
+  m_Name: MockRightPrimaryAxisLeft
   m_EditorClassIdentifier: 
-  axis: 1
-  mockedAxis2D: {fileID: 11400000, guid: 8a2d4ffca8480fb48b6ef34f6b00aaa8, type: 2}
-  keyUp: 273
-  keyDown: 274
-  keyLeft: 276
-  keyRight: 275
-  mockValue: 1
+  button: 16
+  mockedButton: {fileID: 11400000, guid: accd9e48977a4774aad6486f22878d29, type: 2}
+  key: 260

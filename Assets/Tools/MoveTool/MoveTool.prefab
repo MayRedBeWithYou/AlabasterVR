@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &7079215710341580043
+--- !u!1 &468875257525354224
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,22 +8,22 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 7079215710341580045}
-  - component: {fileID: 7079215710341580042}
+  - component: {fileID: 468875257525354230}
+  - component: {fileID: 468875257525354225}
   m_Layer: 0
   m_Name: MoveTool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &7079215710341580045
+  m_IsActive: 1
+--- !u!4 &468875257525354230
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7079215710341580043}
+  m_GameObject: {fileID: 468875257525354224}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -31,18 +31,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7079215710341580042
+--- !u!114 &468875257525354225
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7079215710341580043}
+  m_GameObject: {fileID: 468875257525354224}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b13e01ccbd4ed74cb52cc450cdbd5a6, type: 3}
+  m_Script: {fileID: 11500000, guid: 39d96332b5b98bc4d902843db5b6c55b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   toolName: Move
   description: 
-  sprite: {fileID: 21300000, guid: cb445ecac047d3a459da3710cd981953, type: 3}
+  sprite: {fileID: 21300000, guid: e54823305b3c5d242b499a6c6606a844, type: 3}
+  upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
+  downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
+  positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
+  trigger: {fileID: 11400000, guid: 76b634caa7ba834428f9c7b492f6f056, type: 2}
+  MoveShader: {fileID: 7200000, guid: e7421e254cf438742a392640cdb775ac, type: 3}
+  cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
+    type: 3}
+  cursor: {fileID: 0}
+  isWorking: 0

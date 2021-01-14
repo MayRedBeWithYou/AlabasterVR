@@ -31,7 +31,7 @@ public class CursorSDF : MonoBehaviour
 
     public void UpdateActiveChunks()
     {
-        var collidedChunks = Physics.OverlapSphere(transform.position, radius, 1 << 9);
+        var collidedChunks = Physics.OverlapSphere(transform.position, radius+0.1f, 1 << 9);
         if (collidedChunks != null)
         {
             LayerManager.Instance.activeChunks.Clear();

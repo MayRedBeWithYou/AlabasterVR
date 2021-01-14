@@ -11,6 +11,10 @@ public class GPUMesh : IDisposable
     private ComputeBuffer vertexBuffer;
     private ComputeBuffer drawArgs;
 
+    public float metallic;
+    public float smoothness;
+    public RenderType renderType;
+
     [RuntimeInitializeOnLoadMethod]
     private static void Initialize()
     {
@@ -20,16 +24,28 @@ public class GPUMesh : IDisposable
 
     public GPUMesh(int maxTriangleCount)
     {
-        vertexBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 18, ComputeBufferType.Append);
+        vertexBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 27, ComputeBufferType.Append);
         drawArgs = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
         drawArgs.SetData(new int[] { 3, 0, 0, 0 });
     }
 
     public void UpdateVertexBuffer(GPUVoxelData voxels)
     {
-        int kernel = marchingCubesShader.FindKernel("March");
+        int kernel;
+        switch (renderType)
+        {
+            case RenderType.Flat:
+                kernel = marchingCubesShader.FindKernel("MarchingCubesFlat");
+                break;
+            case RenderType.Smooth:
+                kernel = marchingCubesShader.FindKernel("MarchingCubesSmooth");
+                break;
+            default:
+                throw new ArgumentException("Unknown render type");
+        }
         vertexBuffer.SetCounterValue(0);
         marchingCubesShader.SetBuffer(kernel, "points", voxels.VoxelBuffer);
+        marchingCubesShader.SetBuffer(kernel, "colors", voxels.ColorBuffer);
         marchingCubesShader.SetBuffer(kernel, "triangles", vertexBuffer);
         marchingCubesShader.SetInt("numPointsPerAxis", voxels.Resolution);
         marchingCubesShader.SetFloat("isoLevel", isoLevel);
@@ -44,6 +60,8 @@ public class GPUMesh : IDisposable
         materialBlock.SetBuffer("data", vertexBuffer);
         materialBlock.SetMatrix("model", modelMatrix);
         materialBlock.SetMatrix("invModel", inverseModelMatrix);
+        materialBlock.SetFloat("_Glossiness", smoothness);
+        materialBlock.SetFloat("_Metallic", metallic);
 
         Graphics.DrawProceduralIndirect(
             proceduralMaterial,
@@ -61,15 +79,23 @@ public class GPUMesh : IDisposable
         vertexBuffer.Dispose();
         drawArgs.Dispose();
     }
-
-    public MeshToSdfGpu.GPUTriangle[] GetTriangles()
+    public struct GPUTriangle
     {
-        ComputeBuffer buffer = new ComputeBuffer(1, sizeof(int), ComputeBufferType.IndirectArguments);
-        ComputeBuffer.CopyCount(vertexBuffer, buffer, 0);
-        int[] arr = new int[1];
-        buffer.GetData(arr);
-        buffer.Release();
-        MeshToSdfGpu.GPUTriangle[] result = new MeshToSdfGpu.GPUTriangle[arr[0]];
+        public Vector3 vertexC;
+        public Vector3 vertexA;
+        public Vector3 vertexB;
+        public Vector3 normC;
+        public Vector3 normA;
+        public Vector3 normB;
+        public Vector3 colorC;
+        public Vector3 colorA;
+        public Vector3 colorB;
+    };
+    public GPUTriangle[] GetTriangles()
+    {
+        int[] arr = new int[4];
+        drawArgs.GetData(arr);
+        GPUTriangle[] result = new GPUTriangle[arr[1]];
         vertexBuffer.GetData(result);
         return result;
     }

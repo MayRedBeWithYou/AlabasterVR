@@ -1,0 +1,80 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel TakeSnapshot
+#pragma kernel ApplySnapshot
+#pragma kernel Normalize
+#pragma kernel ClearData
+
+
+RWStructuredBuffer<float> snapshot;
+RWStructuredBuffer<float3> colors;
+RWStructuredBuffer<float> sdf;
+RWStructuredBuffer<float3> chunkColors;
+RWStructuredBuffer<uint> overlaps;
+
+float3 gridDisplacement;
+float voxelSpacing;
+uint resolution;
+
+uint coords(uint3 id)
+{
+    return id.z * resolution * resolution + id.y * resolution + id.x;
+}
+
+
+[numthreads(8,8,8)]
+void TakeSnapshot (uint3 id : SV_DispatchThreadID)
+{
+    int3 intId = id;
+    int3 gridOffset = round(gridDisplacement);
+    uint3 targetId = intId + gridOffset;
+    if (targetId.x >= 0 && targetId.x < resolution && 
+        targetId.y >= 0 && targetId.y < resolution &&
+        targetId.z >= 0 && targetId.z < resolution)
+    {
+        uint coordsId = coords(id);
+        uint coordsTargetId = coords(targetId);
+        snapshot[coordsId] += sdf[coordsTargetId];
+        colors[coordsId] += chunkColors[coordsTargetId];
+        ++overlaps[coordsId];
+    }
+}
+
+[numthreads(8, 8, 8)]
+void ApplySnapshot(uint3 id : SV_DispatchThreadID)
+{
+    int3 intId = id;
+    int3 gridOffset = round(gridDisplacement);
+    uint3 targetId = intId + gridOffset;
+    if (targetId.x >= 0 && targetId.x < resolution &&
+        targetId.y >= 0 && targetId.y < resolution &&
+        targetId.z >= 0 && targetId.z < resolution)
+    {
+        uint coordsId = coords(id);
+        uint coordsTargetId = coords(targetId);
+        sdf[coordsTargetId] = snapshot[coordsId];
+        chunkColors[coordsTargetId] = colors[coordsId];
+    }
+}
+
+[numthreads(512,1,1)]
+void ClearData(uint3 id : SV_DispatchThreadID)
+{
+    snapshot[id.x] = 0;
+    colors[id.x] = float3(0,0,0);
+    overlaps[id.x] = 0;
+}
+
+[numthreads(512,1,1)]
+void Normalize(uint3 id : SV_DispatchThreadID)
+{
+    uint overlapsCount = overlaps[id.x];
+    if (overlapsCount != 0)
+    {
+        snapshot[id.x] /= overlapsCount;
+        colors[id.x] /= overlapsCount;
+    }
+    else
+    {
+        snapshot[id.x] = voxelSpacing;
+    }
+}

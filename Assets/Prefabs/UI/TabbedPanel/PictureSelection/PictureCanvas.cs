@@ -4,7 +4,7 @@ using UnityEngine;
 using System.IO;
 using UnityEngine.UI;
 
-public class PictureCanvas : MonoBehaviour, IResizable
+public class PictureCanvas : MonoBehaviour, IResizable, IMovable
 {
     [SerializeField]
     private Text picName;
@@ -75,5 +75,15 @@ public class PictureCanvas : MonoBehaviour, IResizable
     public void SetScale(Vector3 scale)
     {
         transform.localScale = scale;
+    }
+
+    public void SetPosition(Vector3 pos)
+    {
+
+    }
+
+    public void SetRotation(Quaternion rot)
+    {
+
     }
 }

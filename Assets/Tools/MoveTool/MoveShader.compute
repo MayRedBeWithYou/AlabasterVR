@@ -1,0 +1,132 @@
+﻿// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel PrepareMoveData
+#pragma kernel ApplyMoveData
+
+
+struct MoveData
+{
+    uint3 from;
+    float3 gradient;
+    float3 rGradient;
+    float3 gGradient;
+    float3 bGradient;
+};
+
+RWStructuredBuffer<float> sdf;
+RWStructuredBuffer<float3> colors;
+
+//it is the same buffer, but accessed differently
+AppendStructuredBuffer<MoveData> workBufferIn;
+StructuredBuffer<MoveData> workBufferOut;
+
+
+float3 offset;
+uint resolution;
+StructuredBuffer<uint> entries;
+float voxelSpacing;
+float toolRadius;
+float chunkSize;
+float3 toolCenter;
+
+
+uint coords(uint3 id)
+{
+    return id.z * resolution * resolution + id.y * resolution + id.x;
+}
+
+float3 realPos(uint3 id)
+{
+    float3 ids = id;
+    float res = resolution - 1;
+    ids = id / res;
+    return ids * chunkSize;
+}
+
+float3 getSdfGradient(uint3 id)
+{
+    float dx = sdf[coords(uint3(id.x - 1, id.y, id.z))] - sdf[coords(uint3(id.x + 1, id.y, id.z))];
+    float dy = sdf[coords(uint3(id.x, id.y - 1, id.z))] - sdf[coords(uint3(id.x, id.y + 1, id.z))];
+    float dz = sdf[coords(uint3(id.x, id.y, id.z - 1))] - sdf[coords(uint3(id.x, id.y, id.z + 1))];
+    float3 gradient = { dx,dy,dz };
+    gradient /= (voxelSpacing * 3);
+    return gradient;
+}
+
+float3 getRGradient(uint3 id)
+{
+    float dx = colors[coords(uint3(id.x - 1, id.y, id.z))].r - colors[coords(uint3(id.x + 1, id.y, id.z))].r;
+    float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].r - colors[coords(uint3(id.x, id.y + 1, id.z))].r;
+    float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].r - colors[coords(uint3(id.x, id.y, id.z + 1))].r;
+    float3 gradient = { dx,dy,dz };
+    gradient /= (voxelSpacing * 3);
+    return gradient;
+}
+
+float3 getGGradient(uint3 id)
+{
+    float dx = colors[coords(uint3(id.x - 1, id.y, id.z))].g - colors[coords(uint3(id.x + 1, id.y, id.z))].g;
+    float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].g - colors[coords(uint3(id.x, id.y + 1, id.z))].g;
+    float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].g - colors[coords(uint3(id.x, id.y, id.z + 1))].g;
+    float3 gradient = { dx,dy,dz };
+    gradient /= (voxelSpacing * 3);
+    return gradient;
+}
+
+float3 getBGradient(uint3 id)
+{
+    float dx = colors[coords(uint3(id.x - 1, id.y, id.z))].b - colors[coords(uint3(id.x + 1, id.y, id.z))].b;
+    float dy = colors[coords(uint3(id.x, id.y - 1, id.z))].b - colors[coords(uint3(id.x, id.y + 1, id.z))].b;
+    float dz = colors[coords(uint3(id.x, id.y, id.z - 1))].b - colors[coords(uint3(id.x, id.y, id.z + 1))].b;
+    float3 gradient = { dx,dy,dz };
+    gradient /= (voxelSpacing * 3);
+    return gradient;
+}
+
+[numthreads(8, 8, 8)]
+void PrepareMoveData(uint3 id : SV_DispatchThreadID)
+{
+    float3 displacement = realPos(id) - toolCenter;
+    float val = dot(displacement, displacement) - (toolRadius * toolRadius);
+    if (val < 0) //inside cursor
+    {
+        MoveData data;
+        data.from = id;
+        data.gradient = getSdfGradient(id);
+        data.rGradient = getRGradient(id);
+        data.gGradient = getGGradient(id);
+        data.bGradient = getBGradient(id);
+        float ratio = dot(displacement, displacement) / (toolRadius * toolRadius);
+        data.gradient = lerp(data.gradient, float3(0, 0, 0), ratio);
+        data.rGradient = lerp(data.rGradient, float3(0, 0, 0), ratio);
+        data.gGradient = lerp(data.gGradient, float3(0, 0, 0), ratio);
+        data.bGradient = lerp(data.bGradient, float3(0, 0, 0), ratio);
+        workBufferIn.Append(data);
+    }
+}
+
+[numthreads(512, 1, 1)]
+void ApplyMoveData(uint3 id : SV_DispatchThreadID)
+{
+    if (id.x < entries[0])
+    {
+        MoveData data;
+        data = workBufferOut[id.x];
+        float value = sdf[coords(data.from)] + dot(offset, data.gradient);
+        value = clamp(-voxelSpacing, voxelSpacing, value);
+        sdf[coords(data.from)] = value;
+
+        float3 outColor;
+
+        value = colors[coords(data.from)].r + dot(offset, data.rGradient);
+        value = clamp(0, 1, value);
+        outColor.r = value;
+        value = colors[coords(data.from)].g + dot(offset, data.gGradient);
+        value = clamp(0, 1, value);
+        outColor.g = value;
+        value = colors[coords(data.from)].b + dot(offset, data.bGradient);
+        value = clamp(0, 1, value);
+        outColor.b = value;
+
+        colors[coords(data.from)] = outColor;
+    }
+}

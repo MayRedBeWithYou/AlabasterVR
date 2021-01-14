@@ -44,6 +44,13 @@ public class LayerItem : MonoBehaviour
         LayerManager.Instance.RemoveLayer(Layer);
     }
 
+    public void ShowSettings()
+    {
+        LayerSettings settings = UIController.Instance.ShowLayerSettings();
+        settings.closeButton.onClick.AddListener(() => UIController.Instance.ShowTabbedPanelMenu());
+        settings.layer = _layer;
+    }
+
     public void ShowKeyboard()
     {
         Keyboard keyboard = Keyboard.Show(Layer.name);
