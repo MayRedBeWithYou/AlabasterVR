@@ -5,9 +5,11 @@
 RWStructuredBuffer<float> sdf;
 RWStructuredBuffer<float3> colors;
 float3 color;
+
+float4x4 voxelToCursorCoords;
+
 float radius;
 float chunkSize;
-float3 position;
 uint resolution;
 float voxelSpacing;
 
@@ -26,8 +28,8 @@ void AddMaterial (uint3 id : SV_DispatchThreadID)
 {
     uint arrCoords = coords(id);
     float sdfVal = sdf[arrCoords];
-    float3 displacement = realPos(id) - position;
-    float val = length(displacement) - radius;//dot(displacement, displacement) - (radius * radius);
+    float3 transformedPoint = mul(voxelToCursorCoords, float4(realPos(id), 1)).xyz;
+    float val = length(transformedPoint) - radius;
     val = clamp(val, -voxelSpacing, voxelSpacing);
     sdf[arrCoords] = min(val, sdfVal);
     if (val < voxelSpacing)
@@ -41,8 +43,8 @@ void RemoveMaterial(uint3 id : SV_DispatchThreadID)
 {
     uint arrCoords = coords(id);
     float sdfVal = sdf[arrCoords];
-    float3 displacement = realPos(id) - position;
-    float val = length(displacement) - radius;
+    float3 transformedPoint = mul(voxelToCursorCoords, float4(realPos(id), 1)).xyz;
+    float val = length(transformedPoint) - radius;
     val = clamp(val, -voxelSpacing, voxelSpacing);
     sdf[arrCoords] = max(-val, sdfVal);
 }

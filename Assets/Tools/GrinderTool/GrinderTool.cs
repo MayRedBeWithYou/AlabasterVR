@@ -29,9 +29,6 @@ public class GrinderTool : Tool
 
     public Color color;
 
-    //[HideInInspector]
-    //public SphericalCursor cursor;
-
     public bool isAdding = true;
 
     public bool isWorking = false;
@@ -103,21 +100,9 @@ public class GrinderTool : Tool
             activeColorPicker.onValueChanged.AddListener((c) => color = c);
         }
     }
-    IEnumerator RotateLayer(Layer layer, Vector3 point, Vector3 axis)
-    {
-        while (true)
-        {
-            layer.transform.RotateAround(point, axis, 1.0f);
-            yield return new WaitForSeconds(0.016f);
-        }
-    }
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.U))
-        {
-            var coroutine = RotateLayer(LayerManager.Instance.ActiveLayer, transform.position, cursor.transform.position - transform.position);
-            StartCoroutine(coroutine);
-        }
         if (upButton.IsPressed)
         {
             cursor.IncreaseSize();
@@ -126,9 +111,9 @@ public class GrinderTool : Tool
         {
             cursor.DecreaseSize();
         }
-        cursor.UpdateActiveChunks();
         if (isWorking)
         {
+            cursor.UpdateActiveChunks();
             if (trigger.Value <= 0.2)
             {
                 isWorking = false;
@@ -187,24 +172,19 @@ public class GrinderTool : Tool
         shader.SetFloat("chunkSize", activeLayer.Spacing);
         shader.SetInt("resolution", activeLayer.ChunkResolution);
         shader.SetFloat("voxelSpacing", LayerManager.Instance.VoxelSpacing);
-        shader.SetFloat("radius", cursor.Size * (1f / activeLayer.transform.localScale.x)); //Layer scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetFloat("radius", cursor.Size); 
     }
 
     private void PerformAction()
     {
         var activeLayer = LayerManager.Instance.ActiveLayer;
         int kernel = isAdding ? AddMaterialKernel : RemoveMaterialKernel;
-        shader.SetFloat("radius", cursor.Size * (1f / activeLayer.transform.localScale.x)); //Layer scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetFloat("radius", cursor.Size);
         shader.SetVector("color", new Vector3(color.r, color.g, color.b));
-        var cursorMat = cursor.transform.worldToLocalMatrix;//cursor.transform.worldToLocalMatrix;
-        //cursorMat.SetColumn(0, cursorMat.GetColumn(0).normalized);
-        //cursorMat.SetColumn(1, cursorMat.GetColumn(1).normalized);
-        //cursorMat.SetColumn(2, cursorMat.GetColumn(2).normalized);
-
-
+        var cursorMat = cursor.transform.worldToLocalMatrix;
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
-            Matrix4x4 voxelToCursorCoords = cursorMat * chunk.transform.localToWorldMatrix;//cursor.transform.worldToLocalMatrix * chunk.transform.localToWorldMatrix;
+            Matrix4x4 voxelToCursorCoords = cursorMat * chunk.transform.localToWorldMatrix;
             shader.SetMatrix("voxelToCursorCoords", voxelToCursorCoords);
             shader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
             shader.SetBuffer(kernel, "colors", chunk.voxels.ColorBuffer);
