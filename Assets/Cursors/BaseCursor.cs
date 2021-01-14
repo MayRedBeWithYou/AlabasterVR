@@ -42,7 +42,7 @@ public abstract class BaseCursor : MonoBehaviour
     }
     public void SetSizeToDefault()
     {
-        Size = (MaximalSize - MinimalSize) * 0.5f;
+        Size = (MaximalSize - MinimalSize) * 0.3f;
     }
     public float SizeChangeSpeed = 0.001f;
 

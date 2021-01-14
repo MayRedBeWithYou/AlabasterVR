@@ -35,6 +35,7 @@ public class UIController : MonoBehaviour
     public GameObject LeftOverlay;
     public GameObject LayerSettingsPrefab;
     public GameObject LightSettingsPrefab;
+    public GameObject PotteryUIPrefab;
 
     private Keyboard _activeKeyboard = null;
     private MainMenu _activeMainMenu = null;
@@ -179,6 +180,21 @@ public class UIController : MonoBehaviour
         _activeLeftHandMenu = CreateUI(LightSettingsPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
         return _activeLeftHandMenu.GetComponent<LightSettings>();
     }
+
+    public PotteryUI ShowPotteryUI()
+    {
+        if (_activeLeftHandMenu != null)
+        {
+            _activeLeftHandMenu.SetActive(false);
+            Destroy(_activeLeftHandMenu);
+            _activeLeftHandMenu = null;
+        }
+
+        _activeLeftHandMenu = CreateUI(PotteryUIPrefab, LeftHandMenuTransform.position, LeftHandMenuTransform.rotation, LeftHandMenuTransform);
+        _activeLeftHandMenu.transform.localPosition += new Vector3(0f, -0.08f, 0f);
+        return _activeLeftHandMenu.GetComponent<PotteryUI>();
+    }
+
 
     public ColorPicker ShowColorPicker(Color color)
     {

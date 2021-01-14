@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cursorPrefab: {fileID: 126633759883351933, guid: 7598524e3a8122348b8f375bc20007e2,
     type: 3}
-  defaultCursorColor: {r: 1, g: 0, b: 0, a: 0}
+  defaultCursorColor: {r: 1, g: 0, b: 0, a: 1}
   toolName: Grinder
   description: BlaBlabla
   sprite: {fileID: 0}

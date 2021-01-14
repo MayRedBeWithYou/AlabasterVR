@@ -16,21 +16,16 @@ public class MaterialTool : Tool
 
     public ButtonHandler upButton;
     public ButtonHandler downButton;
+    public ButtonHandler leftButton;
+    public ButtonHandler rightButton;
 
     [Header("Cursor")]
     public Color addMaterialColor;
     public Color removeMaterialColor;
 
-    public ComputeShader shader;
-    private int AddMaterialKernel;
-    private int RemoveMaterialKernel;
-
     private ColorPicker activeColorPicker;
 
     public Color color;
-
-    //[HideInInspector]
-    //public SphericalCursor cursor;
 
     public bool isAdding = true;
 
@@ -39,6 +34,29 @@ public class MaterialTool : Tool
     public Dictionary<Chunk, float[]> beforeEdit;
 
     public Dictionary<Chunk, float[]> beforeColor;
+
+    public List<MaterialCursor> materialCursorPrefabs;
+
+    [HideInInspector]
+    public List<MaterialCursor> materialCursors;
+
+    [SerializeField]
+    private MaterialCursor selectedCursor;
+
+    public MaterialCursor SelectedCursor
+    {
+        get => selectedCursor;
+        set
+        {
+            foreach (MaterialCursor cursor in materialCursors)
+            {
+                cursor.Disable();
+            }
+            selectedCursor = value;
+            SyncCursorColor();
+            selectedCursor.Enable();
+        }
+    }
 
     public override void Enable()
     {
@@ -49,20 +67,13 @@ public class MaterialTool : Tool
 
             positionButton.OnButtonDown += PositionButton_OnButtonDown;
             positionButton.OnButtonUp += PositionButton_OnButtonUp;
-            base.Enable();
+            leftButton.OnButtonDown += PrevCursor;
+            rightButton.OnButtonDown += NextCursor;
+
+            SelectedCursor?.Enable();
+            gameObject.SetActive(true);
         }
     }
-
-    private void PositionButton_OnButtonDown(XRController controller)
-    {
-        cursor.transform.parent = null;
-    }
-
-    private void PositionButton_OnButtonUp(XRController controller)
-    {
-        cursor.transform.parent = ToolController.Instance.rightController.transform;
-    }
-
 
     public override void Disable()
     {
@@ -71,22 +82,38 @@ public class MaterialTool : Tool
         toggleButton.OnButtonDown -= ToggleButtonHandler;
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
         positionButton.OnButtonUp -= PositionButton_OnButtonUp;
+        SelectedCursor.Disable();
 
         if (activeColorPicker != null && ToolController.Instance.SelectedTool != this) activeColorPicker.Close();
-        base.Disable();
+        gameObject.SetActive(false);
+    }
+
+    private void PositionButton_OnButtonDown(XRController controller)
+    {
+        selectedCursor.transform.parent = null;
+    }
+
+    private void PositionButton_OnButtonUp(XRController controller)
+    {
+        selectedCursor.transform.parent = ToolController.Instance.rightController.transform;
     }
 
     protected override void Awake()
     {
-        base.Awake();
+        materialCursors = new List<MaterialCursor>();
+        foreach (MaterialCursor cursor in materialCursorPrefabs)
+        {
+            MaterialCursor matCursor = Instantiate(cursor, ToolController.Instance.rightController.transform);
+            materialCursors.Add(matCursor);
+        }
+        if (selectedCursor == null) SelectedCursor = materialCursors[0];
         SyncCursorColor();
     }
     protected override void Start()
     {
-        base.Start();
-        AddMaterialKernel = shader.FindKernel("AddMaterial");
-        RemoveMaterialKernel = shader.FindKernel("RemoveMaterial");
-        InitializeShadersConstUniforms();
+        SetMinSize();
+        SetMaxSize();
+        foreach (MaterialCursor cursor in materialCursors) cursor.SetSizeToDefault();
     }
 
     private void SettingsButton_OnButtonDown(XRController controller)
@@ -107,13 +134,13 @@ public class MaterialTool : Tool
     {
         if (upButton.IsPressed)
         {
-            cursor.IncreaseSize();
+            SelectedCursor.IncreaseSize();
         }
         if (downButton.IsPressed)
         {
-            cursor.DecreaseSize();
+            SelectedCursor.DecreaseSize();
         }
-        cursor.UpdateActiveChunks();
+        SelectedCursor.UpdateActiveChunks();
         if (isWorking)
         {
             if (trigger.Value <= 0.2)
@@ -158,9 +185,10 @@ public class MaterialTool : Tool
             }
         }
     }
+
     private void SyncCursorColor()
     {
-        cursor.Color = isAdding ? new Color(0, 1, 0, 1) : new Color(1, 0, 0, 1);
+        selectedCursor.SetColor(isAdding ? addMaterialColor : removeMaterialColor);
     }
 
     private void ToggleButtonHandler(XRController controller)
@@ -168,24 +196,30 @@ public class MaterialTool : Tool
         isAdding = !isAdding;
         SyncCursorColor();
     }
-    private void InitializeShadersConstUniforms()
+
+    private void NextCursor(XRController controller)
     {
-        var activeLayer = LayerManager.Instance.ActiveLayer;
-        shader.SetFloat("chunkSize", activeLayer.Spacing);
-        shader.SetInt("resolution", activeLayer.ChunkResolution);
-        shader.SetFloat("voxelSpacing", LayerManager.Instance.VoxelSpacing);
-        shader.SetFloat("radius", cursor.Size * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        int index = materialCursors.IndexOf(SelectedCursor);
+        SelectedCursor = materialCursors[(index + 1) % materialCursors.Count];
+    }
+    private void PrevCursor(XRController controller)
+    {
+        int index = materialCursors.IndexOf(SelectedCursor);
+        index = (index - 1) % materialCursors.Count;
+        if (index < 0) index = materialCursors.Count - 1;
+        SelectedCursor = materialCursors[index];
     }
 
     private void PerformAction()
     {
         var activeLayer = LayerManager.Instance.ActiveLayer;
-        int kernel = isAdding ? AddMaterialKernel : RemoveMaterialKernel;
-        shader.SetFloat("radius", cursor.Size * (1f / activeLayer.transform.localScale.x)); //Scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
-        shader.SetVector("color", new Vector3(color.r, color.g, color.b));
+        int kernel = isAdding ? SelectedCursor.AddMaterialKernel : SelectedCursor.RemoveMaterialKernel;
+        ComputeShader shader = SelectedCursor.PrepareShader(color);
+        var cursorMat = SelectedCursor.transform.worldToLocalMatrix;
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
-            shader.SetVector("position", chunk.transform.worldToLocalMatrix.MultiplyPoint(cursor.transform.position));
+            Matrix4x4 voxelToCursorCoords = cursorMat * chunk.transform.localToWorldMatrix;
+            shader.SetMatrix("voxelToCursorCoords", voxelToCursorCoords);
             shader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
             shader.SetBuffer(kernel, "colors", chunk.voxels.ColorBuffer);
             shader.Dispatch(kernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
@@ -195,11 +229,11 @@ public class MaterialTool : Tool
 
     protected override void SetMaxSize()
     {
-        MaxSize = LayerManager.Instance.Spacing;
+        foreach (MaterialCursor cursor in materialCursors) cursor.SetMaximumSize(LayerManager.Instance.Spacing);
     }
 
     protected override void SetMinSize()
     {
-        MinSize = LayerManager.Instance.VoxelSpacing;
+        foreach (MaterialCursor cursor in materialCursors) cursor.SetMaximumSize(LayerManager.Instance.VoxelSpacing);
     }
 }

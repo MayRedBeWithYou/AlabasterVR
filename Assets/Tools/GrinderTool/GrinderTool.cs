@@ -29,9 +29,6 @@ public class GrinderTool : Tool
 
     public Color color;
 
-    //[HideInInspector]
-    //public SphericalCursor cursor;
-
     public bool isAdding = true;
 
     public bool isWorking = false;
@@ -175,14 +172,14 @@ public class GrinderTool : Tool
         shader.SetFloat("chunkSize", activeLayer.Spacing);
         shader.SetInt("resolution", activeLayer.ChunkResolution);
         shader.SetFloat("voxelSpacing", LayerManager.Instance.VoxelSpacing);
-        shader.SetFloat("radius", cursor.Size * (1f / activeLayer.transform.localScale.x)); //Layer scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetFloat("radius", cursor.Size); 
     }
 
     private void PerformAction()
     {
         var activeLayer = LayerManager.Instance.ActiveLayer;
         int kernel = isAdding ? AddMaterialKernel : RemoveMaterialKernel;
-        shader.SetFloat("radius", cursor.Size * (1f));// / activeLayer.transform.localScale.x)); //Layer scale is always uniform in all dimensions, so it does not matter which component of localScale we take.
+        shader.SetFloat("radius", cursor.Size);
         shader.SetVector("color", new Vector3(color.r, color.g, color.b));
         var cursorMat = cursor.transform.worldToLocalMatrix;
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
