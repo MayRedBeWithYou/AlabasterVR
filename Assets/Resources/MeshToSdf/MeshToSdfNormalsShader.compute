@@ -1,0 +1,150 @@
+﻿#pragma kernel CalculateDistance
+
+static const int numThreads = 8;
+
+RWStructuredBuffer<float> sdf;
+StructuredBuffer<float> inputTriangles;
+float4x4 modelMatrix;
+int numPointsPerAxis;
+int trianglesCount;
+float chunkSize;
+float sizeSquared;
+float maxValue;
+float3 boundsMin;
+float3 boundsMax;
+
+float3 GetVertexC(int index)
+{
+    int offset=9*index;
+    return float3(inputTriangles[offset],inputTriangles[offset+1],inputTriangles[offset+2]);
+}
+float3 GetVertexA(int index)
+{
+    int offset=9*index;
+    return float3(inputTriangles[offset+3],inputTriangles[offset+4],inputTriangles[offset+5]);
+}
+float3 GetVertexB(int index)
+{
+    int offset=9*index;
+    return float3(inputTriangles[offset+6],inputTriangles[offset+7],inputTriangles[offset+8]);
+}
+int coords(int3 id)
+{
+    return id.z * numPointsPerAxis * numPointsPerAxis + id.y * numPointsPerAxis + id.x;
+}
+bool InBounds(float3 P)
+{
+    return P.x>=boundsMin.x && P.y>=boundsMin.y && P.z>=boundsMin.z && P.x<=boundsMax.x && P.y<=boundsMax.y && P.z<=boundsMax.z;
+}
+float3 realPosExternal(int3 id)
+{
+    float res = numPointsPerAxis - 1;
+    float3 ids = float3(id) / res;
+    float4 pos=float4(ids * chunkSize,1);
+    return mul(modelMatrix,pos).xyz;
+}
+
+float3 NormalSquared(int index)
+{
+    float3 vertexA=GetVertexA(index);
+    return cross(GetVertexB(index) - vertexA, GetVertexC(index) - vertexA);
+}
+
+float3 Barycentric(float3 P, int index)
+{
+    //https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+    
+    float3 result=float3(0,0,0);
+
+    float3 vertexA=GetVertexA(index);
+    float3 v0 = GetVertexB(index) - vertexA;
+    float3 v1 = GetVertexC(index) - vertexA;
+    float3 v2 = P - vertexA;
+    
+    float d00 = dot(v0, v0);
+    float d01 = dot(v0, v1);
+    float d11 = dot(v1, v1);
+    float d20 = dot(v2, v0);
+    float d21 = dot(v2, v1);
+    float invDenominator = 1/(d00 * d11 - d01 * d01);
+    result.y = (d11 * d20 - d01 * d21) * invDenominator;
+    result.z = (d00 * d21 - d01 * d20) * invDenominator;
+    result.x = 1 - result.y - result.z;
+    return result;
+}
+float3 ProjectedPoint(float3 P, int index)
+{
+    float3 normal = NormalSquared(index);
+    return P - normal * (dot(normal, P - GetVertexA(index)) / dot(normal, normal));
+}
+
+float3 ClosestPointOnSegment(float3 projectedPoint,float3 A, float3 B)
+{
+    float3 v=B-A;
+    float3 w=projectedPoint-A;
+    float t=clamp(dot(v,w)/dot(v,v) ,0,1);
+    return A+v*t;
+}
+
+float3 ClosestPointOnTriangle(float3 projectedPoint, int index, float3 barMultipliers)
+    {
+        float3 result =float3(projectedPoint.x,projectedPoint.y,projectedPoint.z);
+        if (barMultipliers.x < 0)
+        {
+            result = ClosestPointOnSegment(projectedPoint, GetVertexB(index), GetVertexC(index));
+        }
+        if (barMultipliers.y < 0)
+        {
+            result = ClosestPointOnSegment(projectedPoint, GetVertexA(index), GetVertexC(index));
+        }
+        if (barMultipliers.z < 0)
+        {
+            result = ClosestPointOnSegment(projectedPoint, GetVertexA(index),  GetVertexB(index));
+        }
+        return result;
+    }
+
+[numthreads(numThreads, numThreads, numThreads)]
+void CalculateDistance(int3 id : SV_DispatchThreadID)
+{
+    float3 currentPosition = realPosExternal(id);
+    
+    float val = sizeSquared;
+    float3 t_projectedPoint=float3(0, 0, 0);
+    float3 t_vector3=float3(0, 0, 0);
+    float3 t_closestPoint=float3(0, 0, 0);
+    float t_val = val;
+
+    uint closestCounter=0;
+    uint insideCounter=0;
+
+    if(InBounds(currentPosition))
+    {
+        for (int j = 0; j < trianglesCount && val != 0; j++)
+        {
+            t_projectedPoint = ProjectedPoint(currentPosition, j);        
+            t_vector3 = Barycentric(t_projectedPoint, j);
+            t_closestPoint = ClosestPointOnTriangle(t_projectedPoint, j, t_vector3);
+            t_vector3=currentPosition - t_closestPoint;
+            t_val = dot(t_vector3,t_vector3);
+            t_vector3=NormalSquared(j);
+            if(t_val==val)
+            {
+                closestCounter++;
+                insideCounter= insideCounter+ int(dot(currentPosition - t_closestPoint,t_vector3) < 0);
+            }
+            if (t_val < val)
+            {
+                val = t_val;
+                closestCounter=1;
+                insideCounter=int(dot(currentPosition - t_closestPoint,t_vector3) < 0);
+            }
+        }
+    }
+    val = min(val, maxValue);
+    if(insideCounter>closestCounter/2)
+    {
+        val=-val;
+    }
+    sdf[coords(id)]=val;
+}

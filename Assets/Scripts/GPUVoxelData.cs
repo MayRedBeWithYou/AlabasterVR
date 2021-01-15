@@ -65,7 +65,7 @@ public class GPUVoxelData : IDisposable
 
     private void ResetVoxelsValues()
     {
-        VoxelBuffer.SetData(Enumerable.Repeat(0.01209677f, Volume).ToArray());
+        VoxelBuffer.SetData(Enumerable.Repeat(LayerManager.Instance.VoxelSpacing, Volume).ToArray());
         ColorBuffer.SetData(Enumerable.Repeat(1.0f, Volume * 3).ToArray());
     }
 
@@ -91,5 +91,16 @@ public class GPUVoxelData : IDisposable
             null,
             materialBlock
             );
+    }
+    public void InitializeFromArray(float[] values, float[] colors = null)
+    {
+        if (_voxelBuffer == null)
+        {
+            _voxelBuffer = new ComputeBuffer(Volume, sizeof(float));
+            _colorBuffer = new ComputeBuffer(Volume, sizeof(float) * 3);
+        }
+        VoxelBuffer.SetData(values);
+        if (colors != null) ColorBuffer.SetData(colors);
+        Initialized = true;
     }
 }

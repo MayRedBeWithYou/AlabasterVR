@@ -72,11 +72,12 @@ public class UIController : MonoBehaviour
             Vector3 lookDirection = cameraTransform.forward;
             lookDirection.y = 0;
             _activeMainMenu = CreateUI(MainMenuPrefab, cameraTransform.position + lookDirection.normalized * uiDistance, Quaternion.LookRotation(lookDirection, Vector3.up)).GetComponent<MainMenu>();
+            _activeMainMenu.OpenButton.onClick.AddListener(() => ShowLoadModel());
             _activeMainMenu.SaveButton.onClick.AddListener(() => ShowSaveModel());
-            _activeMainMenu.ImportButton.onClick.AddListener(() => ShowLoadModel());
+            _activeMainMenu.ImportButton.onClick.AddListener(() => ShowImportModel());
+            _activeMainMenu.ExportButton.onClick.AddListener(() => ShowExportModel());
         }
     }
-
     private void ShowToolSelectionMenu(XRController controller)
     {
         if (_activeLeftHandMenu)
@@ -239,6 +240,21 @@ public class UIController : MonoBehaviour
         return go.GetComponent<YesNoCancelPopup>();
     }
 
+    public FileExplorer ShowExportModel()
+    {
+        if (_activeMainMenu != null) _activeMainMenu.Close();
+        if (_activeFileExplorer != null) _activeFileExplorer.Close();
+        _activeFileExplorer = FileManager.ExportModel(PrepreparedFileExplorer());
+        return _activeFileExplorer;
+    }
+
+    public FileExplorer ShowImportModel()
+    {
+        if (_activeMainMenu != null) _activeMainMenu.Close();
+        if (_activeFileExplorer != null) _activeFileExplorer.Close();
+        _activeFileExplorer = FileManager.ImportModel(PrepreparedFileExplorer());
+        return _activeFileExplorer;
+    }
     public FileExplorer ShowSaveModel()
     {
         if (_activeMainMenu != null) _activeMainMenu.Close();
@@ -246,7 +262,6 @@ public class UIController : MonoBehaviour
         _activeFileExplorer = FileManager.SaveModel(PrepreparedFileExplorer());
         return _activeFileExplorer;
     }
-
     public FileExplorer ShowLoadModel()
     {
         if (_activeMainMenu != null) _activeMainMenu.Close();

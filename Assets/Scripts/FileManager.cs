@@ -7,8 +7,32 @@ using System.Text;
 using System.Globalization;
 public static class FileManager
 {
-    public static int precisionMultiplier = 100;
     public static FileExplorer SaveModel(FileExplorer script)
+    {
+        script.mode = FileExplorerMode.Save;
+        script.UpdateDirectory();
+        script.OnAccepted += (text) =>
+          {
+              if (System.String.IsNullOrWhiteSpace(text)) return;
+              JsonSerializer.Serialize(text);
+              script.Close();
+          };
+        return script;
+    }
+    public static FileExplorer LoadModel(FileExplorer script)
+    {
+        script.mode = FileExplorerMode.Open;
+        script.SetExtensionsArray(new string[] { ".abs" });
+        script.UpdateDirectory();
+        script.OnAccepted += (text) =>
+          {
+              if (System.String.IsNullOrWhiteSpace(text)) return;
+              JsonSerializer.Deserialize(text);
+              script.Close();
+          };
+        return script;
+    }
+    public static FileExplorer ExportModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Save;
         script.UpdateDirectory();
@@ -20,8 +44,7 @@ public static class FileManager
           };
         return script;
     }
-
-    public static FileExplorer LoadModel(FileExplorer script)
+    public static FileExplorer ImportModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Open;
         script.SetExtensionsArray(new string[] { ".obj" });
@@ -29,19 +52,17 @@ public static class FileManager
         script.OnAccepted += (text) =>
           {
               if (System.String.IsNullOrWhiteSpace(text)) return;
-              GPUMesh.GPUTriangle[] triangles = null;
               try
               {
-                  triangles = TranslateObjToModel(text);
+                  MeshToSdfGpu.TemporaryMesh mesh = TranslateObjToModel(text);
+                  MeshToSdfGpu.TranslateTrianglesToSdf(TranslateObjToModel(text), mesh.triangles.Length / 9, true);
               }
               catch
               {
                   UIController.Instance.ShowMessageBox("Model couldn't be loaded - incorrect file format");
-                  script.Close();
               }
               script.Close();
           };
-        //todo:meshtosdf
         return script;
     }
 
@@ -52,44 +73,33 @@ public static class FileManager
         script.UpdateDirectory();
         return script;
     }
-    private static GPUMesh.GPUTriangle[] TranslateObjToModel(string path)
+    private static MeshToSdfGpu.TemporaryMesh TranslateObjToModel(string path)
     {
         StreamReader streamReader = new StreamReader(path);
         List<int[]> trianglesIndices = new List<int[]>();
         List<Vector3> vertices = new List<Vector3>();
-        List<Vector3> normals = new List<Vector3>();
-
-        bool noVertexNormals = false;
         while (!streamReader.EndOfStream)
         {
             string current = streamReader.ReadLine();
             if (current.Length > 2)
             {
-                if (current.Substring(0, 2) == "vn")
-                {
-                    normals.Add(ParseToVector3(current));
-                }
-                else if (current[0] == 'v')
-                {
-                    vertices.Add(ParseToVector3(current));
-                }
-                else if (current[0] == 'f')
+                if (current[0] == 'f')
                 {
                     var temp = ParseToFace(current);
                     for (int i = 0; i < temp.Count / 3; i++)
                     {
-                        int[] triIndices = new int[6];
+                        int[] triIndices = new int[3];
                         for (int j = 0; j < 3; j++)
                         {
                             if (temp[3 * i + j].x > 0) triIndices[j] = temp[3 * i + j].x - 1;
-                            else triIndices[j] = vertices.Count - temp[3 * i + j].x;
-
-                            if (temp[3 * i + j].y > 0) triIndices[3 + j] = temp[3 * i + j].y - 1;
-                            else if (temp[3 * i + j].y < 0) triIndices[3 + j] = normals.Count - temp[3 * i + j].y;
-                            else noVertexNormals = true;
+                            else triIndices[j] = vertices.Count + temp[3 * i + j].x;
                         }
                         trianglesIndices.Add(triIndices);
                     }
+                }
+                else if (current[0] == 'v')
+                {
+                    if (current[1] == ' ') vertices.Add(ParseToVector3(current));
                 }
             }
         }
@@ -105,41 +115,36 @@ public static class FileManager
         }
         Vector3 diff = max - min;
         float meshDiameter = Mathf.Max(diff.x, diff.y, diff.z);
-        float scale = (LayerManager.Instance.RelativeModelSize * LayerManager.Instance.Size) / meshDiameter;
-        Vector3 centeringVector = (Vector3.one * (LayerManager.Instance.Size / 2)) - diff * scale / 2;
+        float x=(LayerManager.Instance.VoxelSpacing * (LayerManager.Instance.ChunkResolution - 3));
+        float tempSize = LayerManager.Instance.Size - x;
+        float scale = (LayerManager.Instance.RelativeModelSize * tempSize) / meshDiameter;
+        Vector3 sceneCenter = Vector3.one * (LayerManager.Instance.Size * 0.5f);
+        Vector3 centeringVector = sceneCenter - diff * scale * 0.5f;
         for (int i = 0; i < vertices.Count; i++)
         {
-            vertices[i] = vertices[i] - min;
+            vertices[i] -= min;
             vertices[i] *= scale;
             vertices[i] += centeringVector;
         }
+        min = centeringVector;
+        max = diff * scale + centeringVector;
+        Bounds boundsMine = new Bounds((min + max) * 0.5f, max - min);
 
-        if (noVertexNormals)
-        {
-            normals = new List<Vector3>(normals.Count);
-            for (int i = 0; i < trianglesIndices.Count; i++)
-            {
-                var tab = trianglesIndices[i];
-                Vector3 faceNormal = Vector3.Cross(vertices[tab[1]] - vertices[tab[0]], vertices[tab[2]] - vertices[tab[0]]).normalized;
-                normals[tab[3]] += faceNormal;
-                normals[tab[4]] += faceNormal;
-                normals[tab[5]] += faceNormal;
-            }
-        }
-        for (int i = 0; i < normals.Count; i++) normals[i] = normals[i].normalized;
-        GPUMesh.GPUTriangle[] result = new GPUMesh.GPUTriangle[trianglesIndices.Count];
-        for (int i = 0; i < result.Length; i++)
+        MeshToSdfGpu.bounds = new Bounds((min + max) * 0.5f, (max - min) + Vector3.one * LayerManager.Instance.VoxelSpacing * 4);
+        MeshToSdfGpu.TemporaryMesh result = new MeshToSdfGpu.TemporaryMesh();
+        result.triangles = new float[trianglesIndices.Count * 9];
+        for (int i = 0; i < trianglesIndices.Count; i++)
         {
             var tab = trianglesIndices[i];
-            result[i] = new GPUMesh.GPUTriangle()
-            {
-                vertexA = vertices[tab[0]],
-                vertexB = vertices[tab[1]],
-                vertexC = vertices[tab[2]],
-                normA = normals[tab[3]],
-                normB = normals[tab[4]],
-                normC = normals[tab[5]]
-            };
+            result.triangles[9 * i] = vertices[tab[2]].x;
+            result.triangles[9 * i + 1] = vertices[tab[2]].y;
+            result.triangles[9 * i + 2] = vertices[tab[2]].z;
+            result.triangles[9 * i + 3] = vertices[tab[0]].x;
+            result.triangles[9 * i + 4] = vertices[tab[0]].y;
+            result.triangles[9 * i + 5] = vertices[tab[0]].z;
+            result.triangles[9 * i + 6] = vertices[tab[1]].x;
+            result.triangles[9 * i + 7] = vertices[tab[1]].y;
+            result.triangles[9 * i + 8] = vertices[tab[1]].z;
         }
         return result;
     }
@@ -242,8 +247,8 @@ public static class FileManager
         sw.WriteLine("#faces count: " + triangles.Count + Environment.NewLine);
         sw.Close();
 
-        if (!nameChanged) UIController.Instance.ShowMessageBox("Model saved as " + Path.GetFileName(tempName));
-        else UIController.Instance.ShowMessageBox($"File {Path.GetFileName(path)}.obj already existed.\nModel saved as {Path.GetFileName(tempName)}.");
+        if (!nameChanged) UIController.Instance.ShowMessageBox("Model exported to " + Path.GetFileName(tempName));
+        else UIController.Instance.ShowMessageBox($"File {Path.GetFileName(path)}.obj already existed.\nModel exported to {Path.GetFileName(tempName)}.");
     }
 
     private static Vector3 ParseToVector3(string text)
@@ -267,11 +272,23 @@ public static class FileManager
         tmp = text.Split(sep, StringSplitOptions.RemoveEmptyEntries);
         for (int i = 1; i < tmp.Length; i++)
         {
-            string s1 = tmp[i].Substring(0, tmp[i].IndexOf('/'));
-            string s2 = tmp[i].Substring(tmp[i].LastIndexOf('/') + 1);
             int v, vn;
+            int firstInd = tmp[i].IndexOf('/');
+            int lastInd = tmp[i].LastIndexOf('/');
+
+            string s1 = tmp[i].Substring(0, firstInd);
             int.TryParse(s1, out v);
-            int.TryParse(s2, out vn);
+
+            if (firstInd == lastInd)
+            {
+                vn = 0;
+            }
+            else
+            {
+                string s2 = tmp[i].Substring(lastInd + 1);
+                int.TryParse(s2, out vn);
+            }
+
             if (result.Count < 3) result.Add(new Vector2Int(v, vn));
             else
             {
@@ -293,21 +310,10 @@ public static class FileManager
         {
             ObjVertex tmp = (ObjVertex)obj;
             return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
-            /*int x = (int)(precisionMultiplier * coord.x);
-            int y = (int)(precisionMultiplier * coord.y);
-            int z = (int)(precisionMultiplier * coord.z);
-            int x2 = (int)(precisionMultiplier * tmp.coord.x);
-            int y2 = (int)(precisionMultiplier * tmp.coord.y);
-            int z2 = (int)(precisionMultiplier * tmp.coord.z);
-            return x.Equals(x2) && y.Equals(y2) && z.Equals(z2);*/
         }
         public override int GetHashCode()
         {
             return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
-            /*int x = (int)(precisionMultiplier * coord.x);
-            int y = (int)(precisionMultiplier * coord.y);
-            int z = (int)(precisionMultiplier * coord.z);
-            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();*/
         }
         public override string ToString()
         {
@@ -342,21 +348,10 @@ public static class FileManager
         {
             float3 tmp = (float3)obj;
             return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
-            /*int x = (int)(precisionMultiplier * coord.x);
-            int y = (int)(precisionMultiplier * coord.y);
-            int z = (int)(precisionMultiplier * coord.z);
-            int x2 = (int)(precisionMultiplier * tmp.coord.x);
-            int y2 = (int)(precisionMultiplier * tmp.coord.y);
-            int z2 = (int)(precisionMultiplier * tmp.coord.z);
-            return x.Equals(x2) && y.Equals(y2) && z.Equals(z2);*/
         }
         public override int GetHashCode()
         {
             return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
-            /*int x = (int)(precisionMultiplier * coord.x);
-            int y = (int)(precisionMultiplier * coord.y);
-            int z = (int)(precisionMultiplier * coord.z);
-            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();*/
         }
         public override string ToString()
         {

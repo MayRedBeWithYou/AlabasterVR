@@ -933,7 +933,7 @@ MonoBehaviour:
   _size: 2
   _resolution: 8
   _chunkResolution: 32
-  _relativeModelSize: 0.3
+  _relativeModelSize: 0.5
   VoxelSpacing: 0
   Metallic: 0.1
   Smoothness: 0.3

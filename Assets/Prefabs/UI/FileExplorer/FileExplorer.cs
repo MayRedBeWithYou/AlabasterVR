@@ -122,7 +122,7 @@ public class FileExplorer : MonoBehaviour
             IEnumerable<FileInfo> preselectedFiles = files.Where(f => fileExtensions.Contains(f.Extension));
 
             FileType type = FileType.Picture;
-            if (fileExtensions[0] == ".obj") type = FileType.Model;
+            if (fileExtensions[0] == ".obj" || fileExtensions[0] == ".abs") type = FileType.Model;
 
             foreach (var f in preselectedFiles)
             {

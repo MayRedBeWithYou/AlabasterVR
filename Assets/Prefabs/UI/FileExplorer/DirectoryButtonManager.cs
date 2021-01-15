@@ -25,8 +25,8 @@ public class DirectoryButtonManager : MonoBehaviour
         button.enabled = true;
         if (directoryInfo != null)
         {
-            if (prefix) buttonText.text = $"> {directoryInfo.Name}";
-            else buttonText.text = directoryInfo.Name;
+            if (prefix) buttonText.text = $"> {Wraper(directoryInfo.Name)}";
+            else buttonText.text = Wraper(directoryInfo.Name);
         }
         else buttonText.text = "\\";
         dirInfo = directoryInfo;
@@ -34,5 +34,10 @@ public class DirectoryButtonManager : MonoBehaviour
     public void OnClick()
     {
         mainScript.ChangeDirectory(dirInfo);
+    }
+    string Wraper(string text)
+    {
+        if(text.Length>8)return text.Substring(0,6)+"..";
+        else return text;
     }
 }

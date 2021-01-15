@@ -10,12 +10,11 @@ public class MainMenu : MonoBehaviour
     private YesNoCancelPopup popup;
 
     public Button NewFileButton;
-
+    public Button OpenButton;
     public Button SaveButton;
 
     public Button ImportButton;
-
-    public Button OptionsButton;
+    public Button ExportButton;
 
     public Button ExitButton;
 

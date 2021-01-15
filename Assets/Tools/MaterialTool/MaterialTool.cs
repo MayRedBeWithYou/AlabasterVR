@@ -82,6 +82,9 @@ public class MaterialTool : Tool
         toggleButton.OnButtonDown -= ToggleButtonHandler;
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
         positionButton.OnButtonUp -= PositionButton_OnButtonUp;
+
+        leftButton.OnButtonDown -= PrevCursor;
+        rightButton.OnButtonDown -= NextCursor;
         SelectedCursor.Disable();
 
         if (activeColorPicker != null && ToolController.Instance.SelectedTool != this) activeColorPicker.Close();

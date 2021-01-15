@@ -27,7 +27,7 @@ public class Chunk : MonoBehaviour, IDisposable
     private MeshRenderer _renderer;
     private MeshCollider _collider;
     private BoxCollider _boxCollider;
-
+    public Bounds ColliderBounds { get {return _boxCollider.bounds;}  }
     public GPUVoxelData voxels;
 
     public GPUMesh gpuMesh;
