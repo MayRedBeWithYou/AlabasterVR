@@ -78,7 +78,6 @@ public class UIController : MonoBehaviour
             _activeMainMenu.ExportButton.onClick.AddListener(() => ShowExportModel());
         }
     }
-
     private void ShowToolSelectionMenu(XRController controller)
     {
         if (_activeLeftHandMenu)

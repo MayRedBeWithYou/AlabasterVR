@@ -16,8 +16,6 @@ public class MainMenu : MonoBehaviour
     public Button ImportButton;
     public Button ExportButton;
 
-    public Button OptionsButton;
-
     public Button ExitButton;
 
     public void NewFile()
