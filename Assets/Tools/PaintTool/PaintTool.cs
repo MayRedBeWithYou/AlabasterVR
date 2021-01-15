@@ -17,19 +17,24 @@ public class PaintTool : Tool
 
     private ColorPicker activeColorPicker;
 
+    [SerializeField]
+    protected Color defaultColor;
+    [Header("Parameters"), SerializeField]
+    protected Color _color;
 
-    [Header("Parameters")]
-    public Color color;
-
-    [Space(10f)]
-    public GameObject cursorPrefab;
+    public Color Color
+    {
+        get => _color;
+        set
+        {
+            _color = value;
+            cursor.Color = value;
+        }
+    }
 
     public ComputeShader shader;
 
     int shaderKernel;
-
-    [HideInInspector]
-    public CursorSDF cursor;
 
     public bool isWorking = false;
     public Dictionary<Chunk, float[]> beforeColor;
@@ -38,9 +43,6 @@ public class PaintTool : Tool
     {
         if (!gameObject.activeSelf)
         {
-            if (cursor != null)
-                cursor.ToggleRenderer(true);
-
             colorButton.OnButtonDown += ColorButton_OnColorDown;
 
             positionButton.OnButtonDown += PositionButton_OnButtonDown;
@@ -51,7 +53,6 @@ public class PaintTool : Tool
 
     public override void Disable()
     {
-        cursor.ToggleRenderer(false);
         colorButton.OnButtonDown -= ColorButton_OnColorDown;
 
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
@@ -61,21 +62,26 @@ public class PaintTool : Tool
         base.Disable();
     }
 
-    public void Awake()
+    protected override void Awake()
     {
-        cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
-        cursor.gameObject.name = "PaintCursor";
+        base.Awake();
+        Color = defaultColor;
+    }
+
+    protected override void Start()
+    {
+        base.Start();
     }
 
     private void Update()
     {
         if (upButton.IsPressed)
         {
-            cursor.IncreaseRadius();
+            cursor.IncreaseSize();
         }
         if (downButton.IsPressed)
         {
-            cursor.DecreaseRadius();
+            cursor.DecreaseSize();
         }
         if (isWorking)
         {
@@ -136,8 +142,8 @@ public class PaintTool : Tool
         }
         else
         {
-            activeColorPicker = UIController.Instance.ShowColorPicker(color);
-            activeColorPicker.onValueChanged.AddListener((c) => color = c);
+            activeColorPicker = UIController.Instance.ShowColorPicker(Color);
+            activeColorPicker.onValueChanged.AddListener((c) => Color = c);
         }
     }
 
@@ -146,8 +152,8 @@ public class PaintTool : Tool
         var activeLayer = LayerManager.Instance.ActiveLayer;
         shader.SetFloat("chunkSize", activeLayer.Spacing);
         shader.SetInt("resolution", activeLayer.ChunkResolution);
-        shader.SetFloat("radius", cursor.radius * (1f / activeLayer.transform.localScale.x)); //Scale is uniform in all directions, so it does not matter which component of vector we take.
-        shader.SetVector("color", new Vector3(color.r, color.g, color.b));
+        shader.SetFloat("radius", cursor.Size * (1f / activeLayer.transform.localScale.x)); //Scale is uniform in all directions, so it does not matter which component of vector we take.
+        shader.SetVector("color", new Vector3(Color.r, Color.g, Color.b));
         foreach (Chunk chunk in LayerManager.Instance.activeChunks)
         {
             shaderKernel = shader.FindKernel("CSMain");
@@ -156,5 +162,13 @@ public class PaintTool : Tool
             shader.Dispatch(shaderKernel, chunk.resolution / 8, chunk.resolution / 8, chunk.resolution / 8);
             chunk.gpuMesh.UpdateVertexBuffer(chunk.voxels);
         }
+    }
+    protected override void SetMaxSize()
+    {
+        MaxSize = LayerManager.Instance.Spacing;
+    }
+    protected override void SetMinSize()
+    {
+        MinSize = LayerManager.Instance.VoxelSpacing;
     }
 }

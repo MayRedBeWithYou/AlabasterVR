@@ -43,6 +43,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6cad72d1ea2f274c809d651c4bbcc57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cursorPrefab: {fileID: 623986724286308406, guid: c9fec2d5a21dd6542a142e354ae76fc7,
+    type: 3}
+  defaultCursorColor: {r: 0, g: 0, b: 0, a: 1}
   toolName: Material
   description: Tool for adding and removing material
   sprite: {fileID: 21300000, guid: b2d0a19bcee3ee54cb4270f50a6ea3bd, type: 3}
@@ -52,12 +55,16 @@ MonoBehaviour:
   positionButton: {fileID: 11400000, guid: db883316f24c250439a6499fa095ff03, type: 2}
   upButton: {fileID: 11400000, guid: 1d53c45652a41a942bffd2f14ec20d4e, type: 2}
   downButton: {fileID: 11400000, guid: fbb50b332d570d349bf2c933ecb23a45, type: 2}
-  addMaterial: {fileID: 2100000, guid: 9e9b8de4449c2084b87d70a7942f741a, type: 2}
-  removeMaterial: {fileID: 2100000, guid: 2f527c5923696354980882ead218fac6, type: 2}
-  cursorPrefab: {fileID: 7559797350236629890, guid: 921c8dfe9ab7ed44189602844faa5865,
-    type: 3}
-  shader: {fileID: 7200000, guid: 89cb501b611c6e54d83620f7127ef397, type: 3}
+  leftButton: {fileID: 11400000, guid: accd9e48977a4774aad6486f22878d29, type: 2}
+  rightButton: {fileID: 11400000, guid: f7add6caf7164724c81d35f9fd88d9a1, type: 2}
+  addMaterialColor: {r: 0, g: 1, b: 0, a: 1}
+  removeMaterialColor: {r: 1, g: 0, b: 0, a: 1}
   color: {r: 1, g: 1, b: 1, a: 1}
-  cursor: {fileID: 0}
   isAdding: 1
   isWorking: 0
+  materialCursorPrefabs:
+  - {fileID: 1227527577604548498, guid: 2d694b65720ad284d8ecb8856335a774, type: 3}
+  - {fileID: 516133176580738600, guid: 5ac02cf3adcc4ba46953b37bedb0a193, type: 3}
+  - {fileID: -6828218937377536577, guid: 54786754df06b0149a08ca6107e31b84, type: 3}
+  materialCursors: []
+  selectedCursor: {fileID: 0}

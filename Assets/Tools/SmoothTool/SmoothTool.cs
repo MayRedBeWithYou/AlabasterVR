@@ -26,19 +26,13 @@ public class SmoothTool : Tool
     public AxisHandler trigger;
     public ComputeShader SmoothShader;
 
-    public GameObject cursorPrefab;
-
     private ComputeBuffer workBuffer;
     private ComputeBuffer countBuffer;
 
-    private int res;
     private int volume;
 
     private int populateWorkBufferKernel;
     private int applyWorkBufferKernel;
-
-    [HideInInspector]
-    public CursorSDF cursor;
 
     public bool isWorking = false;
     public Dictionary<Chunk, float[]> beforeEdit;
@@ -48,10 +42,6 @@ public class SmoothTool : Tool
     {
         if (!gameObject.activeSelf)
         {
-            if (cursor != null)
-            {
-                cursor.ToggleRenderer(true);
-            }
             positionButton.OnButtonDown += PositionButton_OnButtonDown;
             positionButton.OnButtonUp += PositionButton_OnButtonUp;
             base.Enable();
@@ -60,24 +50,23 @@ public class SmoothTool : Tool
 
     public override void Disable()
     {
-        if (cursor != null)
-        {
-            cursor.ToggleRenderer(false);
-        }
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
         positionButton.OnButtonUp -= PositionButton_OnButtonUp;
         base.Disable();
     }
 
-    public void Start()
+    protected override void Awake()
     {
+        base.Awake();
+    }
+    protected override void Start()
+    {
+        base.Start();
         snapshot = GameObject.Find("Snapshot").GetComponent<SnapshotController>();
-        res = LayerManager.Instance.ChunkResolution;
+        int res = LayerManager.Instance.ChunkResolution;
         volume = res * res * res;
         countBuffer = new ComputeBuffer(1, sizeof(uint), ComputeBufferType.IndirectArguments);
         workBuffer = new ComputeBuffer(volume, sizeof(float) * 4 + sizeof(uint) * 3, ComputeBufferType.Append);
-        cursor = Instantiate(cursorPrefab, ToolController.Instance.rightController.transform).GetComponent<CursorSDF>();
-        cursor.gameObject.name = "SmoothCursor";
         populateWorkBufferKernel = SmoothShader.FindKernel("PopulateWorkBuffer");
         applyWorkBufferKernel = SmoothShader.FindKernel("ApplySmooth");
     }
@@ -86,11 +75,11 @@ public class SmoothTool : Tool
     {
         if (upButton.IsPressed)
         {
-            cursor.IncreaseRadius();
+            cursor.IncreaseSize();
         }
         if (downButton.IsPressed)
         {
-            cursor.DecreaseRadius();
+            cursor.DecreaseSize();
         }
         cursor.UpdateActiveChunks();
 
@@ -155,7 +144,7 @@ public class SmoothTool : Tool
 
         workBuffer.SetCounterValue(0);
         var kernel = SmoothShader.FindKernel("PopulateWorkBuffer");
-        SmoothShader.SetFloat("toolRadius", cursor.radius * 0.8f * (1f / snapshot.transform.localScale.x));
+        SmoothShader.SetFloat("toolRadius", cursor.Size * 0.8f * (1f / snapshot.transform.localScale.x));
         SmoothShader.SetFloat("chunkSize", snapshot.Size);
         SmoothShader.SetVector("toolCenter", snapshot.transform.InverseTransformPoint(cursor.transform.position) + Vector3.one * snapshot.Size * 0.5f);
 
@@ -184,5 +173,13 @@ public class SmoothTool : Tool
     private void PositionButton_OnButtonUp(XRController controller)
     {
         cursor.transform.parent = ToolController.Instance.rightController.transform;
+    }
+    protected override void SetMaxSize()
+    {
+        MaxSize = LayerManager.Instance.Spacing * 0.4f;
+    }
+    protected override void SetMinSize()
+    {
+        MinSize = LayerManager.Instance.VoxelSpacing;
     }
 }
