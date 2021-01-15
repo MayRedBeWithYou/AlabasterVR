@@ -92,7 +92,7 @@ public class PottersWheel : MonoBehaviour, IMovable
     void ToggleVisibility(bool value)
     {
         IsHidden = value;
-        if (IsHidden)
+        if (!IsHidden)
         {
             wheelMesh.SetActive(true);
             wheelCollider.SetActive(true);
