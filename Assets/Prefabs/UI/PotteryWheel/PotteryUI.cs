@@ -24,17 +24,17 @@ using UnityEngine.UI;
 public class PotteryUI : MonoBehaviour
 {
     /// <summary>
-    /// The wheel
+    /// The PottersWheel instance that called the UI.
     /// </summary>
     public PottersWheel wheel;
 
     /// <summary>
-    /// The play image
+    /// Play icon.
     /// </summary>
     public Sprite playImage;
 
     /// <summary>
-    /// The pause image
+    /// Pause icon.
     /// </summary>
     public Sprite pauseImage;
 
@@ -63,7 +63,7 @@ public class PotteryUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Refreshes the UI.
+    /// Refreshes the UI according to wheel's state.
     /// </summary>
     public void RefreshUI()
     {
@@ -84,7 +84,7 @@ public class PotteryUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Closes this instance.
+    /// Closes this UI instance.
     /// </summary>
     public void Close()
     {

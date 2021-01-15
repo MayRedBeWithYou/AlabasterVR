@@ -33,11 +33,11 @@ public class LeftOverlay : MonoBehaviour
     public Image redoImage;
 
     /// <summary>
-    /// The valid color
+    /// The color when option is valid
     /// </summary>
     public Color validColor;
     /// <summary>
-    /// The invalid color
+    /// The color when option is invalid
     /// </summary>
     public Color invalidColor;
 

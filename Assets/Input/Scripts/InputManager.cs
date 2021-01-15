@@ -69,10 +69,7 @@ public class InputManager : MonoBehaviour
             handler.HandleState(controller);
     }
 
-    /// <summary>
-    /// Handles the axis events.
-    /// </summary>
-    public void HandleAxisEvents()
+    private void HandleAxisEvents()
     {
         foreach (AxisHandler handler in axisHandlers)
             handler.HandleState(controller);

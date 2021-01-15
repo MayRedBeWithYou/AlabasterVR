@@ -22,20 +22,17 @@ using System.IO;
 public class DirectoryButtonManager : MonoBehaviour
 {
     /// <summary>
-    /// The dir information
+    /// The directory information
     /// </summary>
     public DirectoryInfo dirInfo;
     /// <summary>
-    /// The main script
+    /// FileExplorer UI object.
     /// </summary>
     public FileExplorer mainScript;
     Button button;
     Text buttonText;
 
-    /// <summary>
-    /// Awakes this instance.
-    /// </summary>
-    public void Awake()
+    void Awake()
     {
         button = GetComponent<Button>();
         buttonText = GetComponentInChildren<Text>();
@@ -50,11 +47,12 @@ public class DirectoryButtonManager : MonoBehaviour
         buttonText.text = "";
         dirInfo = null;
     }
+
     /// <summary>
-    /// Activates the specified directory information.
+    /// Activates with specified directory information.
     /// </summary>
     /// <param name="directoryInfo">The directory information.</param>
-    /// <param name="prefix">if set to <c>true</c> [prefix].</param>
+    /// <param name="prefix">if set to <c>true</c>, adds the prefix.</param>
     public void Activate(DirectoryInfo directoryInfo, bool prefix)
     {
         button.enabled = true;
@@ -66,13 +64,16 @@ public class DirectoryButtonManager : MonoBehaviour
         else buttonText.text = "\\";
         dirInfo = directoryInfo;
     }
+
     /// <summary>
-    /// Called when [click].
+    /// Called when directory is clicked.
     /// </summary>
+    /// 
     public void OnClick()
     {
         mainScript.ChangeDirectory(dirInfo);
     }
+
     string Wraper(string text)
     {
         if(text.Length>8)return text.Substring(0,6)+"..";

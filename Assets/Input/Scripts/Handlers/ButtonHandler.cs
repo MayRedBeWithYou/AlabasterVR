@@ -40,11 +40,11 @@ public class ButtonHandler : InputHandler
     public delegate void StateChange(XRController controller);
 
     /// <summary>
-    /// Occurs when [on button down].
+    /// Occurs when button is pressed.
     /// </summary>
     public event StateChange OnButtonDown;
     /// <summary>
-    /// Occurs when [on button up].
+    /// Occurs when button is released.
     /// </summary>
     public event StateChange OnButtonUp;
 
@@ -69,7 +69,7 @@ public class ButtonHandler : InputHandler
     }
 
     /// <summary>
-    /// Invokes down event.
+    /// Invokes OnButtonDown event.
     /// </summary>
     /// <param name="controller">The controller.</param>
     public void InvokeDownEvent(XRController controller)
@@ -79,7 +79,7 @@ public class ButtonHandler : InputHandler
     }
 
     /// <summary>
-    /// Invokes up event.
+    /// Invokes OnButtonUp event.
     /// </summary>
     /// <param name="controller">The controller.</param>
     public void InvokeUpEvent(XRController controller)

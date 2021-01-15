@@ -32,9 +32,9 @@ public abstract class MaterialCursor : MonoBehaviour
     /// </summary>
     /// <value>The remove material kernel.</value>
     abstract public int RemoveMaterialKernel { get; }
-
+        
     /// <summary>
-    /// Prepares the shader.
+    /// Prepares the shader with relevant info.
     /// </summary>
     /// <param name="color">The color.</param>
     /// <returns>ComputeShader.</returns>
@@ -57,7 +57,7 @@ public abstract class MaterialCursor : MonoBehaviour
     public abstract void SetColor(Color color);
 
     /// <summary>
-    /// Updates the active chunks.
+    /// Updates active chunks.
     /// </summary>
     public abstract void UpdateActiveChunks();
     /// <summary>

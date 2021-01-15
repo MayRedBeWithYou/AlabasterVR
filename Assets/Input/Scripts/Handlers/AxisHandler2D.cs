@@ -27,24 +27,15 @@ public class AxisHandler2D : InputHandler, ISerializationCallbackReceiver
 {
     public enum Axis2D
     {
-        /// <summary>
-        /// The none
-        /// </summary>
         None,
-        /// <summary>
-        /// The primary2 d axis
-        /// </summary>
         Primary2DAxis,
-        /// <summary>
-        /// The secondary2 d axis
-        /// </summary>
         Secondary2DAxis
     }
 
     /// <summary>
     /// Gets the value.
     /// </summary>
-    /// <value>The value.</value>
+    /// <value>The value represented as a Vector2.</value>
     public Vector2 Value => previousValue;
 
     /// <summary>
@@ -54,12 +45,12 @@ public class AxisHandler2D : InputHandler, ISerializationCallbackReceiver
     /// <param name="value">The value.</param>
     public delegate void ValueChange(XRController controller, Vector2 value);
     /// <summary>
-    /// Occurs when [on value change].
+    /// Occurs when value changes.
     /// </summary>
     public event ValueChange OnValueChange;
 
     /// <summary>
-    /// The axis
+    /// Handled axis.
     /// </summary>
     public Axis2D axis = Axis2D.None;
 
@@ -99,15 +90,15 @@ public class AxisHandler2D : InputHandler, ISerializationCallbackReceiver
     /// Gets the value.
     /// </summary>
     /// <param name="controller">The controller.</param>
-    /// <param name="value">The value.</param>
-    /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+    /// <param name="value">Returned value.</param>
+    /// <returns><c>true</c> if could retrieve value, <c>false</c> otherwise.</returns>
     public bool GetValue(XRController controller, out Vector2 value)
     {
         return controller.inputDevice.TryGetFeatureValue(inputFeature, out value);
     }
 
     /// <summary>
-    /// Invokes the event.
+    /// Invokes the OnValueChanged event.
     /// </summary>
     /// <param name="controller">The controller.</param>
     /// <param name="value">The value.</param>

@@ -49,6 +49,7 @@ public class MockInputManager : MonoBehaviour
             controller.enabled = controller.targetCamera == Camera ? true : false;
         }
     }
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -102,10 +103,5 @@ public class MockInputManager : MonoBehaviour
         {
             ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Paint");
         }
-        if (Input.GetKeyDown(KeyCode.Equals))
-        {
-            ToolController.Instance.SelectedTool = ToolController.Instance.Tools.Find(tool => tool.toolName == "Grinder");
-        }
-
     }
 }

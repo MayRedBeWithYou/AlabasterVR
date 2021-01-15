@@ -26,7 +26,7 @@ using UnityEngine.EventSystems;
 public class SceneLight : MonoBehaviour, IMovable
 {
     /// <summary>
-    /// The Light attached to this GameObject. (Null if there is none attached).
+    /// The Light attached to this GameObject.
     /// </summary>
     /// <value>The light.</value>
     public Light light { get; private set; }
@@ -69,10 +69,7 @@ public class SceneLight : MonoBehaviour, IMovable
     /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
     public bool Enabled => light.enabled;
 
-    /// <summary>
-    /// Awakes this instance.
-    /// </summary>
-    public void Awake()
+    void Awake()
     {
         light = GetComponent<Light>();
         meshRenderer = GetComponentInChildren<MeshRenderer>();
@@ -83,7 +80,7 @@ public class SceneLight : MonoBehaviour, IMovable
     /// <summary>
     /// Toggles the light.
     /// </summary>
-    /// <param name="value">if set to <c>true</c> [value].</param>
+    /// <param name="value">if set to <c>true</c>, turns the light on.</param>
     public void ToggleLight(bool value)
     {
         if (value)

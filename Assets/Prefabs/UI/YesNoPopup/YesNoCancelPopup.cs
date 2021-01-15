@@ -33,22 +33,22 @@ public class YesNoCancelPopup : MonoBehaviour
     public delegate void OnState();
 
     /// <summary>
-    /// Occurs when [on accept].
+    /// Occurs when user accepts.
     /// </summary>
     public event OnState OnAccept;
 
     /// <summary>
-    /// Occurs when [on decline].
+    /// Occurs when user declines.
     /// </summary>
     public event OnState OnDecline;
 
     /// <summary>
-    /// Occurs when [on cancel].
+    /// Occurs when user cancels.
     /// </summary>
     public event OnState OnCancel;
 
     /// <summary>
-    /// Initializes the specified message.
+    /// Initializes with specified message.
     /// </summary>
     /// <param name="message">The message.</param>
     public void Init(string message)
@@ -57,7 +57,7 @@ public class YesNoCancelPopup : MonoBehaviour
     }
 
     /// <summary>
-    /// Accepts this instance.
+    /// Used when user accepts.
     /// </summary>
     public void Accept()
     {
@@ -66,7 +66,7 @@ public class YesNoCancelPopup : MonoBehaviour
     }
 
     /// <summary>
-    /// Declines this instance.
+    /// Used when user declines.
     /// </summary>
     public void Decline()
     {
@@ -75,7 +75,7 @@ public class YesNoCancelPopup : MonoBehaviour
     }
 
     /// <summary>
-    /// Cancels this instance.
+    /// Used when user cancels.
     /// </summary>
     public void Cancel()
     {

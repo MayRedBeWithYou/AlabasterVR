@@ -28,7 +28,7 @@ public class CubeMaterialCursor : MaterialCursor
     private int removeMaterialKernel;
 
     /// <summary>
-    /// The shader
+    /// The shader used by cursor
     /// </summary>
     public ComputeShader shader;
 
@@ -44,7 +44,7 @@ public class CubeMaterialCursor : MaterialCursor
     public override int RemoveMaterialKernel { get => removeMaterialKernel; }
 
     /// <summary>
-    /// Prepares the shader.
+    /// Prepares the shader with relevant info.
     /// </summary>
     /// <param name="color">The color.</param>
     /// <returns>ComputeShader.</returns>
@@ -56,7 +56,7 @@ public class CubeMaterialCursor : MaterialCursor
     }
 
     /// <summary>
-    /// Updates the active chunks.
+    /// Updates active chunks for LayerManager.
     /// </summary>
     public override void UpdateActiveChunks()
     {

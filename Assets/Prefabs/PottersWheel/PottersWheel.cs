@@ -40,12 +40,12 @@ public class PottersWheel : MonoBehaviour, IMovable
     public bool IsHidden { get; set; }
 
     /// <summary>
-    /// The wheel mesh
+    /// Mesh for the PottersWheel object on scene.
     /// </summary>
     public GameObject wheelMesh;
 
     /// <summary>
-    /// The wheel collider
+    /// Collider for the PottersWheel object on scene.
     /// </summary>
     public GameObject wheelCollider;
 
@@ -64,6 +64,7 @@ public class PottersWheel : MonoBehaviour, IMovable
     private float _maxRotationSpeed;
     [SerializeField]
     private float _speedChangeStep;
+
     /// <summary>
     /// Gets or sets the rotation speed.
     /// </summary>

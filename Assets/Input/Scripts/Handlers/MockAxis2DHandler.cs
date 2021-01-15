@@ -43,7 +43,7 @@ public class MockAxis2DHandler : AxisHandler2D
     /// </summary>
     public KeyCode keyRight;
     /// <summary>
-    /// The mock value
+    /// Mock value
     /// </summary>
     public float mockValue = 1f;
 

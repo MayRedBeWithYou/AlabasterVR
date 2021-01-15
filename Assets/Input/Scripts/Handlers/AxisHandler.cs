@@ -27,17 +27,8 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
 {
     public enum Axis
     {
-        /// <summary>
-        /// The none
-        /// </summary>
         None,
-        /// <summary>
-        /// The trigger
-        /// </summary>
         Trigger,
-        /// <summary>
-        /// The grip
-        /// </summary>
         Grip
     }
 
@@ -54,12 +45,12 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
     /// <param name="value">The value.</param>
     public delegate void ValueChange(XRController controller, float value);
     /// <summary>
-    /// Occurs when [on value change].
+    /// Occurs when Value changes.
     /// </summary>
     public event ValueChange OnValueChange;
 
     /// <summary>
-    /// The axis
+    /// The axis handled.
     /// </summary>
     public Axis axis = Axis.None;
 
@@ -80,7 +71,7 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
     public void OnBeforeSerialize() { }
 
     /// <summary>
-    /// Handles the state.
+    /// Handles the state of the axis.
     /// </summary>
     /// <param name="controller">The controller.</param>
     public override void HandleState(XRController controller)
@@ -97,11 +88,11 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
     }
 
     /// <summary>
-    /// Gets the value.
+    /// Gets the value corresponding to axis position.
     /// </summary>
     /// <param name="controller">The controller.</param>
-    /// <param name="value">The value.</param>
-    /// <returns><c>true</c> if XXXX, <c>false</c> otherwise.</returns>
+    /// <param name="value">Returned value.</param>
+    /// <returns><c>true</c> if could retrieve value, <c>false</c> otherwise.</returns>
     public bool GetValue(XRController controller, out float value)
     {
         if (controller.inputDevice.TryGetFeatureValue(inputFeature, out value))
@@ -113,7 +104,7 @@ public class AxisHandler : InputHandler, ISerializationCallbackReceiver
     }
 
     /// <summary>
-    /// Invokes the event.
+    /// Invokes the OnValueChanged event.
     /// </summary>
     /// <param name="controller">The controller.</param>
     /// <param name="value">The value.</param>

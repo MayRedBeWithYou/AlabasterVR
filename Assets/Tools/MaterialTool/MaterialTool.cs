@@ -62,41 +62,35 @@ public class MaterialTool : Tool
     public ButtonHandler rightButton;
 
     /// <summary>
-    /// The add material color
+    /// The color for cursor while adding material
     /// </summary>
     [Header("Cursor")]
     public Color addMaterialColor;
     /// <summary>
-    /// The remove material color
+    /// The color for cursor while removing material
     /// </summary>
     public Color removeMaterialColor;
 
     private ColorPicker activeColorPicker;
 
     /// <summary>
-    /// The color
+    /// The color of material
     /// </summary>
     public Color color;
 
     /// <summary>
-    /// The is adding
+    /// Is tool currently in add or remove mode
     /// </summary>
     public bool isAdding = true;
 
     /// <summary>
-    /// The is working
+    /// Is tool currently working
     /// </summary>
     public bool isWorking = false;
 
-    /// <summary>
-    /// The before edit
-    /// </summary>
-    public Dictionary<Chunk, float[]> beforeEdit;
+    Dictionary<Chunk, float[]> beforeEdit;
 
-    /// <summary>
-    /// The before color
-    /// </summary>
-    public Dictionary<Chunk, float[]> beforeColor;
+    Dictionary<Chunk, float[]> beforeColor;
 
     /// <summary>
     /// The material cursor prefabs
@@ -104,7 +98,7 @@ public class MaterialTool : Tool
     public List<MaterialCursor> materialCursorPrefabs;
 
     /// <summary>
-    /// The material cursors
+    /// Material cursors (instantiated)
     /// </summary>
     [HideInInspector]
     public List<MaterialCursor> materialCursors;

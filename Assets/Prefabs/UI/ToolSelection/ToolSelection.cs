@@ -33,13 +33,11 @@ public class ToolSelection : MonoBehaviour
     public Transform toolSelectionBox;
 
     /// <summary>
-    /// The tools
+    /// Dictionary for mapping Tools to their ToolItems.
     /// </summary>
     public Dictionary<Tool, ToolItem> Tools;
-    /// <summary>
-    /// Starts this instance.
-    /// </summary>
-    public void Start()
+
+    void Start()
     {
         Tools = new Dictionary<Tool, ToolItem>();
         List<Tool> tools = ToolController.Instance.Tools;
@@ -64,10 +62,7 @@ public class ToolSelection : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Called when [destroy].
-    /// </summary>
-    public void OnDestroy()
+    void OnDestroy()
     {
         ToolController.SelectedToolChanged -= SelectedToolChanged;
     }
