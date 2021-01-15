@@ -111,6 +111,7 @@ public class MoveController : MonoBehaviour
                 movable.SetRotation(quat * refRot);
             }
         }
+        if(grab!=GrabState.None)LayerManager.Instance.DrawLayerBorder(LayerManager.Instance.ActiveLayer);
     }
 
 
