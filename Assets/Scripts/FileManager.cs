@@ -1,12 +1,33 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-15-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-15-2021
+// ***********************************************************************
+// <copyright file="FileManager.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
 using System.Text;
 using System.Globalization;
+/// <summary>
+/// Class FileManager.
+/// </summary>
 public static class FileManager
 {
+    /// <summary>
+    /// Saves the model.
+    /// </summary>
+    /// <param name="script">The script.</param>
+    /// <returns>FileExplorer.</returns>
     public static FileExplorer SaveModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Save;
@@ -19,6 +40,11 @@ public static class FileManager
           };
         return script;
     }
+    /// <summary>
+    /// Loads the model.
+    /// </summary>
+    /// <param name="script">The script.</param>
+    /// <returns>FileExplorer.</returns>
     public static FileExplorer LoadModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Open;
@@ -32,6 +58,11 @@ public static class FileManager
           };
         return script;
     }
+    /// <summary>
+    /// Exports the model.
+    /// </summary>
+    /// <param name="script">The script.</param>
+    /// <returns>FileExplorer.</returns>
     public static FileExplorer ExportModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Save;
@@ -44,6 +75,11 @@ public static class FileManager
           };
         return script;
     }
+    /// <summary>
+    /// Imports the model.
+    /// </summary>
+    /// <param name="script">The script.</param>
+    /// <returns>FileExplorer.</returns>
     public static FileExplorer ImportModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Open;
@@ -66,6 +102,11 @@ public static class FileManager
         return script;
     }
 
+    /// <summary>
+    /// Loads the image reference.
+    /// </summary>
+    /// <param name="script">The script.</param>
+    /// <returns>FileExplorer.</returns>
     public static FileExplorer LoadImageReference(FileExplorer script)
     {
         script.mode = FileExplorerMode.Open;
@@ -300,39 +341,86 @@ public static class FileManager
         return result;
     }
 
+    /// <summary>
+    /// Struct ObjVertex
+    /// </summary>
     struct ObjVertex
     {
+        /// <summary>
+        /// The index
+        /// </summary>
         public int index;
+        /// <summary>
+        /// The coord
+        /// </summary>
         public Vector3 coord;
+        /// <summary>
+        /// The normal
+        /// </summary>
         public Vector3 normal;
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
             ObjVertex tmp = (ObjVertex)obj;
             return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
         }
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
             return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
         }
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
             System.Globalization.CultureInfo cInfo = System.Globalization.CultureInfo.InvariantCulture;
             return "v " + coord.x.ToString(cInfo) + " " + coord.y.ToString(cInfo) + " " + coord.z.ToString(cInfo);
         }
     }
+    /// <summary>
+    /// Struct ObjTriangle
+    /// </summary>
     struct ObjTriangle
     {
+        /// <summary>
+        /// The verts
+        /// </summary>
         public int[] verts;
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
             ObjTriangle tmp = (ObjTriangle)obj;
             return tmp.verts[0].Equals(verts[0]) && tmp.verts[1].Equals(verts[1]) && tmp.verts[2].Equals(verts[2]);
         }
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
             return verts[0].GetHashCode() ^ verts[1].GetHashCode() ^ verts[2].GetHashCode();
         }
+        /// <summary>
+        /// Converts to stringcustom.
+        /// </summary>
+        /// <param name="n1">The n1.</param>
+        /// <param name="n2">The n2.</param>
+        /// <param name="n3">The n3.</param>
+        /// <returns>System.String.</returns>
         public string ToStringCustom(int n1, int n2, int n3)
         {
             System.Globalization.CultureInfo cInfo = System.Globalization.CultureInfo.InvariantCulture;
@@ -340,19 +428,38 @@ public static class FileManager
             " " + verts[1].ToString(cInfo) + "//" + n2.ToString(cInfo) + " " + verts[2].ToString(cInfo) + "//" + n3.ToString(cInfo);
         }
     }
+    /// <summary>
+    /// Struct float3
+    /// </summary>
     struct float3
     {
+        /// <summary>
+        /// The coord
+        /// </summary>
         public Vector3 coord;
 
+        /// <summary>
+        /// Determines whether the specified <see cref="System.Object" /> is equal to this instance.
+        /// </summary>
+        /// <param name="obj">The <see cref="System.Object" /> to compare with this instance.</param>
+        /// <returns><c>true</c> if the specified <see cref="System.Object" /> is equal to this instance; otherwise, <c>false</c>.</returns>
         public override bool Equals(object obj)
         {
             float3 tmp = (float3)obj;
             return coord.x.Equals(tmp.coord.x) && coord.y.Equals(tmp.coord.y) && coord.z.Equals(tmp.coord.z);
         }
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <returns>A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.</returns>
         public override int GetHashCode()
         {
             return coord.x.GetHashCode() ^ coord.y.GetHashCode() ^ coord.z.GetHashCode();
         }
+        /// <summary>
+        /// Returns a <see cref="System.String" /> that represents this instance.
+        /// </summary>
+        /// <returns>A <see cref="System.String" /> that represents this instance.</returns>
         public override string ToString()
         {
             System.Globalization.CultureInfo cInfo = System.Globalization.CultureInfo.InvariantCulture;

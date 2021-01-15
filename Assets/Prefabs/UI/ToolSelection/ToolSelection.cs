@@ -1,14 +1,44 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-04-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-04-2021
+// ***********************************************************************
+// <copyright file="ToolSelection.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class ToolSelection.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class ToolSelection : MonoBehaviour
 {
+    /// <summary>
+    /// The tool item prefab
+    /// </summary>
     public ToolItem toolItemPrefab;
 
+    /// <summary>
+    /// The tool selection box
+    /// </summary>
     public Transform toolSelectionBox;
 
+    /// <summary>
+    /// The tools
+    /// </summary>
     public Dictionary<Tool, ToolItem> Tools;
+    /// <summary>
+    /// Starts this instance.
+    /// </summary>
     public void Start()
     {
         Tools = new Dictionary<Tool, ToolItem>();
@@ -34,6 +64,9 @@ public class ToolSelection : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when [destroy].
+    /// </summary>
     public void OnDestroy()
     {
         ToolController.SelectedToolChanged -= SelectedToolChanged;

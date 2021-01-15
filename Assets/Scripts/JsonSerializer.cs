@@ -1,11 +1,31 @@
+// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-15-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-15-2021
+// ***********************************************************************
+// <copyright file="JsonSerializer.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
 using System;
 using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 
+/// <summary>
+/// Class JsonSerializer.
+/// </summary>
 public static class JsonSerializer
 {
+    /// <summary>
+    /// Serializes the specified path.
+    /// </summary>
+    /// <param name="path">The path.</param>
     public static void Serialize(string path)
     {
         string tempName = path;
@@ -26,6 +46,10 @@ public static class JsonSerializer
         if (!nameChanged) UIController.Instance.ShowMessageBox("Model saved as " + Path.GetFileName(tempName));
         else UIController.Instance.ShowMessageBox($"File {Path.GetFileName(path)}.abs already existed.\nModel saved as {Path.GetFileName(tempName)}.");
     }
+    /// <summary>
+    /// Deserializes the specified path.
+    /// </summary>
+    /// <param name="path">The path.</param>
     public static void Deserialize(string path)
     {
         StreamReader sr = new StreamReader(path);
@@ -41,10 +65,19 @@ public static class JsonSerializer
     }
 }
 
+/// <summary>
+/// Class JsonModel.
+/// </summary>
 [Serializable]
 public class JsonModel
 {
+    /// <summary>
+    /// The layers
+    /// </summary>
     public JsonLayer[] Layers;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonModel" /> class.
+    /// </summary>
     public JsonModel()
     {
         List<JsonLayer> list = new List<JsonLayer>();
@@ -55,20 +88,60 @@ public class JsonModel
         Layers = list.ToArray();
     }
 }
+/// <summary>
+/// Class JsonLayer.
+/// </summary>
 [Serializable]
 public class JsonLayer
 {
+    /// <summary>
+    /// The chunks
+    /// </summary>
     public JsonChunk[] Chunks;
+    /// <summary>
+    /// The name
+    /// </summary>
     public string Name;
+    /// <summary>
+    /// The size
+    /// </summary>
     public float Size;
+    /// <summary>
+    /// The resolution
+    /// </summary>
     public int Resolution;
+    /// <summary>
+    /// The chunk resolution
+    /// </summary>
     public int ChunkResolution;
+    /// <summary>
+    /// The smoothness
+    /// </summary>
     public float Smoothness;
+    /// <summary>
+    /// The metallic
+    /// </summary>
     public float Metallic;
+    /// <summary>
+    /// The render type
+    /// </summary>
     public int RenderType;
+    /// <summary>
+    /// The rotation
+    /// </summary>
     public JsonQuaternion Rotation;
+    /// <summary>
+    /// The position
+    /// </summary>
     public JsonVector3 Position;
+    /// <summary>
+    /// The scale
+    /// </summary>
     public JsonVector3 Scale;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonLayer" /> class.
+    /// </summary>
+    /// <param name="l">The l.</param>
     public JsonLayer(Layer l)
     {
         List<JsonChunk> list = new List<JsonChunk>();
@@ -99,13 +172,32 @@ public class JsonLayer
         RenderType = (int)l.RenderType;
     }
 }
+/// <summary>
+/// Class JsonChunk.
+/// </summary>
 [Serializable]
 public class JsonChunk
 {
+    /// <summary>
+    /// The values
+    /// </summary>
     public JsonVoxel[] Values;
+    /// <summary>
+    /// The x
+    /// </summary>
     public int x;
+    /// <summary>
+    /// The y
+    /// </summary>
     public int y;
+    /// <summary>
+    /// The z
+    /// </summary>
     public int z;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonChunk" /> class.
+    /// </summary>
+    /// <param name="c">The c.</param>
     public JsonChunk(Chunk c)
     {
         var vals = new float[c.resolution * c.resolution * c.resolution];
@@ -128,30 +220,69 @@ public class JsonChunk
         z = c.coord.z;
     }
 }
+/// <summary>
+/// Class JsonVector3.
+/// </summary>
 [Serializable]
 public class JsonVector3
 {
+    /// <summary>
+    /// The x
+    /// </summary>
     public float x;
+    /// <summary>
+    /// The y
+    /// </summary>
     public float y;
+    /// <summary>
+    /// The z
+    /// </summary>
     public float z;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonVector3" /> class.
+    /// </summary>
+    /// <param name="v">The v.</param>
     public JsonVector3(Vector3 v)
     {
         x = v.x;
         y = v.y;
         z = v.z;
     }
+    /// <summary>
+    /// Converts to vector3.
+    /// </summary>
+    /// <returns>Vector3.</returns>
     public Vector3 ToVector3()
     {
         return new Vector3(x, y, z);
     }
 }
+/// <summary>
+/// Class JsonQuaternion.
+/// </summary>
 [Serializable]
 public class JsonQuaternion
 {
+    /// <summary>
+    /// The x
+    /// </summary>
     public float x;
+    /// <summary>
+    /// The y
+    /// </summary>
     public float y;
+    /// <summary>
+    /// The z
+    /// </summary>
     public float z;
+    /// <summary>
+    /// The w
+    /// </summary>
     public float w;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonQuaternion" /> class.
+    /// </summary>
+    /// <param name="q">The q.</param>
     public JsonQuaternion(Quaternion q)
     {
         x = q.x;
@@ -159,20 +290,50 @@ public class JsonQuaternion
         z = q.z;
         w = q.w;
     }
+    /// <summary>
+    /// Converts to quaternion.
+    /// </summary>
+    /// <returns>Quaternion.</returns>
     public Quaternion ToQuaternion()
     {
         return new Quaternion(x, y, z, w);
     }
 }
+/// <summary>
+/// Class JsonVoxel.
+/// </summary>
 [Serializable]
 public class JsonVoxel
 {
+    /// <summary>
+    /// The v
+    /// </summary>
     public float v;
+    /// <summary>
+    /// The k
+    /// </summary>
     public int k;
+    /// <summary>
+    /// The c1
+    /// </summary>
     public float c1;
+    /// <summary>
+    /// The c2
+    /// </summary>
     public float c2;
+    /// <summary>
+    /// The c3
+    /// </summary>
     public float c3;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonVoxel" /> class.
+    /// </summary>
+    /// <param name="value">The value.</param>
+    /// <param name="index">The index.</param>
+    /// <param name="c1">The c1.</param>
+    /// <param name="c2">The c2.</param>
+    /// <param name="c3">The c3.</param>
     public JsonVoxel(float value, int index, float c1, float c2, float c3)
     {
         this.v = value;

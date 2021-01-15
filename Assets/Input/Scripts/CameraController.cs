@@ -1,4 +1,17 @@
-﻿/*
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-10-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-10-2021
+// ***********************************************************************
+// <copyright file="CameraController.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+/*
  * Modified Unity's code
 */
 #if ENABLE_INPUT_SYSTEM && ENABLE_INPUT_SYSTEM_PACKAGE
@@ -9,17 +22,47 @@
 
 using UnityEngine;
 
+/// <summary>
+/// Class CameraController.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class CameraController : MonoBehaviour
 {
+    /// <summary>
+    /// Class CameraState.
+    /// </summary>
     class CameraState
     {
+        /// <summary>
+        /// The yaw
+        /// </summary>
         public float yaw;
+        /// <summary>
+        /// The pitch
+        /// </summary>
         public float pitch;
+        /// <summary>
+        /// The roll
+        /// </summary>
         public float roll;
+        /// <summary>
+        /// The x
+        /// </summary>
         public float x;
+        /// <summary>
+        /// The y
+        /// </summary>
         public float y;
+        /// <summary>
+        /// The z
+        /// </summary>
         public float z;
 
+        /// <summary>
+        /// Sets from transform.
+        /// </summary>
+        /// <param name="t">The t.</param>
         public void SetFromTransform(Transform t)
         {
             pitch = t.eulerAngles.x;
@@ -30,6 +73,10 @@ public class CameraController : MonoBehaviour
             z = t.position.z;
         }
 
+        /// <summary>
+        /// Translates the specified translation.
+        /// </summary>
+        /// <param name="translation">The translation.</param>
         public void Translate(Vector3 translation)
         {
             Vector3 rotatedTranslation = Quaternion.Euler(pitch, yaw, roll) * translation;
@@ -39,6 +86,12 @@ public class CameraController : MonoBehaviour
             z += rotatedTranslation.z;
         }
 
+        /// <summary>
+        /// Lerps the towards.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="positionLerpPct">The position lerp PCT.</param>
+        /// <param name="rotationLerpPct">The rotation lerp PCT.</param>
         public void LerpTowards(CameraState target, float positionLerpPct, float rotationLerpPct)
         {
             yaw = Mathf.Lerp(yaw, target.yaw, rotationLerpPct);
@@ -50,6 +103,10 @@ public class CameraController : MonoBehaviour
             z = Mathf.Lerp(z, target.z, positionLerpPct);
         }
 
+        /// <summary>
+        /// Updates the transform.
+        /// </summary>
+        /// <param name="t">The t.</param>
         public void UpdateTransform(Transform t)
         {
             t.eulerAngles = new Vector3(pitch, yaw, roll);
@@ -60,22 +117,40 @@ public class CameraController : MonoBehaviour
     CameraState m_TargetCameraState = new CameraState();
     CameraState m_InterpolatingCameraState = new CameraState();
 
+    /// <summary>
+    /// The target camera
+    /// </summary>
     public GameObject targetCamera;
 
+    /// <summary>
+    /// The boost
+    /// </summary>
     [Header("Movement Settings")]
     [Tooltip("Exponential boost factor on translation, controllable by mouse wheel.")]
     public float boost = 3.5f;
 
+    /// <summary>
+    /// The position lerp time
+    /// </summary>
     [Tooltip("Time it takes to interpolate camera position 99% of the way to the target."), Range(0.001f, 1f)]
     public float positionLerpTime = 0.2f;
 
+    /// <summary>
+    /// The mouse sensitivity curve
+    /// </summary>
     [Header("Rotation Settings")]
     [Tooltip("X = Change in mouse position.\nY = Multiplicative factor for camera rotation.")]
     public AnimationCurve mouseSensitivityCurve = new AnimationCurve(new Keyframe(0f, 0.5f, 0f, 5f), new Keyframe(1f, 2.5f, 0f, 0f));
 
+    /// <summary>
+    /// The rotation lerp time
+    /// </summary>
     [Tooltip("Time it takes to interpolate camera rotation 99% of the way to the target."), Range(0.001f, 1f)]
     public float rotationLerpTime = 0.01f;
 
+    /// <summary>
+    /// The invert y
+    /// </summary>
     [Tooltip("Whether or not to invert our Y axis for mouse input to rotation.")]
     public bool invertY = false;
 

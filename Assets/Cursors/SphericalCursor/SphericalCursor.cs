@@ -1,10 +1,32 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-14-2021
+// ***********************************************************************
+// <copyright file="SphericalCursor.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class SphericalCursor.
+/// Implements the <see cref="BaseCursor" />
+/// </summary>
+/// <seealso cref="BaseCursor" />
 public class SphericalCursor : BaseCursor
 {
     private float _radius;
+    /// <summary>
+    /// Gets or sets the size.
+    /// </summary>
+    /// <value>The size.</value>
     public override float Size
     {
         get => _radius;
@@ -15,6 +37,9 @@ public class SphericalCursor : BaseCursor
         }
     }
 
+    /// <summary>
+    /// Updates the active chunks.
+    /// </summary>
     public override void UpdateActiveChunks()
     {
         var collidedChunks = Physics.OverlapSphere(transform.position, Size + 0.1f, 1 << 9);

@@ -1,42 +1,105 @@
-﻿using HSVPicker;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-14-2021
+// ***********************************************************************
+// <copyright file="GrinderTool.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using HSVPicker;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/// <summary>
+/// Class GrinderTool.
+/// Implements the <see cref="Tool" />
+/// </summary>
+/// <seealso cref="Tool" />
 public class GrinderTool : Tool
 {
 
+    /// <summary>
+    /// The trigger
+    /// </summary>
     [Header("Handlers")]
 
     public AxisHandler trigger;
+    /// <summary>
+    /// The settings button
+    /// </summary>
     public ButtonHandler settingsButton;
+    /// <summary>
+    /// The toggle button
+    /// </summary>
     public ButtonHandler toggleButton;
+    /// <summary>
+    /// The position button
+    /// </summary>
     public ButtonHandler positionButton;
 
+    /// <summary>
+    /// Up button
+    /// </summary>
     public ButtonHandler upButton;
+    /// <summary>
+    /// Down button
+    /// </summary>
     public ButtonHandler downButton;
 
+    /// <summary>
+    /// The add material color
+    /// </summary>
     [Header("Cursor")]
     public Color addMaterialColor;
+    /// <summary>
+    /// The remove material color
+    /// </summary>
     public Color removeMaterialColor;
 
+    /// <summary>
+    /// The shader
+    /// </summary>
     public ComputeShader shader;
     private int AddMaterialKernel;
     private int RemoveMaterialKernel;
 
     private ColorPicker activeColorPicker;
 
+    /// <summary>
+    /// The color
+    /// </summary>
     public Color color;
 
+    /// <summary>
+    /// The is adding
+    /// </summary>
     public bool isAdding = true;
 
+    /// <summary>
+    /// The is working
+    /// </summary>
     public bool isWorking = false;
 
+    /// <summary>
+    /// The before edit
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeEdit;
 
+    /// <summary>
+    /// The before color
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeColor;
 
+    /// <summary>
+    /// Enables this instance.
+    /// </summary>
     public override void Enable()
     {
         if (!gameObject.activeSelf)
@@ -61,6 +124,9 @@ public class GrinderTool : Tool
     }
 
 
+    /// <summary>
+    /// Disables this instance.
+    /// </summary>
     public override void Disable()
     {
         settingsButton.OnButtonDown -= SettingsButton_OnButtonDown;

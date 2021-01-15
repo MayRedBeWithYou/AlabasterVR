@@ -1,4 +1,17 @@
-﻿using System;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-14-2021
+// ***********************************************************************
+// <copyright file="OnHoverEventHandler.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,18 +22,39 @@ using UnityEngine.XR.Interaction.Toolkit;
 using UnityEngine.XR.Interaction.Toolkit.UI;
 using static UnityEngine.XR.Interaction.Toolkit.UI.TrackedDeviceModel;
 
+/// <summary>
+/// Class OnHoverEnterEvent.
+/// Implements the <see cref="UnityEngine.Events.UnityEvent{UnityEngine.XR.Interaction.Toolkit.XRController, UnityEngine.GameObject}" />
+/// </summary>
+/// <seealso cref="UnityEngine.Events.UnityEvent{UnityEngine.XR.Interaction.Toolkit.XRController, UnityEngine.GameObject}" />
 [Serializable]
 public class OnHoverEnterEvent : UnityEvent<XRController, GameObject> { }
 
+/// <summary>
+/// Class OnHoverExitEvent.
+/// Implements the <see cref="UnityEngine.Events.UnityEvent{UnityEngine.XR.Interaction.Toolkit.XRController, UnityEngine.GameObject}" />
+/// </summary>
+/// <seealso cref="UnityEngine.Events.UnityEvent{UnityEngine.XR.Interaction.Toolkit.XRController, UnityEngine.GameObject}" />
 [Serializable]
 public class OnHoverExitEvent : UnityEvent<XRController, GameObject> { }
 
+/// <summary>
+/// Class OnHoverEventHandler.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class OnHoverEventHandler : MonoBehaviour
 {
     private XRRayInteractor interactor;
     private XRController controller;
 
+    /// <summary>
+    /// The on hover enter
+    /// </summary>
     public OnHoverEnterEvent OnHoverEnter;
+    /// <summary>
+    /// The on hover exit
+    /// </summary>
     public OnHoverExitEvent OnHoverExit;
 
     private XRInteractorLineVisual visual = null;
@@ -28,6 +62,10 @@ public class OnHoverEventHandler : MonoBehaviour
     [SerializeField]
     private GameObject current;
 
+    /// <summary>
+    /// Gets or sets the current.
+    /// </summary>
+    /// <value>The current.</value>
     public GameObject Current
     {
         get => current;
@@ -107,6 +145,10 @@ public class OnHoverEventHandler : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Toggles the interactor.
+    /// </summary>
+    /// <param name="value">if set to <c>true</c> [value].</param>
     public void ToggleInteractor(bool value)
     {
         visual.enabled = value;

@@ -1,18 +1,51 @@
-﻿using HSVPicker;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-14-2021
+// ***********************************************************************
+// <copyright file="PaintTool.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using HSVPicker;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/// <summary>
+/// Class PaintTool.
+/// Implements the <see cref="Tool" />
+/// </summary>
+/// <seealso cref="Tool" />
 public class PaintTool : Tool
 {
 
+    /// <summary>
+    /// The trigger
+    /// </summary>
     [Header("Handlers")]
 
     public AxisHandler trigger;
+    /// <summary>
+    /// The color button
+    /// </summary>
     public ButtonHandler colorButton;
+    /// <summary>
+    /// Up button
+    /// </summary>
     public ButtonHandler upButton;
+    /// <summary>
+    /// Down button
+    /// </summary>
     public ButtonHandler downButton;
+    /// <summary>
+    /// The position button
+    /// </summary>
     public ButtonHandler positionButton;
 
     private ColorPicker activeColorPicker;
@@ -22,6 +55,10 @@ public class PaintTool : Tool
     [Header("Parameters"), SerializeField]
     protected Color _color;
 
+    /// <summary>
+    /// Gets or sets the color.
+    /// </summary>
+    /// <value>The color.</value>
     public Color Color
     {
         get => _color;
@@ -32,13 +69,25 @@ public class PaintTool : Tool
         }
     }
 
+    /// <summary>
+    /// The shader
+    /// </summary>
     public ComputeShader shader;
 
     int shaderKernel;
 
+    /// <summary>
+    /// The is working
+    /// </summary>
     public bool isWorking = false;
+    /// <summary>
+    /// The before color
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeColor;
 
+    /// <summary>
+    /// Enables this instance.
+    /// </summary>
     public override void Enable()
     {
         if (!gameObject.activeSelf)
@@ -51,6 +100,9 @@ public class PaintTool : Tool
         }
     }
 
+    /// <summary>
+    /// Disables this instance.
+    /// </summary>
     public override void Disable()
     {
         colorButton.OnButtonDown -= ColorButton_OnColorDown;

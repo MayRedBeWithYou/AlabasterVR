@@ -1,17 +1,50 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-08-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-08-2021
+// ***********************************************************************
+// <copyright file="Keyboard.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Reflection;
 
+/// <summary>
+/// Class Keyboard.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class Keyboard : MonoBehaviour
 {
+    /// <summary>
+    /// The numerical key current mode
+    /// </summary>
     public NumericalKeyMode NumericalKeyCurrentMode;
+    /// <summary>
+    /// The letter key current mode
+    /// </summary>
     public LetterKeyMode LetterKeyCurrentMode;
 
+    /// <summary>
+    /// The accept button
+    /// </summary>
     public Button acceptButton;
+    /// <summary>
+    /// The cancel button
+    /// </summary>
     public Button cancelButton;
 
+    /// <summary>
+    /// The input field
+    /// </summary>
     public InputField inputField;
 
     [SerializeField]
@@ -20,11 +53,27 @@ public class Keyboard : MonoBehaviour
     [SerializeField]
     private List<KeyboardKey> numKeys;
 
+    /// <summary>
+    /// Delegate InputAccepted
+    /// </summary>
+    /// <param name="text">The text.</param>
     public delegate void InputAccepted(string text);
+    /// <summary>
+    /// Occurs when [on accepted].
+    /// </summary>
     public event InputAccepted OnAccepted;
 
+    /// <summary>
+    /// Delegate InputCancelled
+    /// </summary>
     public delegate void InputCancelled();
+    /// <summary>
+    /// Occurs when [on cancelled].
+    /// </summary>
     public event InputCancelled OnCancelled;
+    /// <summary>
+    /// Occurs when [on closing].
+    /// </summary>
     public event InputCancelled OnClosing;
 
     private bool isSet = false;
@@ -40,6 +89,10 @@ public class Keyboard : MonoBehaviour
         cancelButton.onClick.AddListener(() => OnCancelled?.Invoke());
     }
 
+    /// <summary>
+    /// Sets the text.
+    /// </summary>
+    /// <param name="text">The text.</param>
     public void SetText(string text)
     {
         inputField.text = text;
@@ -47,6 +100,9 @@ public class Keyboard : MonoBehaviour
         inputField.ForceLabelUpdate();
     }
 
+    /// <summary>
+    /// Lates the update.
+    /// </summary>
     public void LateUpdate()
     {
         if (isSet)
@@ -57,6 +113,9 @@ public class Keyboard : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies the shift.
+    /// </summary>
     public void ApplyShift()
     {
         switch (LetterKeyCurrentMode)
@@ -90,6 +149,9 @@ public class Keyboard : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies the caps lock.
+    /// </summary>
     public void ApplyCapsLock()
     {
         switch (LetterKeyCurrentMode)
@@ -113,6 +175,9 @@ public class Keyboard : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Applies the alt.
+    /// </summary>
     public void ApplyAlt()
     {
         switch (LetterKeyCurrentMode)
@@ -136,6 +201,9 @@ public class Keyboard : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Closes this instance.
+    /// </summary>
     public void Close()
     {
         OnClosing?.Invoke();
@@ -143,11 +211,22 @@ public class Keyboard : MonoBehaviour
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Shows the specified parent.
+    /// </summary>
+    /// <param name="parent">The parent.</param>
+    /// <param name="text">The text.</param>
+    /// <returns>Keyboard.</returns>
     public static Keyboard Show(GameObject parent, string text = "")
     {
         return UIController.Instance.ShowKeyboard(parent, text);
     }
 
+    /// <summary>
+    /// Shows the specified text.
+    /// </summary>
+    /// <param name="text">The text.</param>
+    /// <returns>Keyboard.</returns>
     public static Keyboard Show(string text = "")
     {
         return UIController.Instance.ShowKeyboard(text);
@@ -156,10 +235,16 @@ public class Keyboard : MonoBehaviour
 
 public enum NumericalKeyMode
 {
+    /// <summary>
+    /// The primary
+    /// </summary>
     Primary, Secondary
 }
 
 public enum LetterKeyMode
 {
+    /// <summary>
+    /// The primary
+    /// </summary>
     Primary, Secondary, AltPrimary, AltSecondary
 }

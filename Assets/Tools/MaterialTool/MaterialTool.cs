@@ -1,48 +1,121 @@
-﻿using HSVPicker;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-15-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-15-2021
+// ***********************************************************************
+// <copyright file="MaterialTool.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using HSVPicker;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/// <summary>
+/// Class MaterialTool.
+/// Implements the <see cref="Tool" />
+/// </summary>
+/// <seealso cref="Tool" />
 public class MaterialTool : Tool
 {
 
+    /// <summary>
+    /// The trigger
+    /// </summary>
     [Header("Handlers")]
 
     public AxisHandler trigger;
+    /// <summary>
+    /// The settings button
+    /// </summary>
     public ButtonHandler settingsButton;
+    /// <summary>
+    /// The toggle button
+    /// </summary>
     public ButtonHandler toggleButton;
+    /// <summary>
+    /// The position button
+    /// </summary>
     public ButtonHandler positionButton;
 
+    /// <summary>
+    /// Up button
+    /// </summary>
     public ButtonHandler upButton;
+    /// <summary>
+    /// Down button
+    /// </summary>
     public ButtonHandler downButton;
+    /// <summary>
+    /// The left button
+    /// </summary>
     public ButtonHandler leftButton;
+    /// <summary>
+    /// The right button
+    /// </summary>
     public ButtonHandler rightButton;
 
+    /// <summary>
+    /// The add material color
+    /// </summary>
     [Header("Cursor")]
     public Color addMaterialColor;
+    /// <summary>
+    /// The remove material color
+    /// </summary>
     public Color removeMaterialColor;
 
     private ColorPicker activeColorPicker;
 
+    /// <summary>
+    /// The color
+    /// </summary>
     public Color color;
 
+    /// <summary>
+    /// The is adding
+    /// </summary>
     public bool isAdding = true;
 
+    /// <summary>
+    /// The is working
+    /// </summary>
     public bool isWorking = false;
 
+    /// <summary>
+    /// The before edit
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeEdit;
 
+    /// <summary>
+    /// The before color
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeColor;
 
+    /// <summary>
+    /// The material cursor prefabs
+    /// </summary>
     public List<MaterialCursor> materialCursorPrefabs;
 
+    /// <summary>
+    /// The material cursors
+    /// </summary>
     [HideInInspector]
     public List<MaterialCursor> materialCursors;
 
     [SerializeField]
     private MaterialCursor selectedCursor;
 
+    /// <summary>
+    /// Gets or sets the selected cursor.
+    /// </summary>
+    /// <value>The selected cursor.</value>
     public MaterialCursor SelectedCursor
     {
         get => selectedCursor;
@@ -58,6 +131,9 @@ public class MaterialTool : Tool
         }
     }
 
+    /// <summary>
+    /// Enables this instance.
+    /// </summary>
     public override void Enable()
     {
         if (!gameObject.activeSelf)
@@ -75,6 +151,9 @@ public class MaterialTool : Tool
         }
     }
 
+    /// <summary>
+    /// Disables this instance.
+    /// </summary>
     public override void Disable()
     {
         settingsButton.OnButtonDown -= SettingsButton_OnButtonDown;

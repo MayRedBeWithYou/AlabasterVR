@@ -1,16 +1,46 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-04-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-04-2021
+// ***********************************************************************
+// <copyright file="LayerSelection.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Class LayerSelection.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class LayerSelection : MonoBehaviour
 {
+    /// <summary>
+    /// The content holder
+    /// </summary>
     public GameObject contentHolder;
 
+    /// <summary>
+    /// The layer item prefab
+    /// </summary>
     public GameObject layerItemPrefab;
 
+    /// <summary>
+    /// The layers
+    /// </summary>
     public Dictionary<Layer, LayerItem> layers;
 
+    /// <summary>
+    /// Starts this instance.
+    /// </summary>
     public void Start()
     {
         layers = new Dictionary<Layer, LayerItem>();
@@ -53,6 +83,9 @@ public class LayerSelection : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Called when [destroy].
+    /// </summary>
     public void OnDestroy()
     {
         LayerManager.ActiveLayerChanged -= ActiveLayerChanged;

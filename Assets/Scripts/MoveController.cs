@@ -1,25 +1,68 @@
-﻿using UnityEngine;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-07-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-07-2021
+// ***********************************************************************
+// <copyright file="MoveController.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/// <summary>
+/// Class MoveController.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class MoveController : MonoBehaviour
 {
     private static MoveController _instance;
 
+    /// <summary>
+    /// Gets the instance.
+    /// </summary>
+    /// <value>The instance.</value>
     public static MoveController Instance => _instance;
 
     public enum GrabState
     {
+        /// <summary>
+        /// The none
+        /// </summary>
         None,
+        /// <summary>
+        /// The one
+        /// </summary>
         One,
+        /// <summary>
+        /// The both
+        /// </summary>
         Both
     }
 
+    /// <summary>
+    /// The left controller
+    /// </summary>
     [Header("Controllers")]
     public XRController leftController;
+    /// <summary>
+    /// The right controller
+    /// </summary>
     public XRController rightController;
 
+    /// <summary>
+    /// The left grip handler
+    /// </summary>
     [Header("Buttons")]
     public AxisHandler LeftGripHandler;
+    /// <summary>
+    /// The right grip handler
+    /// </summary>
     public AxisHandler RightGripHandler;
 
     private float leftVal;

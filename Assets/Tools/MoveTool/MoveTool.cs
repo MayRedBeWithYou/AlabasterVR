@@ -1,28 +1,81 @@
-﻿using System;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-14-2021
+// ***********************************************************************
+// <copyright file="MoveTool.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/// <summary>
+/// Class MoveTool.
+/// Implements the <see cref="Tool" />
+/// Implements the <see cref="System.IDisposable" />
+/// </summary>
+/// <seealso cref="Tool" />
+/// <seealso cref="System.IDisposable" />
 public class MoveTool : Tool, IDisposable
 {
+    /// <summary>
+    /// Struct MoveData
+    /// </summary>
     public struct MoveData
     {
+        /// <summary>
+        /// From
+        /// </summary>
         public Vector3Int from;
+        /// <summary>
+        /// The gradient
+        /// </summary>
         public Vector3 gradient;
+        /// <summary>
+        /// The r gradient
+        /// </summary>
         public Vector3 rGradient;
+        /// <summary>
+        /// The g gradient
+        /// </summary>
         public Vector3 gGradient;
+        /// <summary>
+        /// The b gradient
+        /// </summary>
         public Vector3 bGradient;
     }
 
+    /// <summary>
+    /// Up button
+    /// </summary>
     [Header("Handlers")]
 
     public ButtonHandler upButton;
+    /// <summary>
+    /// Down button
+    /// </summary>
     public ButtonHandler downButton;
+    /// <summary>
+    /// The position button
+    /// </summary>
     public ButtonHandler positionButton;
 
+    /// <summary>
+    /// The trigger
+    /// </summary>
     public AxisHandler trigger;
 
+    /// <summary>
+    /// The move shader
+    /// </summary>
     [Header("Compute")]
 
     public ComputeShader MoveShader;
@@ -39,10 +92,22 @@ public class MoveTool : Tool, IDisposable
     private int volume;
 
 
+    /// <summary>
+    /// The is working
+    /// </summary>
     public bool isWorking = false;
+    /// <summary>
+    /// The before edit
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeEdit;
+    /// <summary>
+    /// The before color
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeColor;
 
+    /// <summary>
+    /// Enables this instance.
+    /// </summary>
     public override void Enable()
     {
         positionButton.OnButtonDown += PositionButton_OnButtonDown;
@@ -50,6 +115,9 @@ public class MoveTool : Tool, IDisposable
         base.Enable();
     }
 
+    /// <summary>
+    /// Disables this instance.
+    /// </summary>
     public override void Disable()
     {
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
@@ -209,6 +277,9 @@ public class MoveTool : Tool, IDisposable
         MinSize = LayerManager.Instance.VoxelSpacing;
     }
 
+    /// <summary>
+    /// Disposes this instance.
+    /// </summary>
     public void Dispose()
     {
         if (workBuffer != null) workBuffer.Dispose();

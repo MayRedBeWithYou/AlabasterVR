@@ -1,32 +1,92 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-15-2021
+// ***********************************************************************
+// <copyright file="SnapshotController.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
 
+/// <summary>
+/// Class SnapshotController.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// Implements the <see cref="System.IDisposable" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
+/// <seealso cref="System.IDisposable" />
 public class SnapshotController : MonoBehaviour, IDisposable
 {
+    /// <summary>
+    /// Gets the snapshot SDF.
+    /// </summary>
+    /// <value>The snapshot SDF.</value>
     public ComputeBuffer SnapshotSdf { get; private set; }
+    /// <summary>
+    /// Gets the snapshot colors.
+    /// </summary>
+    /// <value>The snapshot colors.</value>
     public ComputeBuffer SnapshotColors { get; private set; }
     ComputeBuffer OverlapCounter { get; set; }
 
-    
+
+    /// <summary>
+    /// The snapshot shader
+    /// </summary>
     public ComputeShader SnapshotShader;
     int takeSnapshotKernel;
     int applySnapshotKernel;
     int normalizeKernel;
     int clearKernel;
 
+    /// <summary>
+    /// Gets the spacing.
+    /// </summary>
+    /// <value>The spacing.</value>
     public float Spacing { get; private set; }
+    /// <summary>
+    /// Gets the resolution.
+    /// </summary>
+    /// <value>The resolution.</value>
     public int Resolution { get; private set; }
+    /// <summary>
+    /// Gets the volume.
+    /// </summary>
+    /// <value>The volume.</value>
     public int Volume { get; private set; }
+    /// <summary>
+    /// Gets the size.
+    /// </summary>
+    /// <value>The size.</value>
     public float Size { get; private set; }
 
+    /// <summary>
+    /// The debug mode
+    /// </summary>
     [Header("Debug options")]
     public bool debugMode = false;
+    /// <summary>
+    /// Converts to follow.
+    /// </summary>
     public GameObject ToFollow;
+    /// <summary>
+    /// The point material
+    /// </summary>
     public Material pointMaterial;
 
+    /// <summary>
+    /// Sets the position real.
+    /// </summary>
+    /// <param name="pos">The position.</param>
     public void SetPositionReal(Vector3 pos)
     {
         transform.rotation = LayerManager.Instance.ActiveLayer.transform.rotation;
@@ -93,6 +153,9 @@ public class SnapshotController : MonoBehaviour, IDisposable
         SnapshotShader.SetInt("resolution", Resolution);
     }
 
+    /// <summary>
+    /// Takes the snapshot.
+    /// </summary>
     public void TakeSnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
@@ -115,6 +178,9 @@ public class SnapshotController : MonoBehaviour, IDisposable
         SnapshotShader.Dispatch(normalizeKernel, Volume/512, 1, 1);
     }
 
+    /// <summary>
+    /// Applies the snapshot.
+    /// </summary>
     public void ApplySnapshot()
     {
         var overlappedColliders = Physics.OverlapBox(
@@ -156,6 +222,9 @@ public class SnapshotController : MonoBehaviour, IDisposable
             );
     }
 
+    /// <summary>
+    /// Disposes this instance.
+    /// </summary>
     public void Dispose()
     {
         if (SnapshotSdf != null) SnapshotSdf.Release();

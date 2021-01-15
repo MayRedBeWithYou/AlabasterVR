@@ -1,16 +1,44 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-14-2021
+// ***********************************************************************
+// <copyright file="SceneLight.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Class SceneLight.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// Implements the <see cref="IMovable" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
+/// <seealso cref="IMovable" />
 public class SceneLight : MonoBehaviour, IMovable
 {
+    /// <summary>
+    /// The Light attached to this GameObject. (Null if there is none attached).
+    /// </summary>
+    /// <value>The light.</value>
     public Light light { get; private set; }
 
     private MeshRenderer meshRenderer;
     private float range;
     private float angle;
 
+    /// <summary>
+    /// Gets or sets the range.
+    /// </summary>
+    /// <value>The range.</value>
     public float Range
     {
         get => range;
@@ -21,6 +49,10 @@ public class SceneLight : MonoBehaviour, IMovable
         }
     }
 
+    /// <summary>
+    /// Gets or sets the angle.
+    /// </summary>
+    /// <value>The angle.</value>
     public float Angle
     {
         get => angle;
@@ -31,8 +63,15 @@ public class SceneLight : MonoBehaviour, IMovable
         }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether this <see cref="SceneLight" /> is enabled.
+    /// </summary>
+    /// <value><c>true</c> if enabled; otherwise, <c>false</c>.</value>
     public bool Enabled => light.enabled;
 
+    /// <summary>
+    /// Awakes this instance.
+    /// </summary>
     public void Awake()
     {
         light = GetComponent<Light>();
@@ -41,6 +80,10 @@ public class SceneLight : MonoBehaviour, IMovable
         angle = light.spotAngle;
     }
 
+    /// <summary>
+    /// Toggles the light.
+    /// </summary>
+    /// <param name="value">if set to <c>true</c> [value].</param>
     public void ToggleLight(bool value)
     {
         if (value)
@@ -57,6 +100,10 @@ public class SceneLight : MonoBehaviour, IMovable
         }
     }
 
+    /// <summary>
+    /// Sets the color.
+    /// </summary>
+    /// <param name="color">The color.</param>
     public void SetColor(Color color)
     {
         light.color = color;
@@ -64,10 +111,18 @@ public class SceneLight : MonoBehaviour, IMovable
         meshRenderer.materials[1].SetColor("_EmissionColor", color);
     }
 
+    /// <summary>
+    /// Sets the position.
+    /// </summary>
+    /// <param name="pos">The position.</param>
     public void SetPosition(Vector3 pos)
     {
     }
 
+    /// <summary>
+    /// Sets the rotation.
+    /// </summary>
+    /// <param name="rot">The rot.</param>
     public void SetRotation(Quaternion rot)
     {
         transform.rotation = rot;

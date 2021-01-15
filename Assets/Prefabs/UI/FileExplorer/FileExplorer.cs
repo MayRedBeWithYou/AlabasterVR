@@ -1,4 +1,17 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-15-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-15-2021
+// ***********************************************************************
+// <copyright file="FileExplorer.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -7,18 +20,38 @@ using System.Linq;
 
 public enum FileExplorerMode
 {
+    /// <summary>
+    /// The open
+    /// </summary>
     Open,
+    /// <summary>
+    /// The save
+    /// </summary>
     Save
 }
+/// <summary>
+/// Class FileExplorer.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class FileExplorer : MonoBehaviour
 {
     private char[] forbidden = { '#', '%', '&', '{', '}', '\\', '<', '>', '*', '?', '/', ' ', '$', '!', '\'', '"', ':', '@', '+', '`', '|', '=' };
 
+    /// <summary>
+    /// The mode
+    /// </summary>
     [Header("Parameters")]
     public FileExplorerMode mode;
+    /// <summary>
+    /// The selected path
+    /// </summary>
     public string SelectedPath;
     private string filename = "";
     private DirectoryInfo currentDirectory;
+    /// <summary>
+    /// The file extensions
+    /// </summary>
     public string[] fileExtensions;
 
     [SerializeField]
@@ -37,7 +70,13 @@ public class FileExplorer : MonoBehaviour
     [SerializeField]
     private Button cancelButton;
 
+    /// <summary>
+    /// The valid color
+    /// </summary>
     public Color validColor;
+    /// <summary>
+    /// The invalid color
+    /// </summary>
     public Color invalidColor;
 
     [Header("Path buttons scripts")]
@@ -58,6 +97,10 @@ public class FileExplorer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Gets or sets the filename.
+    /// </summary>
+    /// <value>The filename.</value>
     public string Filename
     {
         get
@@ -81,10 +124,23 @@ public class FileExplorer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Delegate SelectPathCallback
+    /// </summary>
+    /// <param name="SelectedPath">The selected path.</param>
     public delegate void SelectPathCallback(string SelectedPath);
+    /// <summary>
+    /// Occurs when [on accepted].
+    /// </summary>
     public event SelectPathCallback OnAccepted;
 
+    /// <summary>
+    /// Delegate CancelCallback
+    /// </summary>
     public delegate void CancelCallback();
+    /// <summary>
+    /// Occurs when [on cancelled].
+    /// </summary>
     public event CancelCallback OnCancelled;
 
     void Awake()
@@ -100,11 +156,18 @@ public class FileExplorer : MonoBehaviour
         Filename = "";
     }
 
+    /// <summary>
+    /// Sets the extensions array.
+    /// </summary>
+    /// <param name="arr">The arr.</param>
     public void SetExtensionsArray(string[] arr)
     {
         fileExtensions = arr;
     }
 
+    /// <summary>
+    /// Closes this instance.
+    /// </summary>
     public void Close()
     {
         ClearItems();
@@ -112,6 +175,9 @@ public class FileExplorer : MonoBehaviour
         Destroy(gameObject);
     }
 
+    /// <summary>
+    /// Updates the directory.
+    /// </summary>
     public void UpdateDirectory()
     {
         ClearItems();
@@ -142,6 +208,9 @@ public class FileExplorer : MonoBehaviour
         }
 
     }
+    /// <summary>
+    /// Updates the directory root.
+    /// </summary>
     public void UpdateDirectoryRoot()
     {
         ClearItems();
@@ -196,6 +265,10 @@ public class FileExplorer : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Changes the directory.
+    /// </summary>
+    /// <param name="name">The name.</param>
     public void ChangeDirectory(string name)
     {
         if (currentDirectory != null)
@@ -209,6 +282,10 @@ public class FileExplorer : MonoBehaviour
             UpdateDirectory();
         }
     }
+    /// <summary>
+    /// Changes the directory.
+    /// </summary>
+    /// <param name="directoryInfo">The directory information.</param>
     public void ChangeDirectory(DirectoryInfo directoryInfo)
     {
         if (directoryInfo != null)
@@ -234,6 +311,9 @@ public class FileExplorer : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Shows the keyboard.
+    /// </summary>
     public void ShowKeyboard()
     {
         if (mode == FileExplorerMode.Save)

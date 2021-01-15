@@ -1,18 +1,42 @@
-﻿using HSVPicker;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-07-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-07-2021
+// ***********************************************************************
+// <copyright file="ColorPickerKeyboardPopup.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using HSVPicker;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class ColorPickerKeyboardPopup.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class ColorPickerKeyboardPopup : MonoBehaviour
 {
     ColorPicker picker;
     Keyboard keyboard;
 
+    /// <summary>
+    /// Awakes this instance.
+    /// </summary>
     public void Awake()
     {
         picker = GetComponent<ColorPicker>();
     }
 
+    /// <summary>
+    /// Shows the keyboard.
+    /// </summary>
     public void ShowKeyboard()
     {
         if (keyboard != null) return;

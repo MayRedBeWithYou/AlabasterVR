@@ -1,11 +1,38 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-14-2021
+// ***********************************************************************
+// <copyright file="MockInputManager.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Class MockInputManager.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class MockInputManager : MonoBehaviour
 {
+    /// <summary>
+    /// The left controller
+    /// </summary>
     public GameObject LeftController;
+    /// <summary>
+    /// The right controller
+    /// </summary>
     public GameObject RightController;
+    /// <summary>
+    /// The camera
+    /// </summary>
     public GameObject Camera;
 
     private CameraController[] CameraControllers;

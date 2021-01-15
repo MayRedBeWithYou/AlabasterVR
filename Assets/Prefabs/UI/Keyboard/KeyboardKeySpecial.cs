@@ -1,9 +1,27 @@
-﻿using System.Collections;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 12-11-2020
+//
+// Last Modified By : MayRe
+// Last Modified On : 12-11-2020
+// ***********************************************************************
+// <copyright file="KeyboardKeySpecial.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// Class KeyboardKeySpecial.
+/// Implements the <see cref="UnityEngine.MonoBehaviour" />
+/// </summary>
+/// <seealso cref="UnityEngine.MonoBehaviour" />
 public class KeyboardKeySpecial : MonoBehaviour
 {
     Button _button;
@@ -13,6 +31,9 @@ public class KeyboardKeySpecial : MonoBehaviour
     [SerializeField]
     private Keyboard _keyboard;
 
+    /// <summary>
+    /// The key
+    /// </summary>
     public SpecialKeyType Key;
 
     void Start()
@@ -24,6 +45,9 @@ public class KeyboardKeySpecial : MonoBehaviour
         if (Key != SpecialKeyType.Shift && Key != SpecialKeyType.Alt) _button.onClick.AddListener(OnClick);
 
     }
+    /// <summary>
+    /// Called when [click].
+    /// </summary>
     public void OnClick()
     {
         switch (Key)
@@ -81,5 +105,8 @@ public class KeyboardKeySpecial : MonoBehaviour
 }
 public enum SpecialKeyType
 {
+    /// <summary>
+    /// The backspace
+    /// </summary>
     Backspace, Delete, CapsLock, Shift, Alt, Confirm, Cancel, Clear, LeftCaret, RightCaret
 }

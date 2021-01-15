@@ -1,29 +1,77 @@
-﻿using System;
+﻿// ***********************************************************************
+// Assembly         : Assembly-CSharp
+// Author           : MayRe
+// Created          : 01-14-2021
+//
+// Last Modified By : MayRe
+// Last Modified On : 01-14-2021
+// ***********************************************************************
+// <copyright file="SmoothTool.cs" company="">
+//     Copyright (c) . All rights reserved.
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit;
 
+/// <summary>
+/// Class SmoothTool.
+/// Implements the <see cref="Tool" />
+/// </summary>
+/// <seealso cref="Tool" />
 public class SmoothTool : Tool
 {
+    /// <summary>
+    /// Struct SmoothData
+    /// </summary>
     public struct SmoothData
     {
+        /// <summary>
+        /// From
+        /// </summary>
         public Vector3Int from;
+        /// <summary>
+        /// The average
+        /// </summary>
         public float avg;
+        /// <summary>
+        /// The average color
+        /// </summary>
         public Vector3 avgColor;
     }
 
+    /// <summary>
+    /// The position button
+    /// </summary>
     [Header("Handlers")]
     public ButtonHandler positionButton;
 
+    /// <summary>
+    /// Up button
+    /// </summary>
     public ButtonHandler upButton;
+    /// <summary>
+    /// Down button
+    /// </summary>
     public ButtonHandler downButton;
 
+    /// <summary>
+    /// The snapshot
+    /// </summary>
     [Space(10)]
 
     public SnapshotController snapshot;
 
+    /// <summary>
+    /// The trigger
+    /// </summary>
     public AxisHandler trigger;
+    /// <summary>
+    /// The smooth shader
+    /// </summary>
     public ComputeShader SmoothShader;
 
     private ComputeBuffer workBuffer;
@@ -34,10 +82,22 @@ public class SmoothTool : Tool
     private int populateWorkBufferKernel;
     private int applyWorkBufferKernel;
 
+    /// <summary>
+    /// The is working
+    /// </summary>
     public bool isWorking = false;
+    /// <summary>
+    /// The before edit
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeEdit;
+    /// <summary>
+    /// The before color
+    /// </summary>
     public Dictionary<Chunk, float[]> beforeColor;
 
+    /// <summary>
+    /// Enables this instance.
+    /// </summary>
     public override void Enable()
     {
         if (!gameObject.activeSelf)
@@ -48,6 +108,9 @@ public class SmoothTool : Tool
         }
     }
 
+    /// <summary>
+    /// Disables this instance.
+    /// </summary>
     public override void Disable()
     {
         positionButton.OnButtonDown -= PositionButton_OnButtonDown;
