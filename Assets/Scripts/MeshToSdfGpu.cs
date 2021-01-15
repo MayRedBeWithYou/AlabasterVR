@@ -66,14 +66,13 @@ public static class MeshToSdfGpu
         }
         sw.Close();
     }
-    public static void TranslateTrianglesToSdf(TemporaryMesh m, bool calculateOnGpu = true)
+    public static void TranslateTrianglesToSdf(TemporaryMesh m, int trianglesCount, bool calculateOnGpu = true)
     {
-        meshToSdfShader = Resources.Load<ComputeShader>("MeshToSdf/MeshToSdfVertexNormalsShader");
+        meshToSdfShader = Resources.Load<ComputeShader>("MeshToSdf/MeshToSdfNormalsShader");
         Initialize(m);
         float[] arr = new float[LayerManager.Instance.ChunkResolution * LayerManager.Instance.ChunkResolution * LayerManager.Instance.ChunkResolution];
         LayerManager.Instance.AddNewLayer();
         int counter = 0;
-        int trianglesCount = m.triangles.Length / 18;
         foreach (var chunk in LayerManager.Instance.ActiveLayer.chunks)
         {
             if (bounds.Intersects(chunk.ColliderBounds))
@@ -93,8 +92,9 @@ public static class MeshToSdfGpu
                     meshToSdfShader.SetInt("trianglesCount", trianglesCount);
                     meshToSdfShader.SetFloat("chunkSize", LayerManager.Instance.Spacing);
                     meshToSdfShader.SetFloat("sizeSquared", LayerManager.Instance.Size * LayerManager.Instance.Size);
-                    meshToSdfShader.SetFloat("maxValue", LayerManager.Instance.Spacing / (LayerManager.Instance.ChunkResolution - 1));
-
+                    meshToSdfShader.SetFloat("maxValue", LayerManager.Instance.VoxelSpacing);
+                    meshToSdfShader.SetVector("boundsMin",new Vector4(bounds.min.x, bounds.min.y,bounds.min.z));
+                    meshToSdfShader.SetVector("boundsMax",new Vector4(bounds.max.x, bounds.max.y,bounds.max.z));
 
                     meshToSdfShader.Dispatch(kernel, chunk.voxels.Resolution / 8, chunk.voxels.Resolution / 8, chunk.voxels.Resolution / 8);
                     //chunk.voxels.VoxelBuffer.GetData(arr);
