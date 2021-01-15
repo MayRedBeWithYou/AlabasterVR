@@ -75,7 +75,7 @@ public static class FileManager
         script.UpdateDirectory();
         return script;
     }
-    private static MeshToSdfGpu.GPUTriangle[] TranslateObjToModel(string path)
+    private static MeshToSdfGpu.TemporaryMesh TranslateObjToModel(string path)
     {
         StreamReader streamReader = new StreamReader(path);
         List<int[]> trianglesIndices = new List<int[]>();
@@ -157,7 +157,7 @@ public static class FileManager
         else normalsArray = normals.ToArray();
         normals = null;
         for (int i = 0; i < normalsArray.Length; i++) normalsArray[i] = normalsArray[i].normalized;
-
+        /*
         MeshToSdfGpu.GPUTriangle[] result = new MeshToSdfGpu.GPUTriangle[trianglesIndices.Count];
         for (int i = 0; i < result.Length; i++)
         {
@@ -171,6 +171,31 @@ public static class FileManager
                 normB = normalsArray[tab[4]],
                 normC = normalsArray[tab[5]]
             };
+        }*/
+        MeshToSdfGpu.TemporaryMesh result = new MeshToSdfGpu.TemporaryMesh();
+        result.triangles = new float[trianglesIndices.Count * 18];
+        //float[] result=new float[trianglesIndices.Count*18];
+        for (int i = 0; i < trianglesIndices.Count; i++)
+        {
+            var tab = trianglesIndices[i];
+            result.triangles[18 * i] = vertices[tab[2]].x;
+            result.triangles[18 * i + 1] = vertices[tab[2]].y;
+            result.triangles[18 * i + 2] = vertices[tab[2]].z;
+            result.triangles[18 * i + 3] = vertices[tab[0]].x;
+            result.triangles[18 * i + 4] = vertices[tab[0]].y;
+            result.triangles[18 * i + 5] = vertices[tab[0]].z;
+            result.triangles[18 * i + 6] = vertices[tab[1]].x;
+            result.triangles[18 * i + 7] = vertices[tab[1]].y;
+            result.triangles[18 * i + 8] = vertices[tab[1]].z;
+            result.triangles[18 * i + 9] = normalsArray[tab[5]].x;
+            result.triangles[18 * i + 10] = normalsArray[tab[5]].y;
+            result.triangles[18 * i + 11] = normalsArray[tab[5]].z;
+            result.triangles[18 * i + 12] = normalsArray[tab[3]].x;
+            result.triangles[18 * i + 13] = normalsArray[tab[3]].y;
+            result.triangles[18 * i + 14] = normalsArray[tab[3]].z;
+            result.triangles[18 * i + 15] = normalsArray[tab[4]].x;
+            result.triangles[18 * i + 16] = normalsArray[tab[4]].y;
+            result.triangles[18 * i + 17] = normalsArray[tab[4]].z;
         }
         return result;
     }

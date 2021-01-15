@@ -139,7 +139,6 @@ void CalculateDistance(int3 id : SV_DispatchThreadID)
     
     for (int j = 0; j < trianglesCount && val != 0; j++)
     {
-        
         t_projectedPoint = ProjectedPoint(currentPosition, j);        
         t_vector3 = Barycentric(t_projectedPoint, j);
         t_closestPoint = ClosestPointOnTriangle(t_projectedPoint, j, t_vector3);

@@ -13,56 +13,67 @@ public static class MeshToSdfGpu
         public Vector3 normA;
         public Vector3 normB;
     };
+    public class TemporaryMesh
+    {
+        public float[] triangles;
+    }
 
     private static ComputeShader meshToSdfShader;
     private static ComputeBuffer trianglesBuffer;
     public static Bounds bounds;
 
-    private static void Initialize(GPUTriangle[] triangles)
+    private static void Initialize2(GPUTriangle[] triangles)
     {
         trianglesBuffer = new ComputeBuffer(triangles.Length * 18, sizeof(float));
-        float[] arr=new float[18*triangles.Length];
+        float[] arr = new float[18 * triangles.Length];
         for (int i = 0; i < triangles.Length; i++)
         {
-            arr[18*i]=triangles[i].vertexC.x;
-            arr[18*i+1]=triangles[i].vertexC.y;
-            arr[18*i+2]=triangles[i].vertexC.z;
-            arr[18*i+3]=triangles[i].vertexA.x;
-            arr[18*i+4]=triangles[i].vertexA.y;
-            arr[18*i+5]=triangles[i].vertexA.z;
-            arr[18*i+6]=triangles[i].vertexB.x;
-            arr[18*i+7]=triangles[i].vertexB.y;
-            arr[18*i+8]=triangles[i].vertexB.z;
-            arr[18*i+9]=triangles[i].normC.x;
-            arr[18*i+10]=triangles[i].normC.y;
-            arr[18*i+11]=triangles[i].normC.z;
-            arr[18*i+12]=triangles[i].normA.x;
-            arr[18*i+13]=triangles[i].normA.y;
-            arr[18*i+14]=triangles[i].normA.z;
-            arr[18*i+15]=triangles[i].normB.x;
-            arr[18*i+16]=triangles[i].normB.y;
-            arr[18*i+17]=triangles[i].normB.z;
+            arr[18 * i] = triangles[i].vertexC.x;
+            arr[18 * i + 1] = triangles[i].vertexC.y;
+            arr[18 * i + 2] = triangles[i].vertexC.z;
+            arr[18 * i + 3] = triangles[i].vertexA.x;
+            arr[18 * i + 4] = triangles[i].vertexA.y;
+            arr[18 * i + 5] = triangles[i].vertexA.z;
+            arr[18 * i + 6] = triangles[i].vertexB.x;
+            arr[18 * i + 7] = triangles[i].vertexB.y;
+            arr[18 * i + 8] = triangles[i].vertexB.z;
+            arr[18 * i + 9] = triangles[i].normC.x;
+            arr[18 * i + 10] = triangles[i].normC.y;
+            arr[18 * i + 11] = triangles[i].normC.z;
+            arr[18 * i + 12] = triangles[i].normA.x;
+            arr[18 * i + 13] = triangles[i].normA.y;
+            arr[18 * i + 14] = triangles[i].normA.z;
+            arr[18 * i + 15] = triangles[i].normB.x;
+            arr[18 * i + 16] = triangles[i].normB.y;
+            arr[18 * i + 17] = triangles[i].normB.z;
         }
         trianglesBuffer.SetData(arr);
 
         //trianglesBuffer.GetData(arr);
     }
+    private static void Initialize(TemporaryMesh m)
+    {
+        trianglesBuffer = new ComputeBuffer(m.triangles.Length, sizeof(float));
+        trianglesBuffer.SetData(m.triangles);
+    }
+
     private static void WriteData(float[] arr, string name)
     {
         StreamWriter sw = new StreamWriter(name + ".txt");
         for (int i = 0; i < arr.Length; i++)
         {
-            sw.Write(arr[i].ToString()+' ');
+            sw.Write(arr[i].ToString() + ' ');
         }
         sw.Close();
     }
-    public static void TranslateTrianglesToSdf(GPUTriangle[] triangles, bool calculateOnGpu = true)
+    public static void TranslateTrianglesToSdf(TemporaryMesh m, bool calculateOnGpu = true)
     {
         meshToSdfShader = Resources.Load<ComputeShader>("MeshToSdf/MeshToSdfVertexNormalsShader");
-        Initialize(triangles);
+        Initialize(m);
         float[] arr = new float[LayerManager.Instance.ChunkResolution * LayerManager.Instance.ChunkResolution * LayerManager.Instance.ChunkResolution];
         LayerManager.Instance.AddNewLayer();
         int counter = 0;
+        int trianglesCount = m.triangles.Length / 18;
         foreach (var chunk in LayerManager.Instance.ActiveLayer.chunks)
         {
             if (bounds.Intersects(chunk.ColliderBounds))
@@ -79,7 +90,7 @@ public static class MeshToSdfGpu
                     meshToSdfShader.SetBuffer(kernel, "sdf", chunk.voxels.VoxelBuffer);
                     meshToSdfShader.SetMatrix("modelMatrix", chunk.ModelMatrix);
                     meshToSdfShader.SetInt("numPointsPerAxis", LayerManager.Instance.ChunkResolution);
-                    meshToSdfShader.SetInt("trianglesCount", triangles.Length);
+                    meshToSdfShader.SetInt("trianglesCount", trianglesCount);
                     meshToSdfShader.SetFloat("chunkSize", LayerManager.Instance.Spacing);
                     meshToSdfShader.SetFloat("sizeSquared", LayerManager.Instance.Size * LayerManager.Instance.Size);
                     meshToSdfShader.SetFloat("maxValue", LayerManager.Instance.Spacing / (LayerManager.Instance.ChunkResolution - 1));
@@ -89,12 +100,13 @@ public static class MeshToSdfGpu
                     //chunk.voxels.VoxelBuffer.GetData(arr);
                     //WriteData(arr,chunk.name);
                 }
+                /*
                 else
                 {
                     M2SdfGpuCpu translator = new M2SdfGpuCpu(ref triangles, chunkOffset, LayerManager.Instance.ChunkResolution, triangles.Length, LayerManager.Instance.Spacing, LayerManager.Instance.Size, LayerManager.Instance.Spacing / (LayerManager.Instance.ChunkResolution - 1), chunk.ModelMatrix);
                     translator.Compute();
                     chunk.voxels.InitializeFromArray(translator.sdf);
-                }
+                }*/
             }
         }
         Debug.Log(counter);
