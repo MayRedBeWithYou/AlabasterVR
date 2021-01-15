@@ -20,7 +20,7 @@ public static class JsonSerializer
         tempName += ".abs";
 
         StreamWriter sw = new StreamWriter(tempName);
-        sw.Write(JsonUtility.ToJson(new JsonModel(), true));
+        sw.Write(JsonUtility.ToJson(new JsonModel()));
         sw.Close();
 
         if (!nameChanged) UIController.Instance.ShowMessageBox("Model saved as " + Path.GetFileName(tempName));
@@ -103,9 +103,9 @@ public class JsonLayer
 public class JsonChunk
 {
     public JsonVoxel[] Values;
-    public int CoordsX;
-    public int CoordsY;
-    public int CoordsZ;
+    public int x;
+    public int y;
+    public int z;
     public JsonChunk(Chunk c)
     {
         var vals = new float[c.resolution * c.resolution * c.resolution];
@@ -123,9 +123,9 @@ public class JsonChunk
         vals = null;
         cols = null;
         Values = list.ToArray();
-        CoordsX = c.coord.x;
-        CoordsY = c.coord.y;
-        CoordsZ = c.coord.z;
+        x = c.coord.x;
+        y = c.coord.y;
+        z = c.coord.z;
     }
 }
 [Serializable]
@@ -167,16 +167,16 @@ public class JsonQuaternion
 [Serializable]
 public class JsonVoxel
 {
-    public float value;
-    public int index;
+    public float v;
+    public int k;
     public float c1;
     public float c2;
     public float c3;
 
     public JsonVoxel(float value, int index, float c1, float c2, float c3)
     {
-        this.value = value;
-        this.index = index;
+        this.v = value;
+        this.k = index;
         this.c1 = c1;
         this.c2 = c2;
         this.c3 = c3;

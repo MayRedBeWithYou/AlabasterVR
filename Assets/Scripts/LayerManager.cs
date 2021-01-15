@@ -173,12 +173,12 @@ public class LayerManager : MonoBehaviour
             for (int j = 0; j < l.Chunks[i].Values.Length; j++)
             {
                 JsonVoxel jsonVoxel = l.Chunks[i].Values[j];
-                vals[jsonVoxel.index] = jsonVoxel.value;
-                cols[3 * jsonVoxel.index] = jsonVoxel.c1;
-                cols[3 * jsonVoxel.index + 1] = jsonVoxel.c2;
-                cols[3 * jsonVoxel.index + 2] = jsonVoxel.c3;
+                vals[jsonVoxel.k] = jsonVoxel.v;
+                cols[3 * jsonVoxel.k] = jsonVoxel.c1;
+                cols[3 * jsonVoxel.k + 1] = jsonVoxel.c2;
+                cols[3 * jsonVoxel.k + 2] = jsonVoxel.c3;
             }
-            Vector3Int ind=new Vector3Int(l.Chunks[i].CoordsX,l.Chunks[i].CoordsY,l.Chunks[i].CoordsZ);
+            Vector3Int ind=new Vector3Int(l.Chunks[i].x,l.Chunks[i].y,l.Chunks[i].z);
             layer.chunks[ind.x,ind.y,ind.z].voxels.InitializeFromArray(vals, cols);
             layer.chunks[ind.x,ind.y,ind.z].gpuMesh.UpdateVertexBuffer(layer.chunks[ind.x,ind.y,ind.z].voxels);
         }

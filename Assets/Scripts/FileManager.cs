@@ -7,9 +7,6 @@ using System.Text;
 using System.Globalization;
 public static class FileManager
 {
-    public static int precisionMultiplier = 100;
-    public static bool noVertexNormals;
-
     public static FileExplorer SaveModel(FileExplorer script)
     {
         script.mode = FileExplorerMode.Save;
@@ -57,8 +54,8 @@ public static class FileManager
               if (System.String.IsNullOrWhiteSpace(text)) return;
               try
               {
-                  MeshToSdfGpu.TemporaryMesh mesh=TranslateObjToModel(text);
-                  MeshToSdfGpu.TranslateTrianglesToSdf(TranslateObjToModel(text),mesh.triangles.Length/9, true);
+                  MeshToSdfGpu.TemporaryMesh mesh = TranslateObjToModel(text);
+                  MeshToSdfGpu.TranslateTrianglesToSdf(TranslateObjToModel(text), mesh.triangles.Length / 9, true);
               }
               catch
               {
@@ -76,136 +73,11 @@ public static class FileManager
         script.UpdateDirectory();
         return script;
     }
-    private static MeshToSdfGpu.TemporaryMesh TranslateObjToModel2(string path)
-    {
-        StreamReader streamReader = new StreamReader(path);
-        List<int[]> trianglesIndices = new List<int[]>();
-        List<Vector3> vertices = new List<Vector3>();
-        List<Vector3> normals = new List<Vector3>();
-        noVertexNormals = false;
-        while (!streamReader.EndOfStream)
-        {
-            string current = streamReader.ReadLine();
-            if (current.Length > 2)
-            {
-                if (current[0] == 'f')
-                {
-                    var temp = ParseToFace(current);
-                    for (int i = 0; i < temp.Count / 3; i++)
-                    {
-                        int[] triIndices = new int[6];
-                        for (int j = 0; j < 3; j++)
-                        {
-                            if (temp[3 * i + j].x > 0) triIndices[j] = temp[3 * i + j].x - 1;
-                            else triIndices[j] = vertices.Count + temp[3 * i + j].x;
-
-                            if (temp[3 * i + j].y > 0) triIndices[3 + j] = temp[3 * i + j].y - 1;
-                            else if (temp[3 * i + j].y < 0) triIndices[3 + j] = normals.Count + temp[3 * i + j].y;
-                            else noVertexNormals = true;
-                        }
-                        trianglesIndices.Add(triIndices);
-                    }
-                }
-                else if (current[0] == 'v')
-                {
-                    if (current[1] == 'n') normals.Add(ParseToVector3(current));
-                    else if (current[1] == ' ') vertices.Add(ParseToVector3(current));
-                }
-            }
-        }
-        streamReader.Close();
-
-        Vector3 min = Vector3.positiveInfinity, max = Vector3.negativeInfinity;
-        {
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                min = Vector3.Min(min, vertices[i]);
-                max = Vector3.Max(max, vertices[i]);
-            }
-        }
-        Vector3 diff = max - min;
-        float meshDiameter = Mathf.Max(diff.x, diff.y, diff.z);
-        float scale = (LayerManager.Instance.RelativeModelSize * LayerManager.Instance.Size) / meshDiameter;
-        Vector3 sceneCenter = Vector3.one * (LayerManager.Instance.Size * 0.5f);
-        Vector3 centeringVector = sceneCenter - diff * scale * 0.5f;
-        for (int i = 0; i < vertices.Count; i++)
-        {
-            vertices[i] -= min;
-            vertices[i] *= scale;
-            vertices[i] += centeringVector;
-        }
-        min = centeringVector;
-        max = diff * scale + centeringVector;
-        Bounds boundsMine = new Bounds((min + max) * 0.5f, max - min);
-
-        MeshToSdfGpu.bounds = new Bounds((min + max) * 0.5f, (max - min) + Vector3.one * LayerManager.Instance.Spacing / (LayerManager.Instance.ChunkResolution - 1) * 2);
-        //Mesh mesh = new Mesh();
-        //mesh.vertices = vertices.ToArray();
-
-        Vector3[] normalsArray;
-        if (noVertexNormals)
-        {
-            normalsArray = new Vector3[vertices.Count];
-            for (int i = 0; i < trianglesIndices.Count; i++)
-            {
-                var tab = trianglesIndices[i];
-                Vector3 faceNormal = Vector3.Cross(vertices[tab[1]] - vertices[tab[0]], vertices[tab[2]] - vertices[tab[0]]).normalized;
-                normalsArray[tab[3]] += faceNormal;
-                normalsArray[tab[4]] += faceNormal;
-                normalsArray[tab[5]] += faceNormal;
-            }
-        }
-        else normalsArray = normals.ToArray();
-        normals = null;
-        for (int i = 0; i < normalsArray.Length; i++) normalsArray[i] = normalsArray[i].normalized;
-        /*
-        MeshToSdfGpu.GPUTriangle[] result = new MeshToSdfGpu.GPUTriangle[trianglesIndices.Count];
-        for (int i = 0; i < result.Length; i++)
-        {
-            var tab = trianglesIndices[i];
-            result[i] = new MeshToSdfGpu.GPUTriangle()
-            {
-                vertexA = vertices[tab[0]],
-                vertexB = vertices[tab[1]],
-                vertexC = vertices[tab[2]],
-                normA = normalsArray[tab[3]],
-                normB = normalsArray[tab[4]],
-                normC = normalsArray[tab[5]]
-            };
-        }*/
-        MeshToSdfGpu.TemporaryMesh result = new MeshToSdfGpu.TemporaryMesh();
-        result.triangles = new float[trianglesIndices.Count * 18];
-        //float[] result=new float[trianglesIndices.Count*18];
-        for (int i = 0; i < trianglesIndices.Count; i++)
-        {
-            var tab = trianglesIndices[i];
-            result.triangles[18 * i] = vertices[tab[2]].x;
-            result.triangles[18 * i + 1] = vertices[tab[2]].y;
-            result.triangles[18 * i + 2] = vertices[tab[2]].z;
-            result.triangles[18 * i + 3] = vertices[tab[0]].x;
-            result.triangles[18 * i + 4] = vertices[tab[0]].y;
-            result.triangles[18 * i + 5] = vertices[tab[0]].z;
-            result.triangles[18 * i + 6] = vertices[tab[1]].x;
-            result.triangles[18 * i + 7] = vertices[tab[1]].y;
-            result.triangles[18 * i + 8] = vertices[tab[1]].z;
-            result.triangles[18 * i + 9] = normalsArray[tab[5]].x;
-            result.triangles[18 * i + 10] = normalsArray[tab[5]].y;
-            result.triangles[18 * i + 11] = normalsArray[tab[5]].z;
-            result.triangles[18 * i + 12] = normalsArray[tab[3]].x;
-            result.triangles[18 * i + 13] = normalsArray[tab[3]].y;
-            result.triangles[18 * i + 14] = normalsArray[tab[3]].z;
-            result.triangles[18 * i + 15] = normalsArray[tab[4]].x;
-            result.triangles[18 * i + 16] = normalsArray[tab[4]].y;
-            result.triangles[18 * i + 17] = normalsArray[tab[4]].z;
-        }
-        return result;
-    }
     private static MeshToSdfGpu.TemporaryMesh TranslateObjToModel(string path)
     {
         StreamReader streamReader = new StreamReader(path);
         List<int[]> trianglesIndices = new List<int[]>();
         List<Vector3> vertices = new List<Vector3>();
-        noVertexNormals = false;
         while (!streamReader.EndOfStream)
         {
             string current = streamReader.ReadLine();
@@ -243,7 +115,9 @@ public static class FileManager
         }
         Vector3 diff = max - min;
         float meshDiameter = Mathf.Max(diff.x, diff.y, diff.z);
-        float scale = (LayerManager.Instance.RelativeModelSize * LayerManager.Instance.Size) / meshDiameter;
+        float x=(LayerManager.Instance.VoxelSpacing * (LayerManager.Instance.ChunkResolution - 3));
+        float tempSize = LayerManager.Instance.Size - x;
+        float scale = (LayerManager.Instance.RelativeModelSize * tempSize) / meshDiameter;
         Vector3 sceneCenter = Vector3.one * (LayerManager.Instance.Size * 0.5f);
         Vector3 centeringVector = sceneCenter - diff * scale * 0.5f;
         for (int i = 0; i < vertices.Count; i++)
@@ -256,25 +130,9 @@ public static class FileManager
         max = diff * scale + centeringVector;
         Bounds boundsMine = new Bounds((min + max) * 0.5f, max - min);
 
-        MeshToSdfGpu.bounds = new Bounds((min + max) * 0.5f, (max - min) + Vector3.one * LayerManager.Instance.VoxelSpacing * 2);
-        /*
-        MeshToSdfGpu.GPUTriangle[] result = new MeshToSdfGpu.GPUTriangle[trianglesIndices.Count];
-        for (int i = 0; i < result.Length; i++)
-        {
-            var tab = trianglesIndices[i];
-            result[i] = new MeshToSdfGpu.GPUTriangle()
-            {
-                vertexA = vertices[tab[0]],
-                vertexB = vertices[tab[1]],
-                vertexC = vertices[tab[2]],
-                normA = normalsArray[tab[3]],
-                normB = normalsArray[tab[4]],
-                normC = normalsArray[tab[5]]
-            };
-        }*/
+        MeshToSdfGpu.bounds = new Bounds((min + max) * 0.5f, (max - min) + Vector3.one * LayerManager.Instance.VoxelSpacing * 4);
         MeshToSdfGpu.TemporaryMesh result = new MeshToSdfGpu.TemporaryMesh();
         result.triangles = new float[trianglesIndices.Count * 9];
-        //float[] result=new float[trianglesIndices.Count*18];
         for (int i = 0; i < trianglesIndices.Count; i++)
         {
             var tab = trianglesIndices[i];
@@ -423,7 +281,6 @@ public static class FileManager
 
             if (firstInd == lastInd)
             {
-                noVertexNormals = true;
                 vn = 0;
             }
             else

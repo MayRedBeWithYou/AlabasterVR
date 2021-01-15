@@ -131,21 +131,13 @@ void CalculateDistance(int3 id : SV_DispatchThreadID)
             if(t_val==val)
             {
                 closestCounter++;
-                t_counter=int(dot(currentPosition - GetVertexA(j),t_vector3) < 0);
-                t_counter=t_counter+int(dot(currentPosition - GetVertexB(j),t_vector3) < 0);
-                t_counter=t_counter+int(dot(currentPosition - GetVertexC(j),t_vector3) < 0);
-                insideCounter=insideCounter+t_counter/2;
-                //insideCounter= insideCounter+ int(dot(currentPosition - t_closestPoint,t_vector3) < 0);
+                insideCounter= insideCounter+ int(dot(currentPosition - t_closestPoint,t_vector3) < 0);
             }
             if (t_val < val)
             {
                 val = t_val;
                 closestCounter=1;
-                t_counter=int(dot(currentPosition - GetVertexA(j),t_vector3) < 0);
-                t_counter=t_counter+int(dot(currentPosition - GetVertexB(j),t_vector3) < 0);
-                t_counter=t_counter+int(dot(currentPosition - GetVertexC(j),t_vector3) < 0);
-                insideCounter=t_counter/2;
-                //insideCounter=int(dot(currentPosition - t_closestPoint,t_vector3) < 0);
+                insideCounter=int(dot(currentPosition - t_closestPoint,t_vector3) < 0);
             }
         }
     }
