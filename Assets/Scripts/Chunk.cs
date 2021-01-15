@@ -84,4 +84,9 @@ public class Chunk : MonoBehaviour, IDisposable
         gpuMesh.Dispose();
         voxels.Dispose();
     }
+    public Vector3 RealCoordinates(Vector3Int ind)
+    {
+        Vector3 ids = new Vector3(ind.x, ind.y, ind.z);
+        return ModelMatrix.MultiplyPoint(ids * size / (resolution));
+    }
 }
