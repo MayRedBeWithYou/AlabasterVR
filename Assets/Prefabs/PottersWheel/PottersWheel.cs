@@ -146,7 +146,7 @@ public class PottersWheel : MonoBehaviour, IMovable
         }
         );
 
-        ui.forwardButton.onClick.AddListener(() =>
+        ui.reverseButton.onClick.AddListener(() =>
         {
             RotationSpeed -= _speedChangeStep;
         }
