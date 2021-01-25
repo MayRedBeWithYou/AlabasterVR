@@ -49,11 +49,11 @@ public class FileExplorer : MonoBehaviour
     private DirectoryButtonManager currentButtonScript;
     private List<Transform> items;
 
-    private string resultPath
+    public string ResultPath
     {
         get
         {
-            if(Filename==null || Filename=="")return "";
+            if (Filename == null || Filename == "") return "";
             return currentDirectory.FullName + '/' + Filename;
         }
     }
@@ -80,6 +80,11 @@ public class FileExplorer : MonoBehaviour
             inputText.ForceLabelUpdate();
         }
     }
+    public DirectoryButtonManager GrandparentButtonScript => grandparentButtonScript;
+    public DirectoryButtonManager ParentButtonScript => grandparentButtonScript;
+    public DirectoryButtonManager CurrentButtonScript => grandparentButtonScript;
+    public DirectoryInfo CurrentDirecory => currentDirectory;
+    public int ItemsCounter => items.Count;
 
     public delegate void SelectPathCallback(string SelectedPath);
     public event SelectPathCallback OnAccepted;
@@ -87,11 +92,11 @@ public class FileExplorer : MonoBehaviour
     public delegate void CancelCallback();
     public event CancelCallback OnCancelled;
 
-    void Awake()
+    public void Awake()
     {
         currentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
         items = new List<Transform>();
-        acceptButton.onClick.AddListener(() => OnAccepted?.Invoke(resultPath));
+        acceptButton.onClick.AddListener(() => OnAccepted?.Invoke(ResultPath));
         cancelButton.onClick.AddListener(() => OnCancelled?.Invoke());
     }
 
@@ -223,14 +228,14 @@ public class FileExplorer : MonoBehaviour
         }
     }
 
-    private void ClearItems()
+    public void ClearItems()
     {
         while (items.Count > 0)
         {
             var go = items[items.Count - 1];
             items.RemoveAt(items.Count - 1);
             go.gameObject.SetActive(false);
-            Destroy(go.gameObject);
+            DestroyImmediate(go.gameObject);
         }
     }
 

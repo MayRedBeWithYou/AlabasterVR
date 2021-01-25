@@ -35,7 +35,7 @@ public class DirectoryButtonManager : MonoBehaviour
     {
         mainScript.ChangeDirectory(dirInfo);
     }
-    string Wraper(string text)
+    public string Wraper(string text)
     {
         if(text.Length>8)return text.Substring(0,6)+"..";
         else return text;
