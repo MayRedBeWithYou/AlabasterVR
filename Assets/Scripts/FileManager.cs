@@ -174,7 +174,7 @@ public static class FileManager
                     var tris = chunk.gpuMesh.GetTriangles();
                     for (int i = 0; i < tris.Length; i++)
                     {
-                        var currentNorm = chunk.ModelMatrix.MultiplyVector(tris[i].normA).normalized;
+                        var currentNorm = chunk.ModelMatrix.MultiplyVector(Vector3.Cross(tris[i].vertexB-tris[i].vertexA,tris[i].vertexC-tris[i].vertexA)).normalized;
 
                         ObjVertex[] tmp = new ObjVertex[3];
                         tmp[0].coord = chunk.ModelMatrix.MultiplyPoint(tris[i].vertexA);

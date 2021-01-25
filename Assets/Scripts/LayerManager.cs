@@ -174,7 +174,7 @@ public class LayerManager : MonoBehaviour
         layer.GenerateChunks(chunkPrefab);
         for (int i = 0; i < l.Chunks.Length; i++)
         {
-            float[] vals = Enumerable.Repeat(0.01209677f, layer.ChunkResolution * layer.ChunkResolution * layer.ChunkResolution).ToArray();
+            float[] vals = Enumerable.Repeat(VoxelSpacing, layer.ChunkResolution * layer.ChunkResolution * layer.ChunkResolution).ToArray();
             float[] cols = Enumerable.Repeat(1.0f, layer.ChunkResolution * layer.ChunkResolution * layer.ChunkResolution * 3).ToArray();
             for (int j = 0; j < l.Chunks[i].Values.Length; j++)
             {
@@ -289,20 +289,11 @@ public class LayerManager : MonoBehaviour
         Vector3[] borderPoints = new Vector3[8];
         for (int i = 0; i < indices.Length; i++)
         {
-            borderPoints[i] = l.chunks[indices[i].x * (Resolution - 1), indices[i].y * (Resolution - 1), indices[i].z * (Resolution - 1)].RealCoordinates(indices[i] * (ChunkResolution - 1));
+            borderPoints[i] = l.chunks[indices[i].x * (Resolution - 1), indices[i].y * (Resolution - 1), indices[i].z * (Resolution - 1)].RealCoordinates(indices[i] * (ChunkResolution-2));
         }
         mesh.vertices = borderPoints;
         mesh.colors = new Color[] { Color.red, Color.red, Color.red, Color.red, Color.red, Color.red, Color.red, Color.red };
         mesh.SetIndices(new int[] { 0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7 }, MeshTopology.Lines, 0, false);
         _layerBorder.sharedMesh = mesh;
-    }
-    private void AddEdge(Vector3 a, Vector3 b, ref float[] lines, int index)
-    {
-        lines[6 * index] = a.x;
-        lines[6 * index + 1] = a.y;
-        lines[6 * index + 2] = a.z;
-        lines[6 * index + 3] = b.x;
-        lines[6 * index + 4] = b.y;
-        lines[6 * index + 5] = b.z;
     }
 }
