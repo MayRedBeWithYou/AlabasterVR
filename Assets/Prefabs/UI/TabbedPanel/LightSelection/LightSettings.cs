@@ -45,7 +45,7 @@ public class LightSettings : MonoBehaviour
         if(sceneLight.light.type == LightType.Directional)
         {
             rangeSlider.interactable = false;
-            rangeSlider.interactable = false;
+            angleSlider.interactable = false;
         }
         else
         {

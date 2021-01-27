@@ -28,7 +28,7 @@ public class Layer : MonoBehaviour, IMovable, IResizable
                 foreach (Chunk c in chunks)
                 {
                     c.gpuMesh.renderType = value;
-                    c.gpuMesh.UpdateVertexBuffer(c.voxels);
+                    if (c.voxels.Initialized) c.gpuMesh.UpdateVertexBuffer(c.voxels);
                 }
         }
     }
