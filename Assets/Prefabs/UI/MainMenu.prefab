@@ -1287,7 +1287,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New sculpt
+  m_Text: New project
 --- !u!1 &7558545779775698295
 GameObject:
   m_ObjectHideFlags: 0
@@ -1390,7 +1390,6 @@ MonoBehaviour:
   SaveButton: {fileID: 7558545777796398841}
   ImportButton: {fileID: 7558545777786311830}
   ExportButton: {fileID: 5222226244401020771}
-  OptionsButton: {fileID: 0}
   ExitButton: {fileID: 7558545779368073037}
 --- !u!114 &3022536419796251772
 MonoBehaviour:
