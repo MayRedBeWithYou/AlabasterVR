@@ -111,7 +111,6 @@ public class Layer : MonoBehaviour, IMovable, IResizable
             borderPoints[i] = new Vector3(indices[i].x * fix, indices[i].y * fix, indices[i].z * fix);
         }
         mesh.vertices = borderPoints;
-        mesh.colors = new Color[] { Color.red, Color.red, Color.red, Color.red, Color.red, Color.red, Color.red, Color.red };
         mesh.SetIndices(new int[] { 0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7 }, MeshTopology.Lines, 0, false);
 
         meshFilter.sharedMesh = mesh;

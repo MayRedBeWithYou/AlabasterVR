@@ -14,6 +14,7 @@ public class UIController : MonoBehaviour
     public ButtonHandler ToolSelectionMenuButtonHandler;
     public ButtonHandler LayerSelectionMenuButtonHandler;
     public ButtonHandler LeftTouchHandler;
+    public ButtonHandler SnapshotButton;
 
     [Header("Menu parameters")]
     public Transform cameraTransform;
@@ -59,6 +60,7 @@ public class UIController : MonoBehaviour
         LeftOverlay.SetActive(false);
         LeftTouchHandler.OnButtonDown += (c) => LeftOverlay.SetActive(true);
         LeftTouchHandler.OnButtonUp += (c) => LeftOverlay.SetActive(false);
+        SnapshotButton.OnButtonDown += (c) => MakeSnapshot();
     }
 
     private void ShowMainMenu(XRController controller)
@@ -301,4 +303,36 @@ public class UIController : MonoBehaviour
         script.OnCancelled += () => script.Close();
         return script;
     }
+
+    private void MakeSnapshot()
+    {
+        string name = "AlabasterSnapshot";
+        int counter = 1;
+        if (System.IO.File.Exists(name + ".png"))
+        {
+            while (System.IO.File.Exists($"{name}{counter}.png")) counter++;
+            name += counter.ToString();
+        }
+        name += ".png";
+
+        int captureWidth = 1920;
+        int captureHeight = 1080;
+        Rect rect = new Rect(0, 0, captureWidth, captureHeight);
+        RenderTexture renderTexture = new RenderTexture(captureWidth, captureHeight, 24);
+        Texture2D screenShot = new Texture2D(captureWidth, captureHeight, TextureFormat.RGB24, false);
+        Camera camera = cameraTransform.gameObject.GetComponent<Camera>();
+        camera.targetTexture = renderTexture;
+        camera.Render();
+        RenderTexture.active = renderTexture;
+        screenShot.ReadPixels(rect, 0, 0);
+        camera.targetTexture = null;
+        RenderTexture.active = null;
+
+        byte[] fileData = null;
+        fileData = screenShot.EncodeToPNG();
+        var f = System.IO.File.Create(name);
+        f.Write(fileData, 0, fileData.Length);
+        ShowMessageBox("Snapshot saved as\n" + name);
+    }
+
 }
