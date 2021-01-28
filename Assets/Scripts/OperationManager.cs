@@ -66,7 +66,6 @@ public class OperationManager : MonoBehaviour
         IOperation op = undoOperations.Pop();
         op.Revert();
         redoOperations.Push(op);
-        LayerManager.Instance.DrawLayerBorder(LayerManager.Instance.ActiveLayer);
         source.PlayOneShot(undoAudio);
         Debug.Log($"Undo: {op.GetType().Name}");
         OnStacksChanged?.Invoke();
@@ -77,7 +76,6 @@ public class OperationManager : MonoBehaviour
         IOperation op = redoOperations.Pop();
         op.Apply();
         undoOperations.Push(op);
-        LayerManager.Instance.DrawLayerBorder(LayerManager.Instance.ActiveLayer);
         source.PlayOneShot(redoAudio);
         Debug.Log($"Redo: {op.GetType().Name}");
         OnStacksChanged?.Invoke();

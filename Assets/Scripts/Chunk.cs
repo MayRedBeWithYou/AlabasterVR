@@ -87,6 +87,6 @@ public class Chunk : MonoBehaviour, IDisposable
     public Vector3 RealCoordinates(Vector3Int ind)
     {
         Vector3 ids = new Vector3(ind.x, ind.y, ind.z);
-        return ModelMatrix.MultiplyPoint(ids * size / (resolution-1));
+        return ModelMatrix.MultiplyPoint(ids * size / (resolution));
     }
 }

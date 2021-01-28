@@ -62,7 +62,6 @@ public class PottersWheel : MonoBehaviour, IMovable
         while (true)
         {
             transform.Rotate(new Vector3(0, _rotationSpeed, 0));
-            LayerManager.Instance.DrawLayerBorder(_attatchedLayer);
             yield return new WaitForSeconds(0.0111f);
         }
     }

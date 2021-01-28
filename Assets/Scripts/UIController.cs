@@ -1,4 +1,4 @@
-using HSVPicker;
+﻿using HSVPicker;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +14,6 @@ public class UIController : MonoBehaviour
     public ButtonHandler ToolSelectionMenuButtonHandler;
     public ButtonHandler LayerSelectionMenuButtonHandler;
     public ButtonHandler LeftTouchHandler;
-    public ButtonHandler LeftPrimaryAxisClickHandler;
 
     [Header("Menu parameters")]
     public Transform cameraTransform;
@@ -60,7 +59,6 @@ public class UIController : MonoBehaviour
         LeftOverlay.SetActive(false);
         LeftTouchHandler.OnButtonDown += (c) => LeftOverlay.SetActive(true);
         LeftTouchHandler.OnButtonUp += (c) => LeftOverlay.SetActive(false);
-        LeftPrimaryAxisClickHandler.OnButtonDown += MakeSnapshot;
     }
 
     private void ShowMainMenu(XRController controller)
@@ -302,37 +300,5 @@ public class UIController : MonoBehaviour
         var script = fileExplorer.GetComponent<FileExplorer>();
         script.OnCancelled += () => script.Close();
         return script;
-    }
-    private void MakeSnapshot(XRController controller)
-    {
-        string name = "AlabasterSnapshot";
-        int counter = 1;
-        if (System.IO.File.Exists(name + ".png"))
-        {
-            while (System.IO.File.Exists($"{name}{counter}.png")) counter++;
-            name += counter.ToString();
-        }
-        name += ".png";
-        LayerManager.Instance.DrawLayerBorder(null);
-        int captureWidth = 1920;
-        int captureHeight = 1080;
-        Rect rect = new Rect(0, 0, captureWidth, captureHeight);
-        RenderTexture renderTexture = new RenderTexture(captureWidth, captureHeight, 24);
-        Texture2D screenShot = new Texture2D(captureWidth, captureHeight, TextureFormat.RGB24, false);
-        Camera camera = cameraTransform.gameObject.GetComponent<Camera>();
-        camera.targetTexture = renderTexture;
-        camera.Render();
-        RenderTexture.active = renderTexture;
-        screenShot.ReadPixels(rect, 0, 0);
-        
-        camera.targetTexture = null;
-        RenderTexture.active = null;
-
-        byte[] fileData = null;
-        fileData = screenShot.EncodeToPNG();
-        var f = System.IO.File.Create(name);
-        f.Write(fileData, 0, fileData.Length);
-        LayerManager.Instance.DrawLayerBorder(LayerManager.Instance.ActiveLayer);
-        ShowMessageBox("Snapshot saved as\n" + name);
     }
 }

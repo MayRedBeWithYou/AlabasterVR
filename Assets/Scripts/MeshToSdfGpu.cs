@@ -22,6 +22,7 @@ public static class MeshToSdfGpu
         meshToSdfShader = Resources.Load<ComputeShader>("MeshToSdf/MeshToSdfNormalsShader");
         Initialize(m);
         float[] arr = new float[LayerManager.Instance.ChunkResolution * LayerManager.Instance.ChunkResolution * LayerManager.Instance.ChunkResolution];
+        LayerManager.Instance.AddNewLayer();
         foreach (var chunk in LayerManager.Instance.ActiveLayer.chunks)
         {
             if (bounds.Intersects(chunk.ColliderBounds))
