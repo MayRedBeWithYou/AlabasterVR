@@ -113,7 +113,7 @@ public class LayerManager : MonoBehaviour
         activeChunks = new List<Chunk>();
         VoxelSpacing = Size / Resolution / (ChunkResolution - 1);//Size / (Resolution * ChunkResolution);
         Chunk chunk = chunkPrefab.GetComponent<Chunk>();
-        _layerBorder=gameObject.GetComponent<MeshFilter>();
+        _layerBorder = gameObject.GetComponent<MeshFilter>();
         chunk.size = Spacing;
         chunk.resolution = ChunkResolution;
         _activeLayer = AddNewLayer();
@@ -282,6 +282,11 @@ public class LayerManager : MonoBehaviour
     }
     public void DrawLayerBorder(Layer l)
     {
+        if (l == null)
+        {
+            _layerBorder.sharedMesh = null;
+            return;
+        }
         var mesh = new Mesh();
 
         Vector3Int[] indices = new Vector3Int[8]{new Vector3Int(0,0,0), new Vector3Int(1,0,0),new Vector3Int(1,0,1),new Vector3Int(0,0,1),
@@ -289,7 +294,7 @@ public class LayerManager : MonoBehaviour
         Vector3[] borderPoints = new Vector3[8];
         for (int i = 0; i < indices.Length; i++)
         {
-            borderPoints[i] = l.chunks[indices[i].x * (Resolution - 1), indices[i].y * (Resolution - 1), indices[i].z * (Resolution - 1)].RealCoordinates(indices[i] * (ChunkResolution-2));
+            borderPoints[i] = l.chunks[indices[i].x * (Resolution - 1), indices[i].y * (Resolution - 1), indices[i].z * (Resolution - 1)].RealCoordinates(indices[i] * (ChunkResolution - 2));
         }
         mesh.vertices = borderPoints;
         mesh.SetIndices(new int[] { 0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7 }, MeshTopology.Lines, 0, false);

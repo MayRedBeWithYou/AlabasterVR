@@ -1,4 +1,4 @@
-﻿using HSVPicker;
+using HSVPicker;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -313,7 +313,7 @@ public class UIController : MonoBehaviour
             name += counter.ToString();
         }
         name += ".png";
-
+        LayerManager.Instance.DrawLayerBorder(null);
         int captureWidth = 1920;
         int captureHeight = 1080;
         Rect rect = new Rect(0, 0, captureWidth, captureHeight);
@@ -324,6 +324,7 @@ public class UIController : MonoBehaviour
         camera.Render();
         RenderTexture.active = renderTexture;
         screenShot.ReadPixels(rect, 0, 0);
+        
         camera.targetTexture = null;
         RenderTexture.active = null;
 
@@ -331,6 +332,7 @@ public class UIController : MonoBehaviour
         fileData = screenShot.EncodeToPNG();
         var f = System.IO.File.Create(name);
         f.Write(fileData, 0, fileData.Length);
+        LayerManager.Instance.DrawLayerBorder(LayerManager.Instance.ActiveLayer);
         ShowMessageBox("Snapshot saved as\n" + name);
     }
 }
