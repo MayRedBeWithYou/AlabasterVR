@@ -44,10 +44,16 @@ public class MainMenu : MonoBehaviour
         popup.OnAccept += () =>
         {
             FileExplorer explorer = UIController.Instance.ShowSaveModel();
-            explorer.OnAccepted += (file) => Application.Quit();
+            explorer.OnAccepted += (file) => CloseAppication();
         };
         popup.OnCancel += () => popup.Close();
-        popup.OnDecline += () => Application.Quit();
+        popup.OnDecline += () => CloseAppication();
+    }
+
+    private void CloseAppication()
+    {
+        Application.Unload();
+        if (!Application.isEditor) System.Diagnostics.Process.GetCurrentProcess().Kill();
     }
 
 }

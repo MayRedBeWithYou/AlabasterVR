@@ -20,7 +20,7 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.6313726, g: 0.6313726, b: 0.6313726, a: 1}
+  m_AmbientSkyColor: {r: 0.8301887, g: 0.8301887, b: 0.8301887, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
@@ -702,6 +702,7 @@ MonoBehaviour:
   LayerSelectionMenuButtonHandler: {fileID: 11400000, guid: 2feffd6caa18b9940a5afbfa0046cee1,
     type: 2}
   LeftTouchHandler: {fileID: 11400000, guid: a58ef9bfe8d104647815c73918cedc32, type: 2}
+  SnapshotButton: {fileID: 11400000, guid: 7f1a0f647770e394782890691c3ea206, type: 2}
   cameraTransform: {fileID: 1455743658339109724}
   LeftHandMenuTransform: {fileID: 441042022}
   uiDistance: 0.6

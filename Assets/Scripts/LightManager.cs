@@ -44,7 +44,7 @@ public class LightManager : MonoBehaviour
 
         light.transform.position = new Vector3(0, 3, 0);
         light.transform.rotation = Quaternion.Euler(50, -30, 0);
-        light.light.intensity = 1;
+        light.light.intensity = 0.8f;
 
         light.SetColor(light.light.color);
         lights.Add(light);

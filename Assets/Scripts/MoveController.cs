@@ -111,7 +111,6 @@ public class MoveController : MonoBehaviour
                 movable.SetRotation(quat * refRot);
             }
         }
-        if(grab!=GrabState.None)LayerManager.Instance.DrawLayerBorder(LayerManager.Instance.ActiveLayer);
     }
 
 
@@ -180,7 +179,7 @@ public class MoveController : MonoBehaviour
                 originalParent = null;
                 movable = null;
                 resizable = null;
-                
+
                 break;
             case GrabState.Both:
                 grab = GrabState.One;

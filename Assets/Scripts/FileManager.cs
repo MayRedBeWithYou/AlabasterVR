@@ -12,11 +12,11 @@ public static class FileManager
         script.mode = FileExplorerMode.Save;
         script.UpdateDirectory();
         script.OnAccepted += (text) =>
-          {
-              if (System.String.IsNullOrWhiteSpace(text)) return;
-              JsonSerializer.Serialize(text);
-              script.Close();
-          };
+        {
+            if (System.String.IsNullOrWhiteSpace(text)) return;
+            JsonSerializer.Serialize(text);
+            script.Close();
+        };
         return script;
     }
     public static FileExplorer LoadModel(FileExplorer script)
@@ -25,11 +25,11 @@ public static class FileManager
         script.SetExtensionsArray(new string[] { ".abs" });
         script.UpdateDirectory();
         script.OnAccepted += (text) =>
-          {
-              if (System.String.IsNullOrWhiteSpace(text)) return;
-              JsonSerializer.Deserialize(text);
-              script.Close();
-          };
+        {
+            if (System.String.IsNullOrWhiteSpace(text)) return;
+            JsonSerializer.Deserialize(text);
+            script.Close();
+        };
         return script;
     }
     public static FileExplorer ExportModel(FileExplorer script)
@@ -37,11 +37,11 @@ public static class FileManager
         script.mode = FileExplorerMode.Save;
         script.UpdateDirectory();
         script.OnAccepted += (text) =>
-          {
-              if (System.String.IsNullOrWhiteSpace(text)) return;
-              TranslateModelToObj(text);
-              script.Close();
-          };
+        {
+            if (System.String.IsNullOrWhiteSpace(text)) return;
+            TranslateModelToObj(text);
+            script.Close();
+        };
         return script;
     }
     public static FileExplorer ImportModel(FileExplorer script)
@@ -50,19 +50,19 @@ public static class FileManager
         script.SetExtensionsArray(new string[] { ".obj" });
         script.UpdateDirectory();
         script.OnAccepted += (text) =>
-          {
-              if (System.String.IsNullOrWhiteSpace(text)) return;
-              try
-              {
-                  MeshToSdfGpu.TemporaryMesh mesh = TranslateObjToModel(text);
-                  MeshToSdfGpu.TranslateTrianglesToSdf(TranslateObjToModel(text), mesh.triangles.Length / 9, true);
-              }
-              catch
-              {
-                  UIController.Instance.ShowMessageBox("Model couldn't be loaded - incorrect file format");
-              }
-              script.Close();
-          };
+        {
+            if (System.String.IsNullOrWhiteSpace(text)) return;
+            try
+            {
+                MeshToSdfGpu.TemporaryMesh mesh = TranslateObjToModel(text);
+                MeshToSdfGpu.TranslateTrianglesToSdf(mesh, mesh.triangles.Length / 9, true);
+            }
+            catch
+            {
+                UIController.Instance.ShowMessageBox("Model couldn't be loaded - incorrect file format");
+            }
+            script.Close();
+        };
         return script;
     }
 
@@ -105,32 +105,33 @@ public static class FileManager
         }
         streamReader.Close();
 
+        LayerManager.Instance.AddNewLayer();
         Vector3 min = Vector3.positiveInfinity, max = Vector3.negativeInfinity;
-        {
-            for (int i = 0; i < vertices.Count; i++)
-            {
-                min = Vector3.Min(min, vertices[i]);
-                max = Vector3.Max(max, vertices[i]);
-            }
-        }
-        Vector3 diff = max - min;
-        float meshDiameter = Mathf.Max(diff.x, diff.y, diff.z);
-        float x=(LayerManager.Instance.VoxelSpacing * (LayerManager.Instance.ChunkResolution - 3));
-        float tempSize = LayerManager.Instance.Size - x;
-        float scale = (LayerManager.Instance.RelativeModelSize * tempSize) / meshDiameter;
-        Vector3 sceneCenter = Vector3.one * (LayerManager.Instance.Size * 0.5f);
-        Vector3 centeringVector = sceneCenter - diff * scale * 0.5f;
         for (int i = 0; i < vertices.Count; i++)
         {
-            vertices[i] -= min;
-            vertices[i] *= scale;
-            vertices[i] += centeringVector;
+            min = Vector3.Min(min, vertices[i]);
+            max = Vector3.Max(max, vertices[i]);
         }
-        min = centeringVector;
-        max = diff * scale + centeringVector;
-        Bounds boundsMine = new Bounds((min + max) * 0.5f, max - min);
+        Vector3 sceneStart = LayerManager.Instance.ActiveLayer.chunks[0, 0, 0].RealCoordinates(Vector3Int.zero);
+        Vector3 sceneEnd = LayerManager.Instance.ActiveLayer.chunks[LayerManager.Instance.Resolution - 1, LayerManager.Instance.Resolution - 1, LayerManager.Instance.Resolution - 1].RealCoordinates(Vector3Int.one * (LayerManager.Instance.ChunkResolution - 2));
 
-        MeshToSdfGpu.bounds = new Bounds((min + max) * 0.5f, (max - min) + Vector3.one * LayerManager.Instance.VoxelSpacing * 4);
+        float meshDiameter = Mathf.Max(max.x - min.x, max.y - min.y, max.z - min.z);
+        float tempSceneSize = sceneEnd.x - sceneStart.x;
+        float scale = (LayerManager.Instance.RelativeModelSize * tempSceneSize) / meshDiameter;
+
+        for (int i = 0; i < vertices.Count; i++) vertices[i] = (vertices[i] - min + sceneStart) * scale;
+        max = (max - min + sceneStart) * scale;
+        min = sceneStart * scale;
+
+        Vector3 sceneCenter = (sceneStart + sceneEnd) * 0.5f;
+        Vector3 modelCenter = (max + min) * 0.5f;
+        Vector3 centeringVector = (sceneCenter - modelCenter);
+
+        for (int i = 0; i < vertices.Count; i++) vertices[i] += centeringVector;
+        max += centeringVector;
+        min += centeringVector;
+
+        MeshToSdfGpu.bounds = new Bounds((max + min) * 0.5f, (max - min) + Vector3.one * LayerManager.Instance.VoxelSpacing * 2);
         MeshToSdfGpu.TemporaryMesh result = new MeshToSdfGpu.TemporaryMesh();
         result.triangles = new float[trianglesIndices.Count * 9];
         for (int i = 0; i < trianglesIndices.Count; i++)
@@ -174,7 +175,7 @@ public static class FileManager
                     var tris = chunk.gpuMesh.GetTriangles();
                     for (int i = 0; i < tris.Length; i++)
                     {
-                        var currentNorm = chunk.ModelMatrix.MultiplyVector(tris[i].normA).normalized;
+                        var currentNorm = chunk.ModelMatrix.MultiplyVector(Vector3.Cross(tris[i].vertexB - tris[i].vertexA, tris[i].vertexC - tris[i].vertexA)).normalized;
 
                         ObjVertex[] tmp = new ObjVertex[3];
                         tmp[0].coord = chunk.ModelMatrix.MultiplyPoint(tris[i].vertexA);

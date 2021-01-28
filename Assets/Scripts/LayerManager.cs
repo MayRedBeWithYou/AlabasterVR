@@ -80,10 +80,11 @@ public class LayerManager : MonoBehaviour
         get => _activeLayer;
         set
         {
-            DrawLayerBorder(value);
             foreach (Chunk chunk in _activeLayer.chunks) chunk.ToggleColliders(false);
             activeChunks.Clear();
+            _activeLayer.ToggleRenderer(false);
             _activeLayer = value;
+            _activeLayer.ToggleRenderer(true);
             foreach (Chunk chunk in _activeLayer.chunks) chunk.ToggleColliders(true);
             Debug.Log($"Active layer: {value.name}");
             ActiveLayerChanged?.Invoke(value);
@@ -113,7 +114,7 @@ public class LayerManager : MonoBehaviour
         activeChunks = new List<Chunk>();
         VoxelSpacing = Size / Resolution / (ChunkResolution - 1);//Size / (Resolution * ChunkResolution);
         Chunk chunk = chunkPrefab.GetComponent<Chunk>();
-        _layerBorder=gameObject.GetComponent<MeshFilter>();
+        _layerBorder = gameObject.GetComponent<MeshFilter>();
         chunk.size = Spacing;
         chunk.resolution = ChunkResolution;
         _activeLayer = AddNewLayer();
@@ -132,10 +133,6 @@ public class LayerManager : MonoBehaviour
         layer.Metallic = Metallic;
         layer.RenderType = renderType;
 
-        BoxCollider box = layerObject.GetComponent<BoxCollider>();
-        box.size = Vector3.one * Size;
-        box.center = Vector3.one * Size / 2;
-
         layer.GenerateChunks(chunkPrefab);
         layers.Add(layer);
         LayerAdded?.Invoke(layer);
@@ -143,7 +140,6 @@ public class LayerManager : MonoBehaviour
 
         if (ActiveLayer != null)
             ActiveLayer = layer;
-        DrawLayerBorder(layer);
         return layer;
     }
 
@@ -167,14 +163,11 @@ public class LayerManager : MonoBehaviour
         layer.SetPosition(l.Position.ToVector3());
         layer.SetRotation(l.Rotation.ToQuaternion());
         layer.SetScale(l.Scale.ToVector3());
-        BoxCollider box = layerObject.GetComponent<BoxCollider>();
-        box.size = Vector3.one * Size;
-        box.center = Vector3.one * Size / 2;
 
         layer.GenerateChunks(chunkPrefab);
         for (int i = 0; i < l.Chunks.Length; i++)
         {
-            float[] vals = Enumerable.Repeat(0.01209677f, layer.ChunkResolution * layer.ChunkResolution * layer.ChunkResolution).ToArray();
+            float[] vals = Enumerable.Repeat(VoxelSpacing, layer.ChunkResolution * layer.ChunkResolution * layer.ChunkResolution).ToArray();
             float[] cols = Enumerable.Repeat(1.0f, layer.ChunkResolution * layer.ChunkResolution * layer.ChunkResolution * 3).ToArray();
             for (int j = 0; j < l.Chunks[i].Values.Length; j++)
             {
@@ -194,7 +187,6 @@ public class LayerManager : MonoBehaviour
 
         if (ActiveLayer != null)
             ActiveLayer = layer;
-        DrawLayerBorder(layer);
         return layer;
     }
 
@@ -280,22 +272,7 @@ public class LayerManager : MonoBehaviour
 
         return ((Vector3)(Vector3Int.FloorToInt(pos / VoxelSpacing)) + Vector3.one * 0.5f) * VoxelSpacing + layerPos;
     }
-    public void DrawLayerBorder(Layer l)
-    {
-        var mesh = new Mesh();
 
-        Vector3Int[] indices = new Vector3Int[8]{new Vector3Int(0,0,0), new Vector3Int(1,0,0),new Vector3Int(1,0,1),new Vector3Int(0,0,1),
-            new Vector3Int(0,1,0), new Vector3Int(1,1,0),new Vector3Int(1,1,1),new Vector3Int(0,1,1)};
-        Vector3[] borderPoints = new Vector3[8];
-        for (int i = 0; i < indices.Length; i++)
-        {
-            borderPoints[i] = l.chunks[indices[i].x * (Resolution - 1), indices[i].y * (Resolution - 1), indices[i].z * (Resolution - 1)].RealCoordinates(indices[i] * (ChunkResolution - 1));
-        }
-        mesh.vertices = borderPoints;
-        mesh.colors = new Color[] { Color.red, Color.red, Color.red, Color.red, Color.red, Color.red, Color.red, Color.red };
-        mesh.SetIndices(new int[] { 0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7 }, MeshTopology.Lines, 0, false);
-        _layerBorder.sharedMesh = mesh;
-    }
     private void AddEdge(Vector3 a, Vector3 b, ref float[] lines, int index)
     {
         lines[6 * index] = a.x;
