@@ -99,7 +99,12 @@ public static class FileManager
                 }
                 else if (current[0] == 'v')
                 {
-                    if (current[1] == ' ') vertices.Add(ParseToVector3(current));
+                    if (current[1] == ' ')
+                    {
+                        Vector3 t = ParseToVector3(current);
+                        t.x = -t.x;
+                        vertices.Add(t);
+                    }
                 }
             }
         }
@@ -175,12 +180,15 @@ public static class FileManager
                     var tris = chunk.gpuMesh.GetTriangles();
                     for (int i = 0; i < tris.Length; i++)
                     {
-                        var currentNorm = chunk.ModelMatrix.MultiplyVector(Vector3.Cross(tris[i].vertexB - tris[i].vertexA, tris[i].vertexC - tris[i].vertexA)).normalized;
-
                         ObjVertex[] tmp = new ObjVertex[3];
                         tmp[0].coord = chunk.ModelMatrix.MultiplyPoint(tris[i].vertexA);
                         tmp[1].coord = chunk.ModelMatrix.MultiplyPoint(tris[i].vertexB);
                         tmp[2].coord = chunk.ModelMatrix.MultiplyPoint(tris[i].vertexC);
+
+                        tmp[0].coord.x = -tmp[0].coord.x;
+                        tmp[1].coord.x = -tmp[1].coord.x;
+                        tmp[2].coord.x = -tmp[2].coord.x;
+                        var currentNorm = Vector3.Cross(tmp[2].coord - tmp[0].coord, tmp[1].coord - tmp[0].coord);
                         ObjTriangle tri;
                         tri.verts = new int[3];
                         for (int j = 0; j < tmp.Length; j++)
