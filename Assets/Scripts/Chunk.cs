@@ -43,10 +43,6 @@ public class Chunk : MonoBehaviour, IDisposable
         _renderer = GetComponent<MeshRenderer>();
         _collider = GetComponent<MeshCollider>();
         _boxCollider = GetComponent<BoxCollider>();
-
-        mesh = new Mesh();
-        mesh.MarkDynamic();
-        mesh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
     }
 
     public void Init()

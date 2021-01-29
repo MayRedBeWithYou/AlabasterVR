@@ -59,7 +59,7 @@ public static class FileManager
             }
             catch
             {
-                UIController.Instance.ShowMessageBox("Model couldn't be loaded - incorrect file format");
+                UIController.Instance.ShowMessageBox("Model could not be loaded - incorrect file format");
             }
             script.Close();
         };
@@ -249,7 +249,7 @@ public static class FileManager
         sw.Close();
 
         if (!nameChanged) UIController.Instance.ShowMessageBox("Model exported to " + Path.GetFileName(tempName));
-        else UIController.Instance.ShowMessageBox($"File {Path.GetFileName(path)}.obj already existed.\nModel exported to {Path.GetFileName(tempName)}.");
+        else UIController.Instance.ShowMessageBox($"File {Path.GetFileName(path)}.obj already exists.\nModel exported to {Path.GetFileName(tempName)}.");
     }
 
     private static Vector3 ParseToVector3(string text)

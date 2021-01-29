@@ -71,8 +71,16 @@ public class GPUVoxelData : IDisposable
 
     public void Dispose()
     {
-        if (_voxelBuffer != null) VoxelBuffer.Dispose();
-        if (_colorBuffer != null) ColorBuffer.Dispose();
+        if (_voxelBuffer != null)
+        {
+            VoxelBuffer.Release();
+            VoxelBuffer.Dispose();
+        }
+        if (_colorBuffer != null)
+        {
+            ColorBuffer.Release();
+            ColorBuffer.Dispose();
+        }
     }
 
     public void DrawVoxelData(Vector3 offset)

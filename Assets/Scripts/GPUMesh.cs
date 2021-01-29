@@ -11,6 +11,17 @@ public class GPUMesh : IDisposable
     private ComputeBuffer vertexBuffer;
     private ComputeBuffer drawArgs;
 
+    private int maxTriangleCount;
+
+    private ComputeBuffer VertexBuffer
+    {
+        get
+        {
+            if (vertexBuffer == null) Init();
+            return vertexBuffer;
+        }
+    }
+
     public float metallic;
     public float smoothness;
     public RenderType renderType;
@@ -22,7 +33,12 @@ public class GPUMesh : IDisposable
         marchingCubesShader = Resources.Load<ComputeShader>("MarchingCubes/marchingCubesGPU");
     }
 
-    public GPUMesh(int maxTriangleCount)
+    public GPUMesh(int maxTriagles)
+    {
+        maxTriangleCount = maxTriagles;
+    }
+
+    public void Init()
     {
         vertexBuffer = new ComputeBuffer(maxTriangleCount, sizeof(float) * 27, ComputeBufferType.Append);
         drawArgs = new ComputeBuffer(4, sizeof(int), ComputeBufferType.IndirectArguments);
@@ -43,7 +59,7 @@ public class GPUMesh : IDisposable
             default:
                 throw new ArgumentException("Unknown render type");
         }
-        vertexBuffer.SetCounterValue(0);
+        VertexBuffer.SetCounterValue(0);
         marchingCubesShader.SetBuffer(kernel, "points", voxels.VoxelBuffer);
         marchingCubesShader.SetBuffer(kernel, "colors", voxels.ColorBuffer);
         marchingCubesShader.SetBuffer(kernel, "triangles", vertexBuffer);
@@ -51,13 +67,13 @@ public class GPUMesh : IDisposable
         marchingCubesShader.SetFloat("isoLevel", isoLevel);
         marchingCubesShader.SetFloat("chunkSize", voxels.Size);
         marchingCubesShader.Dispatch(kernel, voxels.Resolution / 8, voxels.Resolution / 8, voxels.Resolution / 8);
-        ComputeBuffer.CopyCount(vertexBuffer, drawArgs, sizeof(int));
+        ComputeBuffer.CopyCount(VertexBuffer, drawArgs, sizeof(int));
     }
 
     public void DrawMesh(Matrix4x4 modelMatrix, Matrix4x4 inverseModelMatrix)
     {
         MaterialPropertyBlock materialBlock = new MaterialPropertyBlock();
-        materialBlock.SetBuffer("data", vertexBuffer);
+        materialBlock.SetBuffer("data", VertexBuffer);
         materialBlock.SetMatrix("model", modelMatrix);
         materialBlock.SetMatrix("invModel", inverseModelMatrix);
         materialBlock.SetFloat("_Glossiness", smoothness);
@@ -96,7 +112,7 @@ public class GPUMesh : IDisposable
         int[] arr = new int[4];
         drawArgs.GetData(arr);
         GPUTriangle[] result = new GPUTriangle[arr[1]];
-        vertexBuffer.GetData(result);
+        VertexBuffer.GetData(result);
         return result;
     }
 }

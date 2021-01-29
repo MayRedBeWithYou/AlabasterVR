@@ -22,6 +22,16 @@ public class MoveController : MonoBehaviour
     public AxisHandler LeftGripHandler;
     public AxisHandler RightGripHandler;
 
+    public ButtonHandler multiGrabButton;
+
+    [Header("Audio")]
+    public AudioClip multiGrabClip;
+    public AudioClip singleGrabClip;
+
+    private AudioSource source;
+
+    private bool MultiGrab = false;
+
     private float leftVal;
     private float rightVal;
 
@@ -88,6 +98,15 @@ public class MoveController : MonoBehaviour
                 rightVal = value;
             }
         };
+        source = GetComponent<AudioSource>();
+
+        multiGrabButton.OnButtonDown += (c) =>
+        {
+            if (grab == GrabState.None)  MultiGrab = !MultiGrab;
+            if (MultiGrab) source.PlayOneShot(multiGrabClip);
+            else source.PlayOneShot(singleGrabClip);
+        };
+
     }
 
     void Update()
@@ -124,8 +143,13 @@ public class MoveController : MonoBehaviour
                 if (hover.Current != null) grabbedObject = hover.Current;
                 else
                 {
-                    grabbedObject = LayerManager.Instance.ActiveLayer.gameObject;
-                    before = new TransformObject(grabbedObject.transform.position, grabbedObject.transform.localScale, grabbedObject.transform.rotation);
+                    if (MultiGrab)
+                    {
+                        grabbedObject = LayerManager.Instance.LayerHelper;
+                        foreach (Layer layer in LayerManager.Instance.layers) layer.transform.parent = LayerManager.Instance.LayerHelper.transform;
+                    }
+                    else grabbedObject = LayerManager.Instance.ActiveLayer.gameObject;
+                    before = new TransformObject(grabbedObject.transform);
                 }
 
                 originalParent = grabbedObject.transform.parent;
@@ -171,8 +195,17 @@ public class MoveController : MonoBehaviour
                 if (before != null)
                 {
                     TransformObject after = new TransformObject(grabbedObject.transform);
-                    LayerMoveOperation op = new LayerMoveOperation(LayerManager.Instance.ActiveLayer, before, after);
-                    OperationManager.Instance.PushOperation(op);
+                    if (MultiGrab)
+                    {
+                        MultiLayerMoveOperation op = new MultiLayerMoveOperation(LayerManager.Instance.LayerHelper, before, after);
+                        OperationManager.Instance.PushOperation(op);
+                        foreach (Layer layer in LayerManager.Instance.layers) layer.transform.parent = LayerManager.Instance.LayersHolder.transform;
+                    }
+                    else
+                    {
+                        LayerMoveOperation op = new LayerMoveOperation(LayerManager.Instance.ActiveLayer, before, after);
+                        OperationManager.Instance.PushOperation(op);
+                    }
                     before = null;
                 }
                 grabbedObject = null;

@@ -20,6 +20,8 @@ public class LayerManager : MonoBehaviour
 
     public GameObject LayerPrefab;
 
+    public GameObject LayerHelper;
+
     public List<Layer> layers { get; private set; }
 
     public GameObject chunkPrefab;

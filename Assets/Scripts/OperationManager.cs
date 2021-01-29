@@ -49,6 +49,7 @@ public class OperationManager : MonoBehaviour
     {
         undoOperations.Clear();
         redoOperations.Clear();
+        GC.Collect();
     }
 
     public void PushOperation(IOperation op)
