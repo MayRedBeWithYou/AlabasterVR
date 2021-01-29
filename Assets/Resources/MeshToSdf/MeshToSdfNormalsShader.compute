@@ -47,7 +47,7 @@ float3 realPosExternal(int3 id)
 float3 NormalSquared(int index)
 {
     float3 vertexA=GetVertexA(index);
-    return cross(GetVertexB(index) - vertexA, GetVertexC(index) - vertexA);
+    return cross(GetVertexC(index) - vertexA, GetVertexB(index) - vertexA);
 }
 
 float3 Barycentric(float3 P, int index)
