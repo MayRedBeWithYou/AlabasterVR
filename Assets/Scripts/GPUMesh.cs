@@ -92,8 +92,8 @@ public class GPUMesh : IDisposable
 
     public void Dispose()
     {
-        vertexBuffer.Dispose();
-        drawArgs.Dispose();
+        if(vertexBuffer != null) vertexBuffer.Dispose();
+        if (drawArgs != null) drawArgs.Dispose();
     }
     public struct GPUTriangle
     {
